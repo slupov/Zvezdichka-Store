@@ -1,0 +1,16 @@
+D:\Github\Zvezdichka\Zvezdichka.Web\bin\Debug\netcoreapp2.0\Zvezdichka.Web.deps.json
+D:\Github\Zvezdichka\Zvezdichka.Web\bin\Debug\netcoreapp2.0\Zvezdichka.Web.runtimeconfig.json
+D:\Github\Zvezdichka\Zvezdichka.Web\bin\Debug\netcoreapp2.0\Zvezdichka.Web.runtimeconfig.dev.json
+D:\Github\Zvezdichka\Zvezdichka.Web\bin\Debug\netcoreapp2.0\Zvezdichka.Web.dll
+D:\Github\Zvezdichka\Zvezdichka.Web\bin\Debug\netcoreapp2.0\Zvezdichka.Web.pdb
+D:\Github\Zvezdichka\Zvezdichka.Web\obj\Debug\netcoreapp2.0\Zvezdichka.Web.csprojResolveAssemblyReference.cache
+D:\Github\Zvezdichka\Zvezdichka.Web\obj\Debug\netcoreapp2.0\Zvezdichka.Web.csproj.CoreCompileInputs.cache
+D:\Github\Zvezdichka\Zvezdichka.Web\obj\Debug\netcoreapp2.0\Zvezdichka.Web.AssemblyInfoInputs.cache
+D:\Github\Zvezdichka\Zvezdichka.Web\obj\Debug\netcoreapp2.0\Zvezdichka.Web.AssemblyInfo.cs
+D:\Github\Zvezdichka\Zvezdichka.Web\obj\Debug\netcoreapp2.0\Zvezdichka.Web.dll
+D:\Github\Zvezdichka\Zvezdichka.Web\obj\Debug\netcoreapp2.0\Zvezdichka.Web.pdb
+D:\Github\Zvezdichka\Zvezdichka.Web\bin\Debug\netcoreapp2.0\Zvezdichka.Data.dll
+D:\Github\Zvezdichka\Zvezdichka.Web\bin\Debug\netcoreapp2.0\Zvezdichka.Services.dll
+D:\Github\Zvezdichka\Zvezdichka.Web\bin\Debug\netcoreapp2.0\Zvezdichka.Data.pdb
+D:\Github\Zvezdichka\Zvezdichka.Web\bin\Debug\netcoreapp2.0\Zvezdichka.Services.pdb
+D:\Github\Zvezdichka\Zvezdichka.Web\obj\Debug\netcoreapp2.0\UserSecretsAssemblyInfo.cs

@@ -1,0 +1,11 @@
+D:\Github\Zvezdichka\Zvezdichka.Services\bin\Debug\netcoreapp2.0\Zvezdichka.Services.deps.json
+D:\Github\Zvezdichka\Zvezdichka.Services\bin\Debug\netcoreapp2.0\Zvezdichka.Services.dll
+D:\Github\Zvezdichka\Zvezdichka.Services\bin\Debug\netcoreapp2.0\Zvezdichka.Services.pdb
+D:\Github\Zvezdichka\Zvezdichka.Services\obj\Debug\netcoreapp2.0\Zvezdichka.Services.csprojResolveAssemblyReference.cache
+D:\Github\Zvezdichka\Zvezdichka.Services\obj\Debug\netcoreapp2.0\Zvezdichka.Services.csproj.CoreCompileInputs.cache
+D:\Github\Zvezdichka\Zvezdichka.Services\obj\Debug\netcoreapp2.0\Zvezdichka.Services.AssemblyInfoInputs.cache
+D:\Github\Zvezdichka\Zvezdichka.Services\obj\Debug\netcoreapp2.0\Zvezdichka.Services.AssemblyInfo.cs
+D:\Github\Zvezdichka\Zvezdichka.Services\obj\Debug\netcoreapp2.0\Zvezdichka.Services.dll
+D:\Github\Zvezdichka\Zvezdichka.Services\obj\Debug\netcoreapp2.0\Zvezdichka.Services.pdb
+D:\Github\Zvezdichka\Zvezdichka.Services\bin\Debug\netcoreapp2.0\Zvezdichka.Data.dll
+D:\Github\Zvezdichka\Zvezdichka.Services\bin\Debug\netcoreapp2.0\Zvezdichka.Data.pdb
