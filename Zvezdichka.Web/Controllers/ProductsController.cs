@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Zvezdichka.Services.Contracts.Entity;
-using Zvezdichka.Web.Models.ProductsViewModels;
-using AutoMapper;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Zvezdichka.Data;
 using Zvezdichka.Data.Models;
+using Zvezdichka.Services.Contracts.Entity;
 
 namespace Zvezdichka.Web.Controllers
 {
@@ -16,70 +20,130 @@ namespace Zvezdichka.Web.Controllers
             this.products = products;
         }
 
-        public IActionResult Index()
+        // GET: Products
+        public async Task<IActionResult> Index()
         {
-            return View();
+            return View(this.products.GetAll());
         }
 
-        [HttpGet]
+        // GET: Products/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var product = this.products.GetSingle(m => m.Id == id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return View(product);
+        }
+
+        // GET: Products/Create
         public IActionResult Create()
         {
             return View();
         }
 
+        // POST: Products/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public IActionResult Create(CreateProductViewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Stock,Price,ImageSource")] Product product)
         {
-            if (!this.ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
-                return View(model);
+                this.products.Add(product);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(product);
+        }
+
+        // GET: Products/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
             }
 
-            this.products.Add(new Product()
+            var product = this.products.GetSingle(m => m.Id == id);
+            if (product == null)
             {
-                Name = model.Name,
-                Description = model.Description,
-                ImageSource = model.ImageSource,
-                Price = model.Price,
-                Stock = model.Stock
-            });
-
-            return RedirectToAction(nameof(Index),nameof(HomeController));
+                return NotFound();
+            }
+            return View(product);
         }
 
-        [HttpGet]
-        public IActionResult Edit(int id)
-        {
-            return View();
-        }
-
+        // POST: Products/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public IActionResult Edit(int id, CreateProductViewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Stock,Price,ImageSource")] Product product)
         {
-            return View();
+            if (id != product.Id)
+            {
+                return NotFound();
+            }
+
+            if (this.ModelState.IsValid)
+            {
+                try
+                {
+                    this.products.Update(product);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ProductExists(product.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(product);
         }
 
-        [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public IActionResult Delete(int id)
+        // GET: Products/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
-            var product = Mapper.Map<ShortProductViewModel>(this.products.GetSingle(p => p.Id == id));
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var product = this.products.GetSingle(m => m.Id == id);
+            if (product == null)
+            {
+                return NotFound();
+            }
 
             return View(product);
         }
 
-        [HttpPost]
-        public IActionResult Delete(int id, ShortProductViewModel model)
+        // POST: Products/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (!this.ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            this.products.Remove(this.products.GetSingle(p => p.Id == id));
-
+            var product = this.products.GetSingle(m => m.Id == id);
+            this.products.Remove(product);
             return RedirectToAction(nameof(Index));
+        }
+
+        private bool ProductExists(int id)
+        {
+            return this.products.Any(e => e.Id == id);
         }
     }
 }

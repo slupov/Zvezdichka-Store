@@ -4014,11 +4014,11 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "D:\\Github\\Zvezdichka\\Zvezdichka.Data\\Zvezdichka.Data.csproj",
+      "projectUniqueName": "D:\\Github\\Zvezdichka-Store\\Zvezdichka.Data\\Zvezdichka.Data.csproj",
       "projectName": "Zvezdichka.Data",
-      "projectPath": "D:\\Github\\Zvezdichka\\Zvezdichka.Data\\Zvezdichka.Data.csproj",
+      "projectPath": "D:\\Github\\Zvezdichka-Store\\Zvezdichka.Data\\Zvezdichka.Data.csproj",
       "packagesPath": "C:\\Users\\stoya\\.nuget\\packages\\",
-      "outputPath": "D:\\Github\\Zvezdichka\\Zvezdichka.Data\\obj\\",
+      "outputPath": "D:\\Github\\Zvezdichka-Store\\Zvezdichka.Data\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

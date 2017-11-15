@@ -13,7 +13,7 @@ namespace Zvezdichka.Services
         public virtual IList<T> GetAll(params Expression<Func<T, object>>[] navigationProperties)
         {
             List<T> list;
-            using (var context = new ZvezdichkaDbContext())
+            using (var context = new ZvezdichkaDbContext(new DbContextOptions<ZvezdichkaDbContext>()))
             {
                 IQueryable<T> dbQuery = context.Set<T>();
 
@@ -32,7 +32,7 @@ namespace Zvezdichka.Services
             params Expression<Func<T, object>>[] navigationProperties)
         {
             List<T> list;
-            using (var context = new ZvezdichkaDbContext())
+            using (var context = new ZvezdichkaDbContext(new DbContextOptions<ZvezdichkaDbContext>()))
             {
                 IQueryable<T> dbQuery = context.Set<T>();
 
@@ -53,7 +53,7 @@ namespace Zvezdichka.Services
             params Expression<Func<T, object>>[] navigationProperties)
         {
             T item = null;
-            using (var context = new ZvezdichkaDbContext())
+            using (var context = new ZvezdichkaDbContext(new DbContextOptions<ZvezdichkaDbContext>()))
             {
                 IQueryable<T> dbQuery = context.Set<T>();
 
@@ -70,7 +70,7 @@ namespace Zvezdichka.Services
 
         public virtual void Add(params T[] items)
         {
-            using (var context = new ZvezdichkaDbContext())
+            using (var context = new ZvezdichkaDbContext(new DbContextOptions<ZvezdichkaDbContext>()))
             {
                 foreach (T item in items)
                 {
@@ -82,7 +82,7 @@ namespace Zvezdichka.Services
 
         public virtual void Update(params T[] items)
         {
-            using (var context = new ZvezdichkaDbContext())
+            using (var context = new ZvezdichkaDbContext(new DbContextOptions<ZvezdichkaDbContext>()))
             {
                 foreach (T item in items)
                 {
@@ -94,7 +94,7 @@ namespace Zvezdichka.Services
 
         public virtual void Remove(params T[] items)
         {
-            using (var context = new ZvezdichkaDbContext())
+            using (var context = new ZvezdichkaDbContext(new DbContextOptions<ZvezdichkaDbContext>()))
             {
                 foreach (T item in items)
                 {
@@ -107,7 +107,7 @@ namespace Zvezdichka.Services
         public bool Any(Func<T, bool> where,
             params Expression<Func<T, object>>[] navigationProperties)
         {
-            using (var context = new ZvezdichkaDbContext())
+            using (var context = new ZvezdichkaDbContext(new DbContextOptions<ZvezdichkaDbContext>()))
             {
                 IQueryable<T> dbQuery = context.Set<T>();
 
@@ -123,7 +123,7 @@ namespace Zvezdichka.Services
 
         public bool Any()
         {
-            using (var context = new ZvezdichkaDbContext())
+            using (var context = new ZvezdichkaDbContext(new DbContextOptions<ZvezdichkaDbContext>()))
             {
                 IQueryable<T> dbQuery = context.Set<T>();
 

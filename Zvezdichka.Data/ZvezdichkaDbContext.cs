@@ -13,13 +13,6 @@ namespace Zvezdichka.Data
         {
         }
 
-        /// <summary>
-        /// adds new DbContextOptions<DbContext> as a parameter by default
-        /// </summary>
-        public ZvezdichkaDbContext() : this(new DbContextOptions<ZvezdichkaDbContext>())
-        {
-        }
-
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Comment> Comments { get; set; }
@@ -38,8 +31,10 @@ namespace Zvezdichka.Data
             base.OnModelCreating(builder);
         }
 
+        //TODO: implement DbContext DI in services, remove this OnConfiguring
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
+            builder.UseSqlServer("Server=.;Database=Zvezdichka;Trusted_Connection=True;MultipleActiveResultSets=true");
             base.OnConfiguring(builder);
         }
     }

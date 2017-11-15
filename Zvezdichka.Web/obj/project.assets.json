@@ -13207,11 +13207,11 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "D:\\Github\\Zvezdichka\\Zvezdichka.Web\\Zvezdichka.Web.csproj",
+      "projectUniqueName": "D:\\Github\\Zvezdichka-Store\\Zvezdichka.Web\\Zvezdichka.Web.csproj",
       "projectName": "Zvezdichka.Web",
-      "projectPath": "D:\\Github\\Zvezdichka\\Zvezdichka.Web\\Zvezdichka.Web.csproj",
+      "projectPath": "D:\\Github\\Zvezdichka-Store\\Zvezdichka.Web\\Zvezdichka.Web.csproj",
       "packagesPath": "C:\\Users\\stoya\\.nuget\\packages\\",
-      "outputPath": "D:\\Github\\Zvezdichka\\Zvezdichka.Web\\obj\\",
+      "outputPath": "D:\\Github\\Zvezdichka-Store\\Zvezdichka.Web\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -13230,11 +13230,11 @@
       "frameworks": {
         "netcoreapp2.0": {
           "projectReferences": {
-            "D:\\Github\\Zvezdichka\\Zvezdichka.Data\\Zvezdichka.Data.csproj": {
-              "projectPath": "D:\\Github\\Zvezdichka\\Zvezdichka.Data\\Zvezdichka.Data.csproj"
+            "D:\\Github\\Zvezdichka-Store\\Zvezdichka.Data\\Zvezdichka.Data.csproj": {
+              "projectPath": "D:\\Github\\Zvezdichka-Store\\Zvezdichka.Data\\Zvezdichka.Data.csproj"
             },
-            "D:\\Github\\Zvezdichka\\Zvezdichka.Services\\Zvezdichka.Services.csproj": {
-              "projectPath": "D:\\Github\\Zvezdichka\\Zvezdichka.Services\\Zvezdichka.Services.csproj"
+            "D:\\Github\\Zvezdichka-Store\\Zvezdichka.Services\\Zvezdichka.Services.csproj": {
+              "projectPath": "D:\\Github\\Zvezdichka-Store\\Zvezdichka.Services\\Zvezdichka.Services.csproj"
             }
           }
         }
