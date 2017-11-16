@@ -1,0 +1,15 @@
+﻿@model Product
+
+<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12" style="background: lightblue">
+    <p>@Html.ActionLink(Model.Name, "Details", "Products", new {id = Model.Id}, null)</p>
+    <img src="@Model.ImageSource" class="img-responsive" alt="@Model.Name">
+    @Html.DisplayFor(modelItem => Model.Price)
+
+    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+    {
+        @Html.Raw(" |")
+        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+        @Html.Raw(" |")
+        <a asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+    }
+</div>

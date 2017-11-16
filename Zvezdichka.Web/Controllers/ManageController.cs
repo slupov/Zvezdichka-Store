@@ -74,7 +74,7 @@ namespace Zvezdichka.Web.Controllers
                 return View(model);
             }
 
-            var user = await this.userManager.GetUserAsync(User);
+            var user = await this.userManager.GetUserAsync(this.User);
             if (user == null)
             {
                 throw new ApplicationException($"Unable to load user with ID '{this.userManager.GetUserId(User)}'.");

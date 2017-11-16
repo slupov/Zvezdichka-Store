@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -7,7 +8,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Zvezdichka.Data;
+using Zvezdichka.Data.Helpers;
 using Zvezdichka.Data.Models;
+using Zvezdichka.Services;
 using Zvezdichka.Services.Contracts;
 using Zvezdichka.Services.Contracts.Entity;
 using Zvezdichka.Services.Implementations;
@@ -62,12 +65,13 @@ namespace Zvezdichka.Web
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IProductsDataService, ProductsDataService>();
+            services.AddTransient<ICategoriesDataService, CategoriesDataService>();
 
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -90,6 +94,64 @@ namespace Zvezdichka.Web
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            //scope seed db
+            Task.Run(() =>
+            {
+                using (var serviceScope =
+                    app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                {
+                    var context = serviceScope.ServiceProvider.GetService<ZvezdichkaDbContext>();
+                    context.Database.Migrate();
+                    context.EnsureSeedData();
+                }
+            });
+
+            CreateRoles(serviceProvider).Wait();
+        }
+
+        private async Task CreateRoles(IServiceProvider serviceProvider)
+        {
+            //initializing custom roles 
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            string[] roleNames = { "Admin", "Manager", "Member" };
+
+            foreach (var roleName in roleNames)
+            {
+                var roleExist = await roleManager.RoleExistsAsync(roleName);
+                if (!roleExist)
+                {
+                    //create the roles and seed them to the database
+                    await roleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
+
+            //TODO: Remove this in production
+            //Here you could create a super user who will maintain the web app
+            var username = this.Configuration.GetSection("UserSettings")["AdminUsername"];
+            var email = this.Configuration.GetSection("UserSettings")["AdminEmail"];
+
+            var superUser = new ApplicationUser
+            {
+
+                UserName = username,
+                Email = email
+            };
+
+            //Ensure you have these values in your appsettings.json file
+            string userPwd = this.Configuration.GetSection("UserSettings")["AdminPassword"];
+            var user = await userManager.FindByNameAsync(this.Configuration.GetSection("UserSettings")["AdminUsername"]);
+
+            if (user == null)
+            {
+                var createSuperUser = await userManager.CreateAsync(superUser, userPwd);
+                if (createSuperUser.Succeeded)
+                {
+                    //here we tie the new user to the role
+                    await userManager.AddToRoleAsync(superUser, "Admin");
+                }
+            }
         }
     }
 }
