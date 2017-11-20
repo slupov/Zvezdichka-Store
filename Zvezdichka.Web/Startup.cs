@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Zvezdichka.Data;
@@ -66,8 +67,14 @@ namespace Zvezdichka.Web
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IProductsDataService, ProductsDataService>();
             services.AddTransient<ICategoriesDataService, CategoriesDataService>();
+            services.AddTransient<IRatingsDataService, RatingsDataService>();
+            services.AddTransient<ICommentsDataService, CommentsDataService>();
 
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+                //adds global antiforgery defense for server data alterations from outside
+                options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

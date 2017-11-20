@@ -11,9 +11,10 @@ using Zvezdichka.Data;
 namespace Zvezdichka.Data.Migrations
 {
     [DbContext(typeof(ZvezdichkaDbContext))]
-    partial class ZvezdichkaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171120152116_LengthierCommentMessage")]
+    partial class LengthierCommentMessage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

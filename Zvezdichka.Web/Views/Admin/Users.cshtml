@@ -1,0 +1,37 @@
+﻿@model System.Collections.Generic.List<Zvezdichka.Web.Models.UserWithRolesModel>
+
+@{
+    ViewBag.Title = "Manage Users";
+    Layout = "_Layout";
+}
+
+<h2>Manage Users</h2>
+
+<table class="table table-striped">
+    <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Roles</th>
+        <th>Actions</th>
+    </tr>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.Username</td>
+            <td>@user.Email</td>
+            <td>
+                <ul>
+                    @foreach (var userRole in user.Roles)
+                    {
+                        <li>@userRole</li>
+                    }
+                </ul>
+            </td>
+            <td>
+                <a class="btn btn-default" asp-controller="Admin" asp-action="EditUser" asp-route-username="@user.Username">Edit</a>
+
+                <a class="btn btn-default" href="/Admin/DeleteUser/@user.Username">Delete</a>
+            </td>
+        </tr>
+    }
+</table>

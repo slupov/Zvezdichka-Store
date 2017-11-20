@@ -9,7 +9,7 @@ namespace Zvezdichka.Data.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(255)]
+        [StringLength(2000)]
         public string Message { get; set; }
 
         [Required]
