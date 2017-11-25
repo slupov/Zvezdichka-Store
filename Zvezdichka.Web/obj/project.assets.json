@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     ".NETCoreApp,Version=v2.0": {
-      "AutoMapper/6.2.0": {
+      "AutoMapper/6.2.1": {
         "type": "package",
         "dependencies": {
           "Microsoft.CSharp": "4.3.0",
@@ -22,6 +22,20 @@
         },
         "runtime": {
           "lib/netstandard1.3/AutoMapper.dll": {}
+        }
+      },
+      "AutoMapper.Extensions.Microsoft.DependencyInjection/3.2.0": {
+        "type": "package",
+        "dependencies": {
+          "AutoMapper": "6.1.1",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "2.0.0",
+          "Microsoft.Extensions.DependencyModel": "2.0.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {}
         }
       },
       "Libuv/1.10.0": {
@@ -5017,6 +5031,9 @@
           "lib/netstandard1.3/System.Xml.XPath.XDocument.dll": {}
         }
       },
+      "TinyMCE/4.7.0": {
+        "type": "package"
+      },
       "WindowsAzure.Storage/8.1.4": {
         "type": "package",
         "dependencies": {
@@ -5066,12 +5083,12 @@
     }
   },
   "libraries": {
-    "AutoMapper/6.2.0": {
-      "sha512": "BqguuSB2DDLdv/ohIfrvXCL+jWC6g284m4Xi/7snYcwoRAEPI0CdOb3EZjJ3MEYlZKDD5EFnN+jkr84NAUsN+Q==",
+    "AutoMapper/6.2.1": {
+      "sha512": "ZD9he/2wsNQbfnZJMc7Ijvz0hf2Lc6R8Tk97k8Q741flowTHd/YPxG8d5P0BVOJAPLVXjjX6IZ8l0u0A2l+K2g==",
       "type": "package",
-      "path": "automapper/6.2.0",
+      "path": "automapper/6.2.1",
       "files": [
-        "automapper.6.2.0.nupkg.sha512",
+        "automapper.6.2.1.nupkg.sha512",
         "automapper.nuspec",
         "lib/net40/AutoMapper.dll",
         "lib/net40/AutoMapper.xml",
@@ -5081,6 +5098,16 @@
         "lib/netstandard1.1/AutoMapper.xml",
         "lib/netstandard1.3/AutoMapper.dll",
         "lib/netstandard1.3/AutoMapper.xml"
+      ]
+    },
+    "AutoMapper.Extensions.Microsoft.DependencyInjection/3.2.0": {
+      "sha512": "528nEpAwniNn8Z6Ae9qTiM/kN4f0BxmWE9mDMEkqKKGxbuElmv6Kj9DVvTXECJkIt6ARerb9+vYbOifNpcwvXQ==",
+      "type": "package",
+      "path": "automapper.extensions.microsoft.dependencyinjection/3.2.0",
+      "files": [
+        "automapper.extensions.microsoft.dependencyinjection.3.2.0.nupkg.sha512",
+        "automapper.extensions.microsoft.dependencyinjection.nuspec",
+        "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll"
       ]
     },
     "Libuv/1.10.0": {
@@ -13137,6 +13164,164 @@
         "system.xml.xpath.xdocument.nuspec"
       ]
     },
+    "TinyMCE/4.7.0": {
+      "sha512": "SUAh9Bk2gldErswAku275PH190PlAZb9EOpF6iPUrFkN9qAEwf0xWgZ3s7A0Uw0NqPgM5n3G60C2IEEgJCFe0A==",
+      "type": "package",
+      "path": "tinymce/4.7.0",
+      "files": [
+        "content/scripts/tinymce/jquery.tinymce.min.js",
+        "content/scripts/tinymce/langs/readme.md",
+        "content/scripts/tinymce/license.txt",
+        "content/scripts/tinymce/plugins/advlist/plugin.js",
+        "content/scripts/tinymce/plugins/advlist/plugin.min.js",
+        "content/scripts/tinymce/plugins/anchor/plugin.js",
+        "content/scripts/tinymce/plugins/anchor/plugin.min.js",
+        "content/scripts/tinymce/plugins/autolink/plugin.js",
+        "content/scripts/tinymce/plugins/autolink/plugin.min.js",
+        "content/scripts/tinymce/plugins/autoresize/plugin.js",
+        "content/scripts/tinymce/plugins/autoresize/plugin.min.js",
+        "content/scripts/tinymce/plugins/autosave/plugin.js",
+        "content/scripts/tinymce/plugins/autosave/plugin.min.js",
+        "content/scripts/tinymce/plugins/bbcode/plugin.js",
+        "content/scripts/tinymce/plugins/bbcode/plugin.min.js",
+        "content/scripts/tinymce/plugins/charmap/plugin.js",
+        "content/scripts/tinymce/plugins/charmap/plugin.min.js",
+        "content/scripts/tinymce/plugins/code/plugin.js",
+        "content/scripts/tinymce/plugins/code/plugin.min.js",
+        "content/scripts/tinymce/plugins/codesample/css/prism.css",
+        "content/scripts/tinymce/plugins/codesample/plugin.js",
+        "content/scripts/tinymce/plugins/codesample/plugin.min.js",
+        "content/scripts/tinymce/plugins/colorpicker/plugin.js",
+        "content/scripts/tinymce/plugins/colorpicker/plugin.min.js",
+        "content/scripts/tinymce/plugins/compat3x/css/dialog.css",
+        "content/scripts/tinymce/plugins/compat3x/img/buttons.png",
+        "content/scripts/tinymce/plugins/compat3x/img/icons.gif",
+        "content/scripts/tinymce/plugins/compat3x/img/items.gif",
+        "content/scripts/tinymce/plugins/compat3x/img/menu_arrow.gif",
+        "content/scripts/tinymce/plugins/compat3x/img/menu_check.gif",
+        "content/scripts/tinymce/plugins/compat3x/img/progress.gif",
+        "content/scripts/tinymce/plugins/compat3x/img/tabs.gif",
+        "content/scripts/tinymce/plugins/compat3x/plugin.js",
+        "content/scripts/tinymce/plugins/compat3x/plugin.min.js",
+        "content/scripts/tinymce/plugins/compat3x/tiny_mce_popup.js",
+        "content/scripts/tinymce/plugins/compat3x/utils/editable_selects.js",
+        "content/scripts/tinymce/plugins/compat3x/utils/form_utils.js",
+        "content/scripts/tinymce/plugins/compat3x/utils/mctabs.js",
+        "content/scripts/tinymce/plugins/compat3x/utils/validate.js",
+        "content/scripts/tinymce/plugins/contextmenu/plugin.js",
+        "content/scripts/tinymce/plugins/contextmenu/plugin.min.js",
+        "content/scripts/tinymce/plugins/directionality/plugin.js",
+        "content/scripts/tinymce/plugins/directionality/plugin.min.js",
+        "content/scripts/tinymce/plugins/emoticons/img/smiley-cool.gif",
+        "content/scripts/tinymce/plugins/emoticons/img/smiley-cry.gif",
+        "content/scripts/tinymce/plugins/emoticons/img/smiley-embarassed.gif",
+        "content/scripts/tinymce/plugins/emoticons/img/smiley-foot-in-mouth.gif",
+        "content/scripts/tinymce/plugins/emoticons/img/smiley-frown.gif",
+        "content/scripts/tinymce/plugins/emoticons/img/smiley-innocent.gif",
+        "content/scripts/tinymce/plugins/emoticons/img/smiley-kiss.gif",
+        "content/scripts/tinymce/plugins/emoticons/img/smiley-laughing.gif",
+        "content/scripts/tinymce/plugins/emoticons/img/smiley-money-mouth.gif",
+        "content/scripts/tinymce/plugins/emoticons/img/smiley-sealed.gif",
+        "content/scripts/tinymce/plugins/emoticons/img/smiley-smile.gif",
+        "content/scripts/tinymce/plugins/emoticons/img/smiley-surprised.gif",
+        "content/scripts/tinymce/plugins/emoticons/img/smiley-tongue-out.gif",
+        "content/scripts/tinymce/plugins/emoticons/img/smiley-undecided.gif",
+        "content/scripts/tinymce/plugins/emoticons/img/smiley-wink.gif",
+        "content/scripts/tinymce/plugins/emoticons/img/smiley-yell.gif",
+        "content/scripts/tinymce/plugins/emoticons/plugin.js",
+        "content/scripts/tinymce/plugins/emoticons/plugin.min.js",
+        "content/scripts/tinymce/plugins/fullpage/plugin.js",
+        "content/scripts/tinymce/plugins/fullpage/plugin.min.js",
+        "content/scripts/tinymce/plugins/fullscreen/plugin.js",
+        "content/scripts/tinymce/plugins/fullscreen/plugin.min.js",
+        "content/scripts/tinymce/plugins/help/img/logo.png",
+        "content/scripts/tinymce/plugins/help/plugin.js",
+        "content/scripts/tinymce/plugins/help/plugin.min.js",
+        "content/scripts/tinymce/plugins/hr/plugin.js",
+        "content/scripts/tinymce/plugins/hr/plugin.min.js",
+        "content/scripts/tinymce/plugins/image/plugin.js",
+        "content/scripts/tinymce/plugins/image/plugin.min.js",
+        "content/scripts/tinymce/plugins/imagetools/plugin.js",
+        "content/scripts/tinymce/plugins/imagetools/plugin.min.js",
+        "content/scripts/tinymce/plugins/importcss/plugin.js",
+        "content/scripts/tinymce/plugins/importcss/plugin.min.js",
+        "content/scripts/tinymce/plugins/insertdatetime/plugin.js",
+        "content/scripts/tinymce/plugins/insertdatetime/plugin.min.js",
+        "content/scripts/tinymce/plugins/legacyoutput/plugin.js",
+        "content/scripts/tinymce/plugins/legacyoutput/plugin.min.js",
+        "content/scripts/tinymce/plugins/link/plugin.js",
+        "content/scripts/tinymce/plugins/link/plugin.min.js",
+        "content/scripts/tinymce/plugins/lists/plugin.js",
+        "content/scripts/tinymce/plugins/lists/plugin.min.js",
+        "content/scripts/tinymce/plugins/media/plugin.js",
+        "content/scripts/tinymce/plugins/media/plugin.min.js",
+        "content/scripts/tinymce/plugins/nonbreaking/plugin.js",
+        "content/scripts/tinymce/plugins/nonbreaking/plugin.min.js",
+        "content/scripts/tinymce/plugins/noneditable/plugin.js",
+        "content/scripts/tinymce/plugins/noneditable/plugin.min.js",
+        "content/scripts/tinymce/plugins/pagebreak/plugin.js",
+        "content/scripts/tinymce/plugins/pagebreak/plugin.min.js",
+        "content/scripts/tinymce/plugins/paste/plugin.js",
+        "content/scripts/tinymce/plugins/paste/plugin.min.js",
+        "content/scripts/tinymce/plugins/preview/plugin.js",
+        "content/scripts/tinymce/plugins/preview/plugin.min.js",
+        "content/scripts/tinymce/plugins/print/plugin.js",
+        "content/scripts/tinymce/plugins/print/plugin.min.js",
+        "content/scripts/tinymce/plugins/save/plugin.js",
+        "content/scripts/tinymce/plugins/save/plugin.min.js",
+        "content/scripts/tinymce/plugins/searchreplace/plugin.js",
+        "content/scripts/tinymce/plugins/searchreplace/plugin.min.js",
+        "content/scripts/tinymce/plugins/spellchecker/plugin.js",
+        "content/scripts/tinymce/plugins/spellchecker/plugin.min.js",
+        "content/scripts/tinymce/plugins/tabfocus/plugin.js",
+        "content/scripts/tinymce/plugins/tabfocus/plugin.min.js",
+        "content/scripts/tinymce/plugins/table/plugin.js",
+        "content/scripts/tinymce/plugins/table/plugin.min.js",
+        "content/scripts/tinymce/plugins/template/plugin.js",
+        "content/scripts/tinymce/plugins/template/plugin.min.js",
+        "content/scripts/tinymce/plugins/textcolor/plugin.js",
+        "content/scripts/tinymce/plugins/textcolor/plugin.min.js",
+        "content/scripts/tinymce/plugins/textpattern/plugin.js",
+        "content/scripts/tinymce/plugins/textpattern/plugin.min.js",
+        "content/scripts/tinymce/plugins/toc/plugin.js",
+        "content/scripts/tinymce/plugins/toc/plugin.min.js",
+        "content/scripts/tinymce/plugins/visualblocks/css/visualblocks.css",
+        "content/scripts/tinymce/plugins/visualblocks/plugin.js",
+        "content/scripts/tinymce/plugins/visualblocks/plugin.min.js",
+        "content/scripts/tinymce/plugins/visualchars/plugin.js",
+        "content/scripts/tinymce/plugins/visualchars/plugin.min.js",
+        "content/scripts/tinymce/plugins/wordcount/plugin.js",
+        "content/scripts/tinymce/plugins/wordcount/plugin.min.js",
+        "content/scripts/tinymce/skins/lightgray/content.inline.min.css",
+        "content/scripts/tinymce/skins/lightgray/content.min.css",
+        "content/scripts/tinymce/skins/lightgray/content.mobile.min.css",
+        "content/scripts/tinymce/skins/lightgray/fonts/tinymce-mobile.woff",
+        "content/scripts/tinymce/skins/lightgray/fonts/tinymce-small.eot",
+        "content/scripts/tinymce/skins/lightgray/fonts/tinymce-small.svg",
+        "content/scripts/tinymce/skins/lightgray/fonts/tinymce-small.ttf",
+        "content/scripts/tinymce/skins/lightgray/fonts/tinymce-small.woff",
+        "content/scripts/tinymce/skins/lightgray/fonts/tinymce.eot",
+        "content/scripts/tinymce/skins/lightgray/fonts/tinymce.svg",
+        "content/scripts/tinymce/skins/lightgray/fonts/tinymce.ttf",
+        "content/scripts/tinymce/skins/lightgray/fonts/tinymce.woff",
+        "content/scripts/tinymce/skins/lightgray/img/anchor.gif",
+        "content/scripts/tinymce/skins/lightgray/img/loader.gif",
+        "content/scripts/tinymce/skins/lightgray/img/object.gif",
+        "content/scripts/tinymce/skins/lightgray/img/trans.gif",
+        "content/scripts/tinymce/skins/lightgray/skin.min.css",
+        "content/scripts/tinymce/skins/lightgray/skin.mobile.min.css",
+        "content/scripts/tinymce/themes/inlite/theme.js",
+        "content/scripts/tinymce/themes/inlite/theme.min.js",
+        "content/scripts/tinymce/themes/mobile/theme.js",
+        "content/scripts/tinymce/themes/mobile/theme.min.js",
+        "content/scripts/tinymce/themes/modern/theme.js",
+        "content/scripts/tinymce/themes/modern/theme.min.js",
+        "content/scripts/tinymce/tinymce.js",
+        "content/scripts/tinymce/tinymce.min.js",
+        "tinymce.4.7.0.nupkg.sha512",
+        "tinymce.nuspec"
+      ]
+    },
     "WindowsAzure.Storage/8.1.4": {
       "sha512": "W6ZZ0/o7+3Qb77mRAQyLjPudHG3OMeeQ4p9yY13PUdJArmRCx2cLMm5F4tpIjJXxzHC0ew0oK7DMDGILMdfCnw==",
       "type": "package",
@@ -13172,11 +13357,13 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.0": [
-      "AutoMapper >= 6.2.0",
+      "AutoMapper >= 6.2.1",
+      "AutoMapper.Extensions.Microsoft.DependencyInjection >= 3.2.0",
       "Microsoft.AspNetCore.All >= 2.0.0",
       "Microsoft.EntityFrameworkCore.Tools >= 2.0.0",
       "Microsoft.NETCore.App >= 2.0.0",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 2.0.0",
+      "TinyMCE >= 4.7.0",
       "Zvezdichka.Data >= 1.0.0",
       "Zvezdichka.Services >= 1.0.0"
     ]
@@ -13237,6 +13424,10 @@
             "target": "Package",
             "version": "2.0.0"
           },
+          "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+            "target": "Package",
+            "version": "3.2.0"
+          },
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
             "suppressParent": "All",
             "target": "Package",
@@ -13249,11 +13440,15 @@
           },
           "AutoMapper": {
             "target": "Package",
-            "version": "6.2.0"
+            "version": "6.2.1"
           },
           "Microsoft.AspNetCore.All": {
             "target": "Package",
             "version": "2.0.0"
+          },
+          "TinyMCE": {
+            "target": "Package",
+            "version": "4.7.0"
           }
         },
         "imports": [

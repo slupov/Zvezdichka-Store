@@ -1,39 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Zvezdichka.Data;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Web.Models;
 
-namespace Zvezdichka.Web.Controllers
+namespace Zvezdichka.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = "Admin")]
-    public class AdminController : Controller
+    public class UsersController : AdminBaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IServiceProvider serviceProvider;
 
-        public AdminController(UserManager<ApplicationUser> userManager, IServiceProvider serviceProvider)
+        public UsersController(UserManager<ApplicationUser> userManager, IServiceProvider serviceProvider)
         {
             this.userManager = userManager;
             this.serviceProvider = serviceProvider;
         }
 
         public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Users()
         {
             var usersWithRoles = new List<UserWithRolesModel>();
             var users = this.userManager.Users;
@@ -49,8 +37,7 @@ namespace Zvezdichka.Web.Controllers
             return View(usersWithRoles);
         }
 
-        //manage user
-        public IActionResult EditUser(string username)
+        public IActionResult Edit(string username)
         {
             var user = this.userManager.FindByNameAsync(username).GetAwaiter().GetResult();
 
@@ -76,7 +63,7 @@ namespace Zvezdichka.Web.Controllers
             });
         }
 
-        public async Task<IActionResult> DeleteUser(string username)
+        public async Task<IActionResult> Delete(string username)
         {
             //delete user
             var user = await this.userManager.FindByNameAsync(username);
@@ -106,12 +93,12 @@ namespace Zvezdichka.Web.Controllers
             {
                 //remove role
                 await this.userManager.RemoveFromRoleAsync(user, newRole);
-                return RedirectToAction(nameof(EditUser), new {username = username});
+                return RedirectToAction(nameof(Edit), new {username = username});
             }
 
             //add role
             await this.userManager.AddToRoleAsync(user, newRole);
-            return RedirectToAction(nameof(EditUser), new {username = username});
+            return RedirectToAction(nameof(Edit), new {username = username});
         }
     }
 }

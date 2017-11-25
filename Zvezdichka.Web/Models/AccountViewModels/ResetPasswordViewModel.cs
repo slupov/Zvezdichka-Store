@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using Zvezdichka.Data.Models;
+using Zvezdichka.Web.Models.Automapper;
 
 namespace Zvezdichka.Web.Models.AccountViewModels
 {
-    public class ResetPasswordViewModel
+    public class ResetPasswordViewModel : IMapFrom<ApplicationUser>
     {
         [Required]
         [EmailAddress]

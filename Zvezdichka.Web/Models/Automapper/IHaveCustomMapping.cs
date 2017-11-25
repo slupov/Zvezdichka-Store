@@ -1,9 +1,7 @@
-﻿using AutoMapper;
-
-namespace Zvezdichka.Web.Models.Automapper
+﻿namespace Zvezdichka.Web.Models.Automapper
 {
     public interface IHaveCustomMapping
     {
-        void Configure(IMapperConfigurationExpression config);
+        void Configure(AutoMapperProfile config);
     }
 }

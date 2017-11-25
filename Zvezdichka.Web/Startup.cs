@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -70,6 +71,8 @@ namespace Zvezdichka.Web
             services.AddTransient<IRatingsDataService, RatingsDataService>();
             services.AddTransient<ICommentsDataService, CommentsDataService>();
 
+            services.AddAutoMapper();
+
             services.AddMvc(options =>
             {
                 //adds global antiforgery defense for server data alterations from outside
@@ -98,6 +101,10 @@ namespace Zvezdichka.Web
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
+                    name: "areas",
+                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
@@ -122,7 +129,7 @@ namespace Zvezdichka.Web
             //initializing custom roles 
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-            string[] roleNames = { "Admin", "Manager", "Member" };
+            string[] roleNames = {"Admin", "Manager", "Member"};
 
             foreach (var roleName in roleNames)
             {
@@ -141,14 +148,14 @@ namespace Zvezdichka.Web
 
             var superUser = new ApplicationUser
             {
-
                 UserName = username,
                 Email = email
             };
 
             //Ensure you have these values in your appsettings.json file
             string userPwd = this.Configuration.GetSection("UserSettings")["AdminPassword"];
-            var user = await userManager.FindByNameAsync(this.Configuration.GetSection("UserSettings")["AdminUsername"]);
+            var user = await userManager.FindByNameAsync(
+                this.Configuration.GetSection("UserSettings")["AdminUsername"]);
 
             if (user == null)
             {

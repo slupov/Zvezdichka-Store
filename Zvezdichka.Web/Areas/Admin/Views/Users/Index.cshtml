@@ -1,4 +1,4 @@
-﻿@model System.Collections.Generic.List<Zvezdichka.Web.Models.UserWithRolesModel>
+﻿@model List<Zvezdichka.Web.Models.UserWithRolesModel>
 
 @{
     ViewBag.Title = "Manage Users";
@@ -28,9 +28,9 @@
                 </ul>
             </td>
             <td>
-                <a class="btn btn-default" asp-controller="Admin" asp-action="EditUser" asp-route-username="@user.Username">Edit</a>
+                <a class="btn btn-default" asp-area="Admin" asp-controller="Users" asp-action="Edit" asp-route-username="@user.Username">Edit</a>
 
-                <a class="btn btn-default" href="/Admin/DeleteUser/@user.Username">Delete</a>
+                <a class="btn btn-default" asp-area="Admin" asp-controller="Users" asp-action="Delete" asp-route-username="@user.Username">Delete</a>
             </td>
         </tr>
     }

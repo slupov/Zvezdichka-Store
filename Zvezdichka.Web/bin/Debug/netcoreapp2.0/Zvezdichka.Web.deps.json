@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.0",
-    "signature": "78d2ab0c27d7bb91817cd22b1fb30c2494e773b4"
+    "signature": "6ef80e68525abd35f19b1a9575db3ca4912903ec"
   },
   "compilationOptions": {
     "defines": [
@@ -23,11 +23,13 @@
     ".NETCoreApp,Version=v2.0": {
       "Zvezdichka.Web/1.0.0": {
         "dependencies": {
-          "AutoMapper": "6.2.0",
+          "AutoMapper": "6.2.1",
+          "AutoMapper.Extensions.Microsoft.DependencyInjection": "3.2.0",
           "Microsoft.AspNetCore.All": "2.0.0",
           "Microsoft.EntityFrameworkCore.Tools": "2.0.0",
           "Microsoft.NETCore.App": "2.0.0",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "2.0.0",
+          "TinyMCE": "4.7.0",
           "Zvezdichka.Data": "1.0.0",
           "Zvezdichka.Services": "1.0.0"
         },
@@ -38,7 +40,7 @@
           "Zvezdichka.Web.dll": {}
         }
       },
-      "AutoMapper/6.2.0": {
+      "AutoMapper/6.2.1": {
         "dependencies": {
           "Microsoft.CSharp": "4.4.0",
           "NETStandard.Library": "2.0.0",
@@ -57,6 +59,19 @@
         },
         "compile": {
           "lib/netstandard1.3/AutoMapper.dll": {}
+        }
+      },
+      "AutoMapper.Extensions.Microsoft.DependencyInjection/3.2.0": {
+        "dependencies": {
+          "AutoMapper": "6.2.1",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "2.0.0",
+          "Microsoft.Extensions.DependencyModel": "2.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {}
+        },
+        "compile": {
+          "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {}
         }
       },
       "Libuv/1.10.0": {
@@ -4045,6 +4060,7 @@
           "System.Xml.XPath": "4.3.0"
         }
       },
+      "TinyMCE/4.7.0": {},
       "WindowsAzure.Storage/8.1.4": {
         "dependencies": {
           "Microsoft.Data.OData": "5.8.2",
@@ -4270,12 +4286,19 @@
       "serviceable": false,
       "sha512": ""
     },
-    "AutoMapper/6.2.0": {
+    "AutoMapper/6.2.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-BqguuSB2DDLdv/ohIfrvXCL+jWC6g284m4Xi/7snYcwoRAEPI0CdOb3EZjJ3MEYlZKDD5EFnN+jkr84NAUsN+Q==",
-      "path": "automapper/6.2.0",
-      "hashPath": "automapper.6.2.0.nupkg.sha512"
+      "sha512": "sha512-ZD9he/2wsNQbfnZJMc7Ijvz0hf2Lc6R8Tk97k8Q741flowTHd/YPxG8d5P0BVOJAPLVXjjX6IZ8l0u0A2l+K2g==",
+      "path": "automapper/6.2.1",
+      "hashPath": "automapper.6.2.1.nupkg.sha512"
+    },
+    "AutoMapper.Extensions.Microsoft.DependencyInjection/3.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-528nEpAwniNn8Z6Ae9qTiM/kN4f0BxmWE9mDMEkqKKGxbuElmv6Kj9DVvTXECJkIt6ARerb9+vYbOifNpcwvXQ==",
+      "path": "automapper.extensions.microsoft.dependencyinjection/3.2.0",
+      "hashPath": "automapper.extensions.microsoft.dependencyinjection.3.2.0.nupkg.sha512"
     },
     "Libuv/1.10.0": {
       "type": "package",
@@ -6397,6 +6420,13 @@
       "sha512": "sha512-jw9oHHEIVW53mHY9PgrQa98Xo2IZ0ZjrpdOTmtvk+Rvg4tq7dydmxdNqUvJ5YwjDqhn75mBXWttWjiKhWP53LQ==",
       "path": "system.xml.xpath.xdocument/4.3.0",
       "hashPath": "system.xml.xpath.xdocument.4.3.0.nupkg.sha512"
+    },
+    "TinyMCE/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-SUAh9Bk2gldErswAku275PH190PlAZb9EOpF6iPUrFkN9qAEwf0xWgZ3s7A0Uw0NqPgM5n3G60C2IEEgJCFe0A==",
+      "path": "tinymce/4.7.0",
+      "hashPath": "tinymce.4.7.0.nupkg.sha512"
     },
     "WindowsAzure.Storage/8.1.4": {
       "type": "package",

@@ -25,8 +25,8 @@ D:\Github\Zvezdichka-Store\Zvezdichka.Web\bin\Debug\netcoreapp2.0\Zvezdichka.Dat
 D:\Github\Zvezdichka-Store\Zvezdichka.Web\bin\Debug\netcoreapp2.0\Zvezdichka.Services.pdb
 D:\Github\Zvezdichka-Store\Zvezdichka.Web\obj\Debug\netcoreapp2.0\Zvezdichka.Web.csprojResolveAssemblyReference.cache
 D:\Github\Zvezdichka-Store\Zvezdichka.Web\obj\Debug\netcoreapp2.0\Zvezdichka.Web.csproj.CoreCompileInputs.cache
-D:\Github\Zvezdichka-Store\Zvezdichka.Web\obj\Debug\netcoreapp2.0\UserSecretsAssemblyInfo.cs
 D:\Github\Zvezdichka-Store\Zvezdichka.Web\obj\Debug\netcoreapp2.0\Zvezdichka.Web.AssemblyInfoInputs.cache
 D:\Github\Zvezdichka-Store\Zvezdichka.Web\obj\Debug\netcoreapp2.0\Zvezdichka.Web.AssemblyInfo.cs
 D:\Github\Zvezdichka-Store\Zvezdichka.Web\obj\Debug\netcoreapp2.0\Zvezdichka.Web.dll
 D:\Github\Zvezdichka-Store\Zvezdichka.Web\obj\Debug\netcoreapp2.0\Zvezdichka.Web.pdb
+D:\Github\Zvezdichka-Store\Zvezdichka.Web\obj\Debug\netcoreapp2.0\UserSecretsAssemblyInfo.cs

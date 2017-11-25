@@ -1,52 +1,51 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using AutoMapper;
 
 namespace Zvezdichka.Web.Models.Automapper
 {
-    public static class AutoMapperConfiguration
+    public class AutoMapperProfile : Profile
     {
-        public static void Initialize()
+        public AutoMapperProfile()
         {
-            Mapper.Initialize(config =>
-            {
-                var allTypes = Assembly
-                    .GetEntryAssembly()
-                    .GetTypes();
+            var allTypes = AppDomain
+                .CurrentDomain
+                .GetAssemblies()
+                .Where(a => a.GetName().Name.Contains("AreasDemo"))
+                .SelectMany(a => a.GetTypes());
 
-                var mappedTypes = allTypes
-                    .Where(t => t
+            allTypes
+                .Where(t => t.IsClass && !t.IsAbstract && t
+                                .GetInterfaces()
+                                .Where(i => i.IsGenericType)
+                                .Select(i => i.GetGenericTypeDefinition())
+                                .Contains(typeof(IMapFrom<>)))
+                .Select(t => new
+                {
+                    Destination = t,
+                    Source = t
                         .GetInterfaces()
                         .Where(i => i.IsGenericType)
-                        .Any(i => i.GetGenericTypeDefinition() == typeof(IMapFrom<>)))
-                    .Select(t => new
-                    {
-                        Destination = t,
-                        Source = t.GetInterfaces()
-                            .Where(i => i.IsGenericType
-                                        && i.GetGenericTypeDefinition() == typeof(IMapFrom<>))
-                            .SelectMany(i => i.GetGenericArguments())
-                            .First()
-                    })
-                    .ToList();
+                        .Select(i => new
+                        {
+                            Definition = i.GetGenericTypeDefinition(),
+                            Arguments = i.GetGenericArguments()
+                        })
+                        .Where(i => i.Definition == typeof(IMapFrom<>))
+                        .SelectMany(i => i.Arguments)
+                        .First(),
+                })
+                .ToList()
+                .ForEach(mapping => this.CreateMap(mapping.Source, mapping.Destination));
 
-                foreach (var type in mappedTypes)
-                {
-                    config.CreateMap(type.Source, type.Destination);
-                }
-
-                var customMappedTypes = allTypes
-                    .Where(t => t.IsClass
-                                && typeof(IHaveCustomMapping).IsAssignableFrom(t))
-                    .Select(t => (IHaveCustomMapping) Activator.CreateInstance(t))
-                    .ToList();
-
-                foreach (var type in customMappedTypes)
-                {
-                    type.Configure(config);
-                }
-            });
+            allTypes
+                .Where(t => t.IsClass
+                            && !t.IsAbstract
+                            && typeof(IHaveCustomMapping).IsAssignableFrom(t))
+                .Select(Activator.CreateInstance)
+                .Cast<IHaveCustomMapping>()
+                .ToList()
+                .ForEach(mapping => mapping.Configure(this));
         }
     }
 }

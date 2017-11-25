@@ -1,4 +1,4 @@
-﻿@model UserWithRolesModel
+﻿@model Zvezdichka.Web.Models.UserWithRolesModel
 
 @{
     ViewBag.Title = "title";
@@ -35,9 +35,10 @@
                     btnClass = "btn-primary";
                 }
 
-                <a asp-controller="Admin" asp-action="ChangeUserRole"
+                <a asp-controller="Users" asp-action="ChangeUserRole"
                    asp-route-newRole="@appRole" asp-route-username="@Model.Username" class="btn @btnClass">
-                    @appRole</a>
+                    @appRole
+                </a>
             }
 
             <div class="row">

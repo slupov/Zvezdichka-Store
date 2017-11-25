@@ -5,18 +5,15 @@ using Microsoft.EntityFrameworkCore;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Services.Contracts.Entity;
 
-namespace Zvezdichka.Web.Controllers
+namespace Zvezdichka.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = "Admin")]
-    public class CategoriesController : Controller
+    public class CategoriesController : AdminBaseController
     {
         private readonly ICategoriesDataService categories;
-        private readonly IProductsDataService products;
 
         public CategoriesController(ICategoriesDataService categories, IProductsDataService products)
         {
             this.categories = categories;
-            this.products = products;
         }
 
         // GET: Categories
@@ -26,7 +23,6 @@ namespace Zvezdichka.Web.Controllers
         }
 
         // GET: Categories/Details/5
-        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,7 +40,6 @@ namespace Zvezdichka.Web.Controllers
         }
 
         // GET: Categories/Create
-        [Authorize(Roles = "Admin, Manager")]
         public IActionResult Create()
         {
             return View();
@@ -54,7 +49,6 @@ namespace Zvezdichka.Web.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
         {
             if (this.ModelState.IsValid)
@@ -66,7 +60,6 @@ namespace Zvezdichka.Web.Controllers
         }
 
         // GET: Categories/Edit/5
-        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -124,7 +117,7 @@ namespace Zvezdichka.Web.Controllers
             {
                 return NotFound();
             }
-            
+
             var category = this.categories.GetSingle(m => m.Id == id);
             if (category == null)
             {

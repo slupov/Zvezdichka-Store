@@ -1,0 +1,23 @@
+﻿@model IEnumerable<Zvezdichka.Data.Models.Product>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Products</h2>
+
+<p>
+    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+    {
+        <a asp-action="Create">Create New</a>
+    }
+</p>
+
+<div class="containter">
+    <div class="row text-center text-lg-left">
+        @foreach (var item in Model)
+        {
+            @Html.Partial("ProductColumn", item)
+        }
+    </div>
+</div>

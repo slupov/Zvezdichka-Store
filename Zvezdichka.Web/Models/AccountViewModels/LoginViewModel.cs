@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Zvezdichka.Data.Models;
+using Zvezdichka.Web.Models.Automapper;
 
 namespace Zvezdichka.Web.Models.AccountViewModels
 {
-    public class LoginViewModel
+    public class LoginViewModel : IMapFrom<ApplicationUser>
     {
         [Required]
         public string Username { get; set; }
