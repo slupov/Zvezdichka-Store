@@ -22,12 +22,12 @@ namespace Zvezdichka.Web.Controllers
 //            return View();
 //        }
 //
-//        public IActionResult Contact()
-//        {
-//            ViewData["Message"] = "Your contact page.";
-//
-//            return View();
-//        }
+        public IActionResult Contact()
+        {
+            ViewData["Message"] = "Your contact page.";
+
+            return View();
+        }
 
         public IActionResult Error()
         {

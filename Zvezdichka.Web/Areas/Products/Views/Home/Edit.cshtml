@@ -10,7 +10,7 @@
 <hr/>
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit" method="post">
+        <form id="editForm" asp-action="Edit" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id"/>
             <div class="form-group">
@@ -19,8 +19,8 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label" style="min-width: 100%"></label>
-                <textarea asp-for="Description"></textarea>
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" id="Description" name="Description"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -49,24 +49,23 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts
-{
+@section Scripts {
     <script>
-        tinymce.init({
-            selector: 'textarea',
-            height: 500,
-            menubar: false,
-            plugins: [
-                'advlist autolink lists link image charmap print preview anchor textcolor',
-                'searchreplace visualblocks code fullscreen',
-                'insertdatetime media table contextmenu paste code help'
-            ],
-            toolbar:
-                'insert | undo redo |  formatselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-            content_css: [
-                '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
-                '//www.tinymce.com/css/codepen.min.css'
-            ]
+        $(document).ready(function() {
+            CKEDITOR.replace("Description");
+
+            $('#editForm').on('submit',
+                function() {
+                    var instance;
+                    for (instance in CKEDITOR.instances) {
+                        if (CKEDITOR.instances.hasOwnProperty(instance)) {
+                            CKEDITOR.instances[instance].updateElement(() => all);
+//                            debugger;
+                        }
+                    }
+                });
         });
+
+
     </script>
 }
