@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Zvezdichka.Data;
 using Zvezdichka.Data.Helpers;
 using Zvezdichka.Data.Models;
@@ -17,14 +18,18 @@ using Zvezdichka.Services.Contracts;
 using Zvezdichka.Services.Contracts.Entity;
 using Zvezdichka.Services.Implementations;
 using Zvezdichka.Services.Implementations.Entity;
+using Zvezdichka.Web.Extensions.Helpers.Secrets;
 
 namespace Zvezdichka.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public AppKeyConfig AppConfigs { get; }
+
+        public Startup(IConfiguration configuration, IOptions<AppKeyConfig> appkeys)
         {
             this.Configuration = configuration;
+            this.AppConfigs = appkeys.Value;
         }
 
         public IConfiguration Configuration { get; }
@@ -64,6 +69,11 @@ namespace Zvezdichka.Web
                 options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
             });
 
+//            //Configure app secrets
+            services.Configure<AppKeyConfig>(this.Configuration.GetSection("AppKeys"));
+
+            //todo: do the same with the superuser (put the info in the appsecrets)
+
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IProductsDataService, ProductsDataService>();
@@ -71,10 +81,11 @@ namespace Zvezdichka.Web
             services.AddTransient<IRatingsDataService, RatingsDataService>();
             services.AddTransient<ICommentsDataService, CommentsDataService>();
 
+            //Add external login options
             services.AddAuthentication().AddFacebook(facebookOptions =>
             {
-                facebookOptions.AppId = this.Configuration["Authentication:Facebook:AppId"];
-                facebookOptions.AppSecret = this.Configuration["Authentication:Facebook:AppSecret"];
+                facebookOptions.AppId = this.Configuration.GetSection("AppKeys")["FacebookAppId"];
+                facebookOptions.AppSecret = this.Configuration.GetSection("AppKeys")["FacebookAppSecret"];
             });
 
             services.AddAutoMapper();
@@ -107,12 +118,12 @@ namespace Zvezdichka.Web
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "areas",
-                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+                    "areas",
+                    "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    "default",
+                    "{controller=Home}/{action=Index}/{id?}");
             });
 
             //scope seed db
@@ -141,13 +152,9 @@ namespace Zvezdichka.Web
             {
                 var roleExist = await roleManager.RoleExistsAsync(roleName);
                 if (!roleExist)
-                {
-                    //create the roles and seed them to the database
                     await roleManager.CreateAsync(new IdentityRole(roleName));
-                }
             }
 
-            //TODO: Remove this in production
             //Here you could create a super user who will maintain the web app
             var username = this.Configuration.GetSection("UserSettings")["AdminUsername"];
             var email = this.Configuration.GetSection("UserSettings")["AdminEmail"];
@@ -158,8 +165,8 @@ namespace Zvezdichka.Web
                 Email = email
             };
 
-            //Ensure you have these values in your appsettings.json file
-            string userPwd = this.Configuration.GetSection("UserSettings")["AdminPassword"];
+            //Ensure you have these values in your appsettings.json or secrets.json file
+            var userPwd = this.Configuration.GetSection("UserSettings")["AdminPassword"];
             var user = await userManager.FindByNameAsync(
                 this.Configuration.GetSection("UserSettings")["AdminUsername"]);
 
@@ -167,10 +174,7 @@ namespace Zvezdichka.Web
             {
                 var createSuperUser = await userManager.CreateAsync(superUser, userPwd);
                 if (createSuperUser.Succeeded)
-                {
-                    //here we tie the new user to the role
                     await userManager.AddToRoleAsync(superUser, "Admin");
-                }
             }
         }
     }

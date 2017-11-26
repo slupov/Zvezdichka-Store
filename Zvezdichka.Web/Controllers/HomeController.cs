@@ -4,14 +4,26 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Zvezdichka.Web.Extensions.Helpers.Secrets;
 using Zvezdichka.Web.Models;
 
 namespace Zvezdichka.Web.Controllers
 {
     public class HomeController : Controller
     {
+        public AppKeyConfig AppConfigs { get; }
+
+        public HomeController(IOptions<AppKeyConfig> appkeys)
+        {
+            this.AppConfigs = appkeys.Value;
+        }
+
         public IActionResult Index()
         {
+            ViewData["FacebookAppId"] = this.AppConfigs.FacebookAppId;
+            ViewData["FacebookAppSecret"] = this.AppConfigs.FacebookAppSecret;
+
             return View();
         }
 
