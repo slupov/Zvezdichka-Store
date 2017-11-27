@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
+using Dropbox.Api;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +19,7 @@ using Zvezdichka.Services.Contracts;
 using Zvezdichka.Services.Contracts.Entity;
 using Zvezdichka.Services.Implementations;
 using Zvezdichka.Services.Implementations.Entity;
+using Zvezdichka.Web.Extensions.Helpers.Html;
 using Zvezdichka.Web.Extensions.Helpers.Secrets;
 
 namespace Zvezdichka.Web
@@ -69,17 +71,18 @@ namespace Zvezdichka.Web
                 options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
             });
 
-//            //Configure app secrets
+            //Configure app secrets
             services.Configure<AppKeyConfig>(this.Configuration.GetSection("AppKeys"));
-
-            //todo: do the same with the superuser (put the info in the appsecrets)
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
-            services.AddTransient<IProductsDataService, ProductsDataService>();
-            services.AddTransient<ICategoriesDataService, CategoriesDataService>();
-            services.AddTransient<IRatingsDataService, RatingsDataService>();
-            services.AddTransient<ICommentsDataService, CommentsDataService>();
+            services.AddTransient<IHtmlService, HtmlService>();
+
+            services.AddScoped<IProductsDataService, ProductsDataService>();
+            services.AddScoped<ICategoriesDataService, CategoriesDataService>();
+            services.AddScoped<IRatingsDataService, RatingsDataService>();
+            services.AddScoped<ICommentsDataService, CommentsDataService>();
+            services.AddScoped<ICartsDataService, CartsDataService>();
 
             //Add external login options
             services.AddAuthentication().AddFacebook(facebookOptions =>
@@ -175,6 +178,17 @@ namespace Zvezdichka.Web
                 var createSuperUser = await userManager.CreateAsync(superUser, userPwd);
                 if (createSuperUser.Succeeded)
                     await userManager.AddToRoleAsync(superUser, "Admin");
+            }
+        }
+
+        private async Task LinkDropboxAccount()
+        {
+            var accessToken = this.Configuration.GetSection("AppKeys")["DropboxAppAccessToken"];
+
+            using (var dbx = new DropboxClient(accessToken))
+            {
+                var full = await dbx.Users.GetCurrentAccountAsync();
+                Console.WriteLine("{0} - {1}", full.Name.DisplayName, full.Email);
             }
         }
     }

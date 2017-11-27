@@ -1,0 +1,27 @@
+﻿@if (ViewData["success"] != null)
+{
+    <div class="alert alert-success">
+        <strong>Success!</strong> @ViewData["success"]
+    </div>
+}
+
+@if (ViewData["danger"] != null)
+{
+    <div class="alert alert-danger">
+        <strong>Danger!</strong> @ViewData["danger"]
+    </div>
+}
+
+@if (ViewData["warning"] != null)
+{
+    <div class="alert alert-warning">
+        <strong>Warning!</strong> @ViewData["warning"]
+    </div>
+}
+
+@if (ViewData["info"] != null)
+{
+    <div class="alert alert-info">
+        <strong>Info!</strong> @ViewData["info"]
+    </div>
+}
