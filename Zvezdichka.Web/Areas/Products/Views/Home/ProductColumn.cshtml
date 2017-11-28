@@ -8,7 +8,7 @@
     <a class="d-block mb-4 h-100" asp-area="Products" asp-controller="Home" asp-action="Details"
        asp-route-id="@Model.Id" asp-route-title="@Model.Name" asp-route-category="@Model.Categories.FirstOrDefault()?.Category.Name">
 
-        <img src="@Model.ImageSource" class="img-fluid img-thumbnail" alt="@Model.Name">
+        <img src="@Model.ThumbnailSource" class="img-fluid img-thumbnail" alt="@Model.Name">
 
     </a>
     &#36 @Html.DisplayFor(modelItem => Model.Price)

@@ -21,9 +21,11 @@ namespace Zvezdichka.Data.Models
         [Required]
         public decimal Price { get; set; }
 
-        public string ImageSource { get; set; }
+        public string ThumbnailSource { get; set; }
 
-        public ICollection<Cart> Carts { get; set; } = new HashSet<Cart>();
+        public ICollection<ImageSource> ImageSources { get; set; } = new HashSet<ImageSource>();
+
+        public ICollection<CartItem> Carts { get; set; } = new HashSet<CartItem>();
 
         public ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
 

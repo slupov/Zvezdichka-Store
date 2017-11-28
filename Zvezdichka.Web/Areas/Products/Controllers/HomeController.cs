@@ -27,11 +27,10 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         }
 
         // GET: Products/Details/5
-        [HttpGet("{title}-{id}", Name =
-            WebConstants.DefaultAreaControllerActionRoutingName)] // GET: products/big-shoes-20125 todo
-        [HttpGet("{category}/{title}-{id}", Name =
-            WebConstants.ProductWithCategoryRoutingName)] // GET: products/big-shoes-20125 todo
-        public async Task<IActionResult> Details(int? id, string title, string category)
+        [HttpGet("/{title}-{id}", 
+            Name =
+            WebConstants.ProductDetailsFriendlyRouteName)] // GET: products/big-shoes-20125
+        public async Task<IActionResult> Details(int? id, string title)
         {
             if (id == null)
                 return NotFound();
@@ -45,17 +44,10 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             // Compare the title with the friendly title.
             if (!string.Equals(friendlyTitle, title, StringComparison.Ordinal))
             {
-                if (string.IsNullOrWhiteSpace(category))
-                {
-                    return RedirectToRoutePermanent(
-                        string.Format(WebConstants.ThreePartRoutingName, "products", "home", "details"),
-                        new {id = id, title = friendlyTitle});
-                }
-
                 //return url with the category inside
                 return RedirectToRoutePermanent(
-                    WebConstants.ProductWithCategoryRoutingName,
-                    new {id = id, title = friendlyTitle, category = category});
+                    WebConstants.ProductDetailsFriendlyRouteName,
+                    new {id = id, title = friendlyTitle});
             }
 
 

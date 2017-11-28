@@ -27,14 +27,13 @@ namespace Zvezdichka.Web
     public class Startup
     {
         public AppKeyConfig AppConfigs { get; }
+        public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration, IOptions<AppKeyConfig> appkeys)
         {
             this.Configuration = configuration;
             this.AppConfigs = appkeys.Value;
         }
-
-        public IConfiguration Configuration { get; }
 
         // DI - This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -82,7 +81,8 @@ namespace Zvezdichka.Web
             services.AddScoped<ICategoriesDataService, CategoriesDataService>();
             services.AddScoped<IRatingsDataService, RatingsDataService>();
             services.AddScoped<ICommentsDataService, CommentsDataService>();
-            services.AddScoped<ICartsDataService, CartsDataService>();
+            services.AddScoped<ICartItemsDataService, CartItemsDataService>();
+            services.AddScoped<IShoppingCartsDataService, ShoppingCartsDataService>();
 
             //Add external login options
             services.AddAuthentication().AddFacebook(facebookOptions =>
@@ -129,19 +129,16 @@ namespace Zvezdichka.Web
                     "{controller=Home}/{action=Index}/{id?}");
             });
 
-            //scope seed db
-            Task.Run(() =>
-            {
-                using (var serviceScope =
-                    app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-                {
-                    var context = serviceScope.ServiceProvider.GetService<ZvezdichkaDbContext>();
-                    context.Database.Migrate();
-                    context.EnsureSeedData();
-                }
-            });
-
             CreateRoles(serviceProvider).Wait();
+
+            //scope seed db
+            using (var serviceScope =
+                app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetService<ZvezdichkaDbContext>();
+                context.Database.Migrate();
+                context.EnsureSeedData();
+            }
         }
 
         private async Task CreateRoles(IServiceProvider serviceProvider)

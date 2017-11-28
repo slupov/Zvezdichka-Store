@@ -179,7 +179,7 @@ namespace Zvezdichka.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("Zvezdichka.Data.Models.Cart", b =>
+            modelBuilder.Entity("Zvezdichka.Data.Models.CartItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -188,6 +188,8 @@ namespace Zvezdichka.Data.Migrations
 
                     b.Property<byte>("Quantity");
 
+                    b.Property<int>("ShoppingCartId");
+
                     b.Property<string>("UserId")
                         .IsRequired();
 
@@ -195,9 +197,11 @@ namespace Zvezdichka.Data.Migrations
 
                     b.HasIndex("ProductId");
 
+                    b.HasIndex("ShoppingCartId");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("Carts");
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("Zvezdichka.Data.Models.Category", b =>
@@ -237,6 +241,23 @@ namespace Zvezdichka.Data.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("Zvezdichka.Data.Models.ImageSource", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("ProductId");
+
+                    b.Property<string>("Source")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ImageSources");
+                });
+
             modelBuilder.Entity("Zvezdichka.Data.Models.Mapping.CategoryProduct", b =>
                 {
                     b.Property<int>("CategoryId");
@@ -257,8 +278,6 @@ namespace Zvezdichka.Data.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<string>("ImageSource");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50);
@@ -266,6 +285,8 @@ namespace Zvezdichka.Data.Migrations
                     b.Property<decimal>("Price");
 
                     b.Property<byte>("Stock");
+
+                    b.Property<string>("ThumbnailSource");
 
                     b.HasKey("Id");
 
@@ -291,6 +312,25 @@ namespace Zvezdichka.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Ratings");
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.ShoppingCart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("UserId");
+
+                    b.Property<string>("UserId1");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("ShoppingCarts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -338,11 +378,16 @@ namespace Zvezdichka.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Zvezdichka.Data.Models.Cart", b =>
+            modelBuilder.Entity("Zvezdichka.Data.Models.CartItem", b =>
                 {
                     b.HasOne("Zvezdichka.Data.Models.Product", "Product")
                         .WithMany("Carts")
                         .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Zvezdichka.Data.Models.ShoppingCart", "ShoppingCart")
+                        .WithMany("CartItems")
+                        .HasForeignKey("ShoppingCartId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Zvezdichka.Data.Models.ApplicationUser", "User")
@@ -361,6 +406,14 @@ namespace Zvezdichka.Data.Migrations
                     b.HasOne("Zvezdichka.Data.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.ImageSource", b =>
+                {
+                    b.HasOne("Zvezdichka.Data.Models.Product", "Product")
+                        .WithMany("ImageSources")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -388,6 +441,13 @@ namespace Zvezdichka.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.ShoppingCart", b =>
+                {
+                    b.HasOne("Zvezdichka.Data.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId1");
                 });
 #pragma warning restore 612, 618
         }

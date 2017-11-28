@@ -7,6 +7,5 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public abstract class AdminBaseController : Controller
     {
-
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Zvezdichka.Data.Models;
@@ -53,7 +52,7 @@ namespace Zvezdichka.Data.Helpers
             Random r = new Random();
 
             var products = context.Products.ToList();
-            var user = context.Users.First();
+            var user = context.Users.First(); //sequence users contains no elements
 
             foreach (var rating in ratingsToSeed)
             {
@@ -87,7 +86,7 @@ namespace Zvezdichka.Data.Helpers
 
             context.AddRange(commentsToSeed);
             context.Comments.AddRange(commentsToSeed);
-                context.SaveChanges(); //BUG:throws null reference
+                context.SaveChanges();
             }
 
         private static void SeedProductsAndCategories(ZvezdichkaDbContext context, Category[] categoriesToSeed)

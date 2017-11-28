@@ -11,14 +11,14 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
     public class HomeController : ShoppingBaseController
     {
         private readonly IProductsDataService products;
-        private readonly ICartsDataService carts;
+        private readonly ICartItemsDataService cartItems;
         private readonly UserManager<ApplicationUser> users;
 
-        public HomeController(IProductsDataService products, ICartsDataService carts,
+        public HomeController(IProductsDataService products, ICartItemsDataService cartItems,
             UserManager<ApplicationUser> users)
         {
             this.products = products;
-            this.carts = carts;
+            this.cartItems = cartItems;
             this.users = users;
         }
 
@@ -37,34 +37,35 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             return View();
         }
 
-//        [HttpPost]
+        /// <param name="title">Product name</param>
+        /// <param name="quantity"></param>
+        /// <returns></returns>
         [Authorize]
-        public IActionResult AddToCart(string productName, byte quantity)
+        public IActionResult AddToCart(string title, byte quantity)
         {
-            var productToAdd = this.products.GetSingle(p => p.Name == productName);
+            var productToAdd = this.products.GetSingle(p => p.Name == title);
 
             if (productToAdd.Stock <= 0 || productToAdd.Stock < quantity)
             {
                 this.ViewData["warning"] = "Cannot add this product to cart. Insufficient stock.";
-                return RedirectToRoute(WebConstants.ProductWithCategoryRoutingName, new {id = productToAdd});
+                return RedirectToRoute(WebConstants.ProductDetailsFriendlyRouteName, new {id = productToAdd.Id, title = title});
             }
 
-            var cartProduct = new Cart()
+            var cartProduct = new CartItem()
             {
                 Product = productToAdd,
                 Quantity = quantity,
                 User = this.users.FindByNameAsync(this.User.Identity.Name).GetAwaiter().GetResult()
             };
 
-//            this.carts.Add(cartProduct);
-            this.ViewData["success"] = $"Successfully added {quantity}x {productName}!";
+            this.cartItems.Add(cartProduct);
+            this.ViewData["success"] = $"Successfully added {quantity}x {title}!";
 
-            return RedirectToRoute(WebConstants.ProductWithCategoryRoutingName,
+            return RedirectToRoute(WebConstants.ProductDetailsFriendlyRouteName,
                 new
                 {
                     id = productToAdd.Id,
-                    productName = productName,
-                    category = productToAdd.Categories.FirstOrDefault()
+                    title = title,
                 });
         }
     }
