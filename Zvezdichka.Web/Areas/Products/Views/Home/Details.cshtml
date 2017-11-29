@@ -1,5 +1,4 @@
-﻿@model Zvezdichka.Data.Models.Product
-
+﻿@model Zvezdichka.Web.Areas.Products.Models.ProductDetailsViewModel
 @{
     ViewData["Title"] = "Details";
 }
@@ -10,45 +9,11 @@
     <h4>Product</h4>
     <hr/>
 
-    <div id="myCarousel" class="carousel slide" data-ride="carousel">
-        <!-- Indicators -->
-        <ol class="carousel-indicators">
-            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-
-            @for (int i = 1; i < Model.ImageSources.Count; i++)
-            {
-                <li data-target="#myCarousel" data-slide-to="@i"></li>
-            }
-        </ol>
-
-        <!-- Wrapper for slides -->
-        <div class="carousel-inner">
-            @{
-                var imageSources = @Model.ImageSources.Select(i => i.Source).ToList();
-            }
-
-            @for (int i = 0; i < Model.ImageSources.Count; i++)
-            {
-                var activeClass = @i == 0 ? "active" : "";
-
-                <div class="item @activeClass">
-                    <img src="@imageSources[i]" alt="@imageSources[i]">
-                </div>
-            }
-            
-        </div>
-
-        <!-- Left and right controls -->
-        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
-            <span class="glyphicon glyphicon-chevron-left"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="right carousel-control" href="#myCarousel" data-slide="next">
-            <span class="glyphicon glyphicon-chevron-right"></span>
-            <span class="sr-only">Next</span>
-        </a>
-    </div>
-    @* End of carousel *@
+    @if (Model.ImageSources.Count > 0)
+    {
+        var all = Model.ImageSources.Select(s => s.Source);
+        @(await Html.PartialAsync("ImageCarousel", all))
+    }
 
     <dl class="dl-horizontal">
         <dt>
@@ -64,31 +29,26 @@
             @Html.Raw(Model.Description)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Stock)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Stock)
-        </dd>
-        <dt>
             @Html.DisplayNameFor(model => model.Price)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Price)
         </dd>
+
         <dt>
-            @Html.DisplayNameFor(model => model.ThumbnailSource)
+            @Html.DisplayNameFor(model => model.IsInStock)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.ThumbnailSource)
+            @Html.DisplayFor(model => model.IsInStock)
         </dd>
 
         <dd>
             @*            TODO: fix hardcoded quantity value*@
-            <a asp-area="Shopping" asp-controller="Home" asp-action="AddToCart" asp-route-title="@Model.Name" asp-route-quantity="2">Add to Cart</a>
+            <a asp-area="Shopping" asp-controller="Home" asp-action="AddToCart" asp-route-title="@Model.Name" asp-route-quantity="2" class="btn btn-success">Add to Cart</a>
         </dd>
 
         <dd>
-            <a asp-area="Shopping" asp-controller="Home" asp-action="Index">Cart</a>
+            <a asp-area="Shopping" asp-controller="Home" asp-action="Index" class="btn btn-default">Cart</a>
         </dd>
     </dl>
 </div>

@@ -11,7 +11,7 @@ namespace Zvezdichka.Web.Models.Automapper
             var allTypes = AppDomain
                 .CurrentDomain
                 .GetAssemblies()
-                .Where(a => a.GetName().Name.Contains("AreasDemo"))
+                .Where(a => a.GetName().Name.Contains("Zvezdichka"))
                 .SelectMany(a => a.GetTypes());
 
             allTypes

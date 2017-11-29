@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Services.Contracts.Entity;
+using Zvezdichka.Web.Areas.Products.Models;
 using Zvezdichka.Web.Extensions.SEO;
 using Zvezdichka.Web.Extensions.Helpers;
 
@@ -72,7 +74,10 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             if (id == null)
                 return NotFound();
 
-            var product = this.products.GetSingle(m => m.Id == id, m => m.ImageSources); //eager loading image sources
+            ProductDetailsViewModel product =
+                Mapper.Map<ProductDetailsViewModel>(this.products.GetSingle(m => m.Id == id,
+                    m => m.ImageSources)); //eager loading image sources
+
             if (product == null)
                 return NotFound();
 
@@ -86,7 +91,6 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                     WebConstants.ProductDetailsFriendlyRouteName,
                     new {id = id, title = friendlyTitle});
             }
-
 
             return View(product);
         }
@@ -118,7 +122,9 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             if (id == null)
                 return NotFound();
 
-            var product = this.products.GetSingle(m => m.Id == id);
+            var product =
+                Mapper.Map<ProductEditViewModel>(this.products.GetSingle(m => m.Id == id, m => m.ImageSources));
+
             if (product == null)
                 return NotFound();
             return View(product);
@@ -159,7 +165,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             if (id == null)
                 return NotFound();
 
-            var product = this.products.GetSingle(m => m.Id == id);
+            var product = Mapper.Map<ProductDeleteViewModel>(this.products.GetSingle(m => m.Id == id));
             if (product == null)
                 return NotFound();
 

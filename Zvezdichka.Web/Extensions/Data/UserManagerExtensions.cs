@@ -14,7 +14,8 @@ namespace Zvezdichka.Web.Extensions.Data
     /// </summary>
     public static class UserManagerExtensions
     {
-        public static async Task<ApplicationUser> FindByNameAsync(this UserManager<ApplicationUser> manager, string username, params Expression<Func<ApplicationUser, object>>[] navigationProperties)
+        public static async Task<ApplicationUser> FindByNameAsync(this UserManager<ApplicationUser> manager,
+            string username, params Expression<Func<ApplicationUser, object>>[] navigationProperties)
         {
             await Task.Run(() =>
             {
@@ -37,7 +38,8 @@ namespace Zvezdichka.Web.Extensions.Data
             return null;
         }
 
-        public static async Task<ApplicationUser> FindByEmailAsync(this UserManager<ApplicationUser> manager, string email, params Expression<Func<ApplicationUser, object>>[] navigationProperties)
+        public static async Task<ApplicationUser> FindByEmailAsync(this UserManager<ApplicationUser> manager,
+            string email, params Expression<Func<ApplicationUser, object>>[] navigationProperties)
         {
             await Task.Run(() =>
             {
@@ -60,7 +62,8 @@ namespace Zvezdichka.Web.Extensions.Data
             return null;
         }
 
-        public static async Task<ApplicationUser> FindByIdAsync(this UserManager<ApplicationUser> manager, string id, params Expression<Func<ApplicationUser, object>>[] navigationProperties)
+        public static async Task<ApplicationUser> FindByIdAsync(this UserManager<ApplicationUser> manager, string id,
+            params Expression<Func<ApplicationUser, object>>[] navigationProperties)
         {
             await Task.Run(() =>
             {
