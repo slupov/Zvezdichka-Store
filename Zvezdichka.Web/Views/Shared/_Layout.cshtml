@@ -30,6 +30,22 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
+
+                <!--Search bar-->
+                <li>
+                    <form asp-area="Products" asp-controller="Home" asp-action="Index" class="navbar-form" method="get">
+                        <div class="input-group">
+                            <input class="form-control" type="text" name="SearchString" placeholder="Search" value="@ViewData["SearchFilter"]"/>
+
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-default">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                </button>
+                            </span>
+                        </div>
+                    </form>
+                </li>
+
                 <li>
                     <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                 </li>
@@ -41,6 +57,7 @@
                 <li>
                     <a asp-area="" asp-controller="Home" asp-action="Contact">Contact us</a>
                 </li>
+
                 @if (User.IsInRole("Admin"))
                 {
                     <li>
@@ -52,8 +69,8 @@
         </div>
     </div>
 </nav>
-    
-    @await Html.PartialAsync("BootlstrapAlerts")
+
+@await Html.PartialAsync("BootlstrapAlerts")
 
 <div class="container body-content">
     @RenderBody()
@@ -64,6 +81,7 @@
 </div>
 
 <environment include="Development">
+    <script src="https://use.fontawesome.com/da65837c38.js"></script>
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/js/ckeditor/ckeditor.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
@@ -84,7 +102,7 @@
     </script>
     <script src="~/js/site.min.js" asp-append-version="true"></script>
 </environment>
-    
+
 @RenderSection("Scripts", required: false)
 </body>
 </html>

@@ -1,7 +1,10 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Zvezdichka.Data;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Services.Contracts.Entity;
 using Zvezdichka.Web.Extensions.Helpers;
@@ -32,9 +35,20 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             return View();
         }
 
-        public IActionResult Cart()
+        public async Task<IActionResult> Cart()
         {
-            return View();
+            var userId = this.users.GetUserId(this.HttpContext.User);
+
+            ApplicationUser user = null;
+
+            using (var context = new ZvezdichkaDbContext(new DbContextOptions<ZvezdichkaDbContext>()))
+            {
+                user = context.Users.Include(c => c.CartItems).FirstOrDefault(u => u.Id == userId);
+            }
+
+            var userCartItems = user.CartItems; //bug = 0
+
+            return View(userCartItems);
         }
 
         /// <param name="title">Product name</param>
@@ -48,17 +62,37 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             if (productToAdd.Stock <= 0 || productToAdd.Stock < quantity)
             {
                 this.ViewData["warning"] = "Cannot add this product to cart. Insufficient stock.";
-                return RedirectToRoute(WebConstants.ProductDetailsFriendlyRouteName, new {id = productToAdd.Id, title = title});
+                return RedirectToRoute(WebConstants.ProductDetailsFriendlyRouteName,
+                    new {id = productToAdd.Id, title = title});
             }
 
+            //already such cart product exists
+            var cartItem =
+                this.cartItems.GetSingle(c => c.User.UserName == this.User.Identity.Name && c.Product.Name == title);
+
+            if (cartItem != null)
+            {
+                cartItem.Quantity += quantity;
+                this.cartItems.Update(cartItem);
+
+                return RedirectToRoute(WebConstants.ProductDetailsFriendlyRouteName,
+                    new
+                    {
+                        id = productToAdd.Id,
+                        title = title,
+                    });
+            }
+
+            var user = this.users.FindByNameAsync(this.User.Identity.Name).GetAwaiter().GetResult();
             var cartProduct = new CartItem()
             {
                 Product = productToAdd,
                 Quantity = quantity,
-                User = this.users.FindByNameAsync(this.User.Identity.Name).GetAwaiter().GetResult()
+                User = user
             };
 
-            this.cartItems.Add(cartProduct);
+            user.CartItems.Add(cartProduct); //by what quanitty todo
+
             this.ViewData["success"] = $"Successfully added {quantity}x {title}!";
 
             return RedirectToRoute(WebConstants.ProductDetailsFriendlyRouteName,

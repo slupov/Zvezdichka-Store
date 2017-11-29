@@ -9,6 +9,47 @@
 <div>
     <h4>Product</h4>
     <hr/>
+
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+
+            @for (int i = 1; i < Model.ImageSources.Count; i++)
+            {
+                <li data-target="#myCarousel" data-slide-to="@i"></li>
+            }
+        </ol>
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+            @{
+                var imageSources = @Model.ImageSources.Select(i => i.Source).ToList();
+            }
+
+            @for (int i = 0; i < Model.ImageSources.Count; i++)
+            {
+                var activeClass = @i == 0 ? "active" : "";
+
+                <div class="item @activeClass">
+                    <img src="@imageSources[i]" alt="@imageSources[i]">
+                </div>
+            }
+            
+        </div>
+
+        <!-- Left and right controls -->
+        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+    @* End of carousel *@
+
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Name)
@@ -35,10 +76,10 @@
             @Html.DisplayFor(model => model.Price)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.ImageSource)
+            @Html.DisplayNameFor(model => model.ThumbnailSource)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.ImageSource)
+            @Html.DisplayFor(model => model.ThumbnailSource)
         </dd>
 
         <dd>

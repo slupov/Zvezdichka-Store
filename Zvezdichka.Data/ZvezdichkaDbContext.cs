@@ -13,7 +13,6 @@ namespace Zvezdichka.Data
         {
         }
 
-        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Comment> Comments { get; set; }
@@ -24,14 +23,13 @@ namespace Zvezdichka.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Category>().ToTable("Categories");
-            builder.Entity<Comment>().ToTable("Comments");
             builder.Entity<Rating>().ToTable("Ratings");
             builder.Entity<Product>().ToTable("Products");
 
-            builder.AddConfiguration(new ShoppingCartConfiguration());
             builder.AddConfiguration(new CartItemConfiguration());
             builder.AddConfiguration(new CategoryProductConfiguration());
             builder.AddConfiguration(new ImageSourceConfiguration());
+            builder.AddConfiguration(new CommentConfiguration());
 
             base.OnModelCreating(builder);
         }

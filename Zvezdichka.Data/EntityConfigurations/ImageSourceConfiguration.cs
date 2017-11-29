@@ -9,7 +9,8 @@ namespace Zvezdichka.Data.EntityConfigurations
     {
         public override void Configure(EntityTypeBuilder<ImageSource> entity)
         {
-            entity.ToTable("ImageSources");
+            entity
+                .ToTable("ImageSources");
 
             entity
                 .HasOne(c => c.Product)

@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 using Zvezdichka.Data;
 
@@ -188,16 +186,12 @@ namespace Zvezdichka.Data.Migrations
 
                     b.Property<byte>("Quantity");
 
-                    b.Property<int>("ShoppingCartId");
-
                     b.Property<string>("UserId")
                         .IsRequired();
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("ShoppingCartId");
 
                     b.HasIndex("UserId");
 
@@ -314,25 +308,6 @@ namespace Zvezdichka.Data.Migrations
                     b.ToTable("Ratings");
                 });
 
-            modelBuilder.Entity("Zvezdichka.Data.Models.ShoppingCart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("UserId");
-
-                    b.Property<string>("UserId1");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.HasIndex("UserId1");
-
-                    b.ToTable("ShoppingCarts");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
@@ -381,17 +356,12 @@ namespace Zvezdichka.Data.Migrations
             modelBuilder.Entity("Zvezdichka.Data.Models.CartItem", b =>
                 {
                     b.HasOne("Zvezdichka.Data.Models.Product", "Product")
-                        .WithMany("Carts")
+                        .WithMany("CartItems")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Zvezdichka.Data.Models.ShoppingCart", "ShoppingCart")
-                        .WithMany("CartItems")
-                        .HasForeignKey("ShoppingCartId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("Zvezdichka.Data.Models.ApplicationUser", "User")
-                        .WithMany("Carts")
+                        .WithMany("CartItems")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -441,13 +411,6 @@ namespace Zvezdichka.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Zvezdichka.Data.Models.ShoppingCart", b =>
-                {
-                    b.HasOne("Zvezdichka.Data.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId1");
                 });
 #pragma warning restore 612, 618
         }

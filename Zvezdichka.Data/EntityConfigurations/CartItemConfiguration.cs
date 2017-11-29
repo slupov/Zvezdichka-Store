@@ -13,10 +13,10 @@ namespace Zvezdichka.Data.EntityConfigurations
 
             entity
                 .HasOne(c => c.Product)
-                .WithMany(p => p.Carts);
+                .WithMany(p => p.CartItems);
 
             entity.HasOne(c => c.User)
-                .WithMany(u => u.Carts)
+                .WithMany(u => u.CartItems)
                 .HasForeignKey(c => c.UserId);
         }
     }

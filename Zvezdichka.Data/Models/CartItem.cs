@@ -4,9 +4,9 @@ namespace Zvezdichka.Data.Models
 {
     public class CartItem
     {
-        [Key]
         public int Id { get; set; }
 
+        [Range(1,256)]
         public byte Quantity { get; set; }
 
         [Required]
@@ -18,10 +18,5 @@ namespace Zvezdichka.Data.Models
         public string UserId { get; set; }
 
         public ApplicationUser User { get; set; }
-
-        [Required]
-        public int ShoppingCartId { get; set; }
-
-        public ShoppingCart ShoppingCart { get; set; }
     }
 }

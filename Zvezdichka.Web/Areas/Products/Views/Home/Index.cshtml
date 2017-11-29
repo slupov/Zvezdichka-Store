@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Zvezdichka.Data.Models.Product>
+﻿@using Zvezdichka.Web.Extensions.Helpers
+@model Zvezdichka.Web.Extensions.Helpers.PaginatedList<Product>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,6 +14,8 @@
     }
 </p>
 
+<a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-default">Sort by name</a>
+
 <div class="containter">
     <div class="row text-center text-lg-left">
         @foreach (var item in Model)
@@ -21,3 +24,35 @@
         }
     </div>
 </div>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-page="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+
+@for (int i = 1; i <= Model.TotalPages; i++)
+{
+    <a asp-action="Index"
+       asp-route-sortOrder="@ViewData["CurrentSort"]"
+       asp-route-page="@i"
+       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+       class="btn btn-primary">
+        [@i]
+    </a>
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-page="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>

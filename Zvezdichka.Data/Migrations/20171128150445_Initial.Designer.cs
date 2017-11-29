@@ -382,7 +382,7 @@ namespace Zvezdichka.Data.Migrations
             modelBuilder.Entity("Zvezdichka.Data.Models.CartItem", b =>
                 {
                     b.HasOne("Zvezdichka.Data.Models.Product", "Product")
-                        .WithMany("Carts")
+                        .WithMany("CartItems")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -392,7 +392,7 @@ namespace Zvezdichka.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Zvezdichka.Data.Models.ApplicationUser", "User")
-                        .WithMany("Carts")
+                        .WithMany("CartItems")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

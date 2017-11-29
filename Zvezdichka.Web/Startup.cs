@@ -82,7 +82,6 @@ namespace Zvezdichka.Web
             services.AddScoped<IRatingsDataService, RatingsDataService>();
             services.AddScoped<ICommentsDataService, CommentsDataService>();
             services.AddScoped<ICartItemsDataService, CartItemsDataService>();
-            services.AddScoped<IShoppingCartsDataService, ShoppingCartsDataService>();
 
             //Add external login options
             services.AddAuthentication().AddFacebook(facebookOptions =>
@@ -129,7 +128,6 @@ namespace Zvezdichka.Web
                     "{controller=Home}/{action=Index}/{id?}");
             });
 
-            CreateRoles(serviceProvider).Wait();
 
             //scope seed db
             using (var serviceScope =
@@ -137,8 +135,13 @@ namespace Zvezdichka.Web
             {
                 var context = serviceScope.ServiceProvider.GetService<ZvezdichkaDbContext>();
                 context.Database.Migrate();
+
+                CreateRoles(serviceProvider).Wait();
+
                 context.EnsureSeedData();
             }
+
+
         }
 
         private async Task CreateRoles(IServiceProvider serviceProvider)

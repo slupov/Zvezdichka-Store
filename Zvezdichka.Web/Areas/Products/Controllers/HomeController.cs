@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,21 +22,57 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             this.products = products;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? page)
         {
-            return View(this.products.GetAll());
+            if (searchString != null)
+            {
+                searchString = searchString.ToLower();
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            this.ViewData["CurrentFilter"] = searchString;
+
+            var productsList = this.products.GetAll();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                productsList = productsList
+                    .Where(p => p.Name.ToLower().Contains(searchString) ||
+                                p.Categories.Any(c => c.Category.Name.ToLower().Contains(searchString)))
+                    .ToList();
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    productsList = productsList.OrderByDescending(s => s.Name).ToList();
+                    break;
+                default:
+                    productsList = productsList.OrderBy(p => p.Name).ToList();
+                    break;
+            }
+
+            int pageSize = 20;
+            return View(PaginatedList<Product>.Create(productsList, page ?? 1, pageSize));
         }
 
         // GET: Products/Details/5
-        [HttpGet("/{title}-{id}", 
+        [HttpGet("/{title}-{id}",
             Name =
-            WebConstants.ProductDetailsFriendlyRouteName)] // GET: products/big-shoes-20125
+                WebConstants.ProductDetailsFriendlyRouteName)] // GET: products/big-shoes-20125
         public async Task<IActionResult> Details(int? id, string title)
         {
             if (id == null)
                 return NotFound();
 
-            var product = this.products.GetSingle(m => m.Id == id);
+            var product = this.products.GetSingle(m => m.Id == id, m => m.ImageSources); //eager loading image sources
             if (product == null)
                 return NotFound();
 
@@ -93,7 +130,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
-            [Bind("Id,Name,Description,Stock,Price,ImageSource")] Product product)
+            [Bind("Id,Name,Description,Stock,Price,ThumbnailSource")] Product product)
         {
             if (id != product.Id)
                 return NotFound();
