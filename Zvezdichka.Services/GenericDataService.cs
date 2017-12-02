@@ -5,11 +5,20 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Zvezdichka.Data;
 using Zvezdichka.Services.Contracts;
+using Zvezdichka.Services.Extensions;
+using Zvezdichka.Services.Extensions.Contracts;
 
 namespace Zvezdichka.Services
 {
-    public class GenericDataService<T> : IGenericDataService<T> where T : class
+    public abstract class GenericDataService<T> : IGenericDataService<T> where T : class
     {
+        protected DbSet<T> _dbSet;
+
+        protected GenericDataService(ZvezdichkaDbContext dbContext)
+        {
+            this._dbSet = dbContext.Set<T>();
+        }
+
         public virtual IList<T> GetAll(params Expression<Func<T, object>>[] navigationProperties)
         {
             List<T> list;
@@ -131,6 +140,11 @@ namespace Zvezdichka.Services
                     .AsNoTracking() //Don't track any changes for the selected item
                     .Any();
             }
+        }
+
+        public IIncludableJoin<T, TProperty> Join<TProperty>(Expression<Func<T, TProperty>> navigationProperty)
+        {
+            return ((IQueryable<T>)this._dbSet).Join(navigationProperty);
         }
     }
 }

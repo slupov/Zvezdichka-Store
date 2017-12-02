@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Zvezdichka.Data;
-using Zvezdichka.Data.Extensions;
 using Zvezdichka.Data.Models;
+using Zvezdichka.Services.Extensions;
 
 namespace Zvezdichka.Web.Extensions.Data
 {

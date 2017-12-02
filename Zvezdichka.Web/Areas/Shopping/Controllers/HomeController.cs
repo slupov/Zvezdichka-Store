@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Zvezdichka.Web.Extensions.Data;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Services.Contracts.Entity;
+using Zvezdichka.Services.Extensions;
 using Zvezdichka.Web.Areas.Shopping.Models;
 using Zvezdichka.Web.Extensions.Helpers;
 
@@ -18,13 +19,15 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
         private readonly IProductsDataService products;
         private readonly ICartItemsDataService cartItems;
         private readonly UserManager<ApplicationUser> users;
+        private readonly IApplicationUserDataService users2;
 
-        public HomeController(IProductsDataService products, ICartItemsDataService cartItems,
+        public HomeController(IProductsDataService products, ICartItemsDataService cartItems, IApplicationUserDataService users2,
             UserManager<ApplicationUser> users)
         {
             this.products = products;
             this.cartItems = cartItems;
             this.users = users;
+            this.users2 = users2;
         }
 
         public IActionResult Index()
@@ -39,22 +42,12 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
 
         public async Task<IActionResult> Cart()
         {
-            //            var user = await this.users.FindByNameAsync(this.User.Identity.Name, 
-            //                u => u.CartItems,
-            //                u => u.CartItems.Select(ci => ci.Product));
-
-            var user = await this.users.FindByNameAsync(this.User.Identity.Name,
-                u => u.CartItems);
+            var user = this.users2
+                .Join(u => u.CartItems)
+                .ThenJoin(ci => ci.Product)
+                .FirstOrDefault(u => u.UserName == this.User.Identity.Name);
 
             var userCartItems = user.CartItems.AsQueryable().ToList();
-
-            //include the product
-            //todo: too many queries, change with expression tree includes
-            foreach (var cartItem in userCartItems)
-            {
-                cartItem.Product = this.products.GetSingle(p => p.Id == cartItem.Id);
-            }
-
 
             //see usercartitems
             return View((userCartItems.AsQueryable().ProjectTo<CartItemListingViewModel>()));

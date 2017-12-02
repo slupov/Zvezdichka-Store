@@ -77,6 +77,7 @@ namespace Zvezdichka.Web
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IHtmlService, HtmlService>();
 
+            services.AddScoped<IApplicationUserDataService, ApplicationUserDataService>();
             services.AddScoped<IProductsDataService, ProductsDataService>();
             services.AddScoped<ICategoriesDataService, CategoriesDataService>();
             services.AddScoped<IRatingsDataService, RatingsDataService>();
@@ -140,8 +141,6 @@ namespace Zvezdichka.Web
 
                 context.EnsureSeedData();
             }
-
-
         }
 
         private async Task CreateRoles(IServiceProvider serviceProvider)
