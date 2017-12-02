@@ -1,13 +1,11 @@
-﻿@model Product
+﻿@using Zvezdichka.Web.Areas.Products.Models
+@model Zvezdichka.Web.Areas.Products.Models.ProductListingViewModel
 
 <style>
-    #thumbnail {
-        max-height: 150px;
-    }
-    
+    #thumbnail { max-height: 150px; }
 </style>
 
-<div class="col-lg-3" col-md-3 col-sm-4 col-xs-12 col-xss-12">
+<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 col-xss-12">
     <p>
         <a asp-area="Products" asp-controller="Home" asp-action="Details" asp-route-id="@Model.Id" asp-route-title="@Model.Name">@Model.Name</a>
     </p>
@@ -16,15 +14,16 @@
        asp-route-id="@Model.Id" asp-route-title="@Model.Name" asp-route-category="@Model.Categories.FirstOrDefault()?.Category.Name">
 
         <img id="thumbnail" src="@Model.ThumbnailSource" class="img-responsive img-thumbnail" alt="@Model.Name">
-        @*        img-flud beshe*@
     </a>
     &#36 @Html.DisplayFor(modelItem => Model.Price)
 
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
     {
         <div class="row">
-            <a asp-action="Edit" asp-route-id="@Model.Id" 
-               class="btn btn-default col-md-5 col-md-offset-1 col-sm-5 col-sm-offset-1 col-xs-4  col-xs-offset-2">Edit</a>
+            <a asp-action="Edit" asp-route-id="@Model.Id"
+               class="btn btn-default col-md-5 col-md-offset-1 col-sm-5 col-sm-offset-1 col-xs-4 col-xs-offset-2">
+                Edit
+            </a>
             <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger col-md-5 col-sm-5 col-xs-4">Delete</a>
         </div>
     }

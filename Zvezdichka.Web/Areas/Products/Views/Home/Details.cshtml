@@ -43,8 +43,13 @@
         </dd>
 
         <dd>
+            <input type="number" id="bag-quantity" class="form-control"/>
+        </dd>
+        <dd>
             @*            TODO: fix hardcoded quantity value*@
-            <a asp-area="Shopping" asp-controller="Home" asp-action="AddToCart" asp-route-title="@Model.Name" asp-route-quantity="2" class="btn btn-success">Add to Cart</a>
+            @*            <a asp-area="Shopping" asp-controller="Home" asp-action="AddToCart" asp-route-title="@Model.Name" asp-route-quantity="2" class="btn btn-success" onclick="addToCart()">Add to Cart</a>*@
+
+            <a class="btn btn-success" onclick="addToCart('@Model.Name')">Add to Cart</a>
         </dd>
 
         <dd>
@@ -61,3 +66,25 @@
     }
     <a asp-action="Index">Back to List</a>
 </div>
+
+<script>
+    function addToCart(productName) {
+
+        $.ajax(
+            {
+                type: "GET",
+                traditional: true,
+                url: "Shopping/Home/AddToCart",
+                data: {
+                    title: productName,
+                    quantity: $('#bag-quantity').val()
+                },
+                success: function() {
+                    alert("Value Added");
+                }, // or any other indication if you want to show
+                error: function() {
+                    alert("Error adding to shopping cart");
+                }
+            });
+    }
+</script>

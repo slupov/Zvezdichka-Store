@@ -1,12 +1,14 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Zvezdichka.Data;
+using Zvezdichka.Web.Extensions.Data;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Services.Contracts.Entity;
+using Zvezdichka.Web.Areas.Shopping.Models;
 using Zvezdichka.Web.Extensions.Helpers;
 
 namespace Zvezdichka.Web.Areas.Shopping.Controllers
@@ -37,18 +39,25 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
 
         public async Task<IActionResult> Cart()
         {
-            var userId = this.users.GetUserId(this.HttpContext.User);
+            //            var user = await this.users.FindByNameAsync(this.User.Identity.Name, 
+            //                u => u.CartItems,
+            //                u => u.CartItems.Select(ci => ci.Product));
 
-            ApplicationUser user = null;
+            var user = await this.users.FindByNameAsync(this.User.Identity.Name,
+                u => u.CartItems);
 
-            using (var context = new ZvezdichkaDbContext(new DbContextOptions<ZvezdichkaDbContext>()))
+            var userCartItems = user.CartItems.AsQueryable().ToList();
+
+            //include the product
+            //todo: too many queries, change with expression tree includes
+            foreach (var cartItem in userCartItems)
             {
-                user = context.Users.Include(c => c.CartItems).FirstOrDefault(u => u.Id == userId);
+                cartItem.Product = this.products.GetSingle(p => p.Id == cartItem.Id);
             }
 
-            var userCartItems = user.CartItems; //bug = 0
 
-            return View(userCartItems);
+            //see usercartitems
+            return View((userCartItems.AsQueryable().ProjectTo<CartItemListingViewModel>()));
         }
 
         /// <param name="title">Product name</param>
@@ -68,7 +77,8 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
 
             //already such cart product exists
             var cartItem =
-                this.cartItems.GetSingle(c => c.User.UserName == this.User.Identity.Name && c.Product.Name == title);
+                this.cartItems.GetSingle(c => c.User.UserName == this.User.Identity.Name && c.Product.Name == title,
+                    c => c.User, c => c.Product);
 
             if (cartItem != null)
             {
@@ -91,7 +101,8 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
                 User = user
             };
 
-            user.CartItems.Add(cartProduct); //by what quanitty todo
+            this.cartItems.Add(cartProduct);
+//            user.CartItems.Add(cartProduct); //by what quanitty todo
 
             this.ViewData["success"] = $"Successfully added {quantity}x {title}!";
 

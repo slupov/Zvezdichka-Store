@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Zvezdichka.Data.Models;
@@ -12,9 +13,6 @@ using Zvezdichka.Web.Extensions.Helpers;
 
 namespace Zvezdichka.Web.Areas.Products.Controllers
 {
-//    [Route("")] //could be called with no controller part supplied in route too
-    //GET: Products/
-    //GET: /
     public class HomeController : ProductsBaseController
     {
         private readonly IProductsDataService products;
@@ -41,7 +39,11 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
 
             this.ViewData["CurrentFilter"] = searchString;
 
-            var productsList = this.products.GetAll();
+
+            var productsList = this.products.GetAll()
+                .AsQueryable()
+                .ProjectTo<ProductListingViewModel>()
+                .ToList();
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -62,7 +64,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             }
 
             int pageSize = 20;
-            return View(PaginatedList<Product>.Create(productsList, page ?? 1, pageSize));
+            return View(PaginatedList<ProductListingViewModel>.Create(productsList, page ?? 1, pageSize));
         }
 
         // GET: Products/Details/5
@@ -127,6 +129,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
 
             if (product == null)
                 return NotFound();
+
             return View(product);
         }
 
@@ -156,7 +159,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(product);
+            return View(Mapper.Map<ProductEditViewModel>(product));
         }
 
         // GET: Products/Delete/5

@@ -1,4 +1,4 @@
-﻿@model System.Collections.Generic.ICollection<Zvezdichka.Data.Models.CartItem>
+﻿@model IQueryable<Zvezdichka.Web.Areas.Shopping.Models.CartItemListingViewModel>
 
 @{
     ViewBag.Title = "title";
@@ -21,7 +21,7 @@
     {
         <tr>
             <td>
-                @item.Product.Name
+                @item.ProductName
             </td>
             <td>
                 @item.Quantity

@@ -12,9 +12,9 @@
     <PackageReference Include="Dropbox.Api" Version="4.6.0" />
     <PackageReference Include="FontAwesome" Version="4.7.0" />
     <PackageReference Include="HtmlSanitizer" Version="4.0.181" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="2.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" PrivateAssets="All" />
   </ItemGroup>
 
@@ -34,7 +34,6 @@
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Products\Data\" />
     <Folder Include="Areas\Shopping\Data\" />
-    <Folder Include="Areas\Shopping\Models\" />
   </ItemGroup>
 
   <ItemGroup>
