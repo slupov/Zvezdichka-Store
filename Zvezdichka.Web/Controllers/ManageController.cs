@@ -10,9 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Services.Contracts;
-using Zvezdichka.Web.Extensions.Data;
+using Zvezdichka.Web.Infrastructure.Extensions;
 using Zvezdichka.Web.Models.ManageViewModels;
-using Zvezdichka.Web.Services;
 
 namespace Zvezdichka.Web.Controllers
 {

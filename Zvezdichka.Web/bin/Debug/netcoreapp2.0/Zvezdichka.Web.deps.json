@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.0",
-    "signature": "c5cb3bc77b8c0c4f800acf04833a0c3e946cc6d9"
+    "signature": "8e03c96638ffdfcd370827d6428b9ce70ebfbab9"
   },
   "compilationOptions": {
     "defines": [
@@ -25,7 +25,6 @@
         "dependencies": {
           "AutoMapper": "6.2.1",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "3.2.0",
-          "Dropbox.Api": "4.6.0",
           "FontAwesome": "4.7.0",
           "HtmlSanitizer": "4.0.181",
           "Microsoft.AspNetCore.All": "2.0.3",
@@ -102,14 +101,6 @@
         },
         "compile": {
           "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {}
-        }
-      },
-      "Dropbox.Api/4.6.0": {
-        "runtime": {
-          "lib/net45/Dropbox.Api.dll": {}
-        },
-        "compile": {
-          "lib/net45/Dropbox.Api.dll": {}
         }
       },
       "FontAwesome/4.7.0": {},
@@ -4392,13 +4383,6 @@
       "sha512": "sha512-528nEpAwniNn8Z6Ae9qTiM/kN4f0BxmWE9mDMEkqKKGxbuElmv6Kj9DVvTXECJkIt6ARerb9+vYbOifNpcwvXQ==",
       "path": "automapper.extensions.microsoft.dependencyinjection/3.2.0",
       "hashPath": "automapper.extensions.microsoft.dependencyinjection.3.2.0.nupkg.sha512"
-    },
-    "Dropbox.Api/4.6.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-gSigIoUzzrETidYzJyHyyMmsOy57fKEvnLnh1brrR8febr0YqD5ltr99XQ+7IQlN9OE3YviJOj2G4TyEq4LoLw==",
-      "path": "dropbox.api/4.6.0",
-      "hashPath": "dropbox.api.4.6.0.nupkg.sha512"
     },
     "FontAwesome/4.7.0": {
       "type": "package",

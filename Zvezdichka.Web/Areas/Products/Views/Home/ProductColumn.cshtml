@@ -1,4 +1,5 @@
 ﻿@using Zvezdichka.Web.Areas.Products.Models
+@using Zvezdichka.Web.Infrastructure.Constants
 @model Zvezdichka.Web.Areas.Products.Models.ProductListingViewModel
 
 <style>
@@ -7,11 +8,10 @@
 
 <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 col-xss-12">
     <p>
-        <a asp-area="Products" asp-controller="Home" asp-action="Details" asp-route-id="@Model.Id" asp-route-title="@Model.Name">@Model.Name</a>
+        <a asp-route="@WebConstants.Routes.ProductDetails" asp-route-id="@Model.Id" asp-route-title="@Model.Name">@Model.Name</a>
     </p>
 
-    <a class="d-block mb-4 h-100" asp-area="Products" asp-controller="Home" asp-action="Details"
-       asp-route-id="@Model.Id" asp-route-title="@Model.Name" asp-route-category="@Model.Categories.FirstOrDefault()?.Category.Name">
+    <a class="d-block mb-4 h-100" asp-route="@WebConstants.Routes.ProductDetails" asp-route-id="@Model.Id" asp-route-title="@Model.Name">
 
         <img id="thumbnail" src="@Model.ThumbnailSource" class="img-responsive img-thumbnail" alt="@Model.Name">
     </a>

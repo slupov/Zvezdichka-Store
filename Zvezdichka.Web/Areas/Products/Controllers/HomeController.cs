@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Services.Contracts.Entity;
 using Zvezdichka.Web.Areas.Products.Models;
-using Zvezdichka.Web.Extensions.SEO;
-using Zvezdichka.Web.Extensions.Helpers;
+using Zvezdichka.Web.Infrastructure.Extensions.Helpers;
+using Zvezdichka.Web.Infrastructure.Extensions.SEO;
 
 namespace Zvezdichka.Web.Areas.Products.Controllers
 {
@@ -67,10 +67,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             return View(PaginatedList<ProductListingViewModel>.Create(productsList, page ?? 1, pageSize));
         }
 
-        // GET: Products/Details/5
-        [HttpGet("/{title}-{id}",
-            Name =
-                WebConstants.ProductDetailsFriendlyRouteName)] // GET: products/big-shoes-20125
+        // GET: www.zvezdichka.com/big-toy-1
         public async Task<IActionResult> Details(int? id, string title)
         {
             if (id == null)
@@ -89,8 +86,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             if (!string.Equals(friendlyTitle, title, StringComparison.Ordinal))
             {
                 //return url with the category inside
-                return RedirectToRoutePermanent(
-                    WebConstants.ProductDetailsFriendlyRouteName,
+                return RedirectToAction(nameof(Details),
                     new {id = id, title = friendlyTitle});
             }
 
@@ -108,7 +104,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Stock,Price,ImageSource")] Product product)
+        public async Task<IActionResult> Create(Product product)
         {
             if (this.ModelState.IsValid)
             {
@@ -119,7 +115,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         }
 
         // GET: Products/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, string title)
         {
             if (id == null)
                 return NotFound();
@@ -129,6 +125,16 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
 
             if (product == null)
                 return NotFound();
+
+            var friendlyTitle = FriendlyUrlHelper.GetFriendlyTitle(product.Name);
+
+            // Compare the title with the friendly title.
+            if (!string.Equals(friendlyTitle, title, StringComparison.Ordinal))
+            {
+                //return url with the category inside
+                return RedirectToAction(nameof(Edit),
+                    new {id = id, title = friendlyTitle});
+            }
 
             return View(product);
         }

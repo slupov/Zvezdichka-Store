@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Zvezdichka.Web.Extensions.Helpers.Secrets;
+using Zvezdichka.Web.Infrastructure.Extensions.Helpers.Secrets;
 using Zvezdichka.Web.Models;
 
 namespace Zvezdichka.Web.Controllers

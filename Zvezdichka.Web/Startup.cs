@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using Dropbox.Api;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -14,13 +13,12 @@ using Microsoft.Extensions.Options;
 using Zvezdichka.Data;
 using Zvezdichka.Data.Helpers;
 using Zvezdichka.Data.Models;
-using Zvezdichka.Services;
 using Zvezdichka.Services.Contracts;
-using Zvezdichka.Services.Contracts.Entity;
 using Zvezdichka.Services.Implementations;
-using Zvezdichka.Services.Implementations.Entity;
-using Zvezdichka.Web.Extensions.Helpers.Html;
-using Zvezdichka.Web.Extensions.Helpers.Secrets;
+using Zvezdichka.Web.Infrastructure.Constants;
+using Zvezdichka.Web.Infrastructure.Extensions.Helpers.Html;
+using Zvezdichka.Web.Infrastructure.Extensions.Helpers.Secrets;
+using Zvezdichka.Web.Infrastructure.Extensions.Services;
 
 namespace Zvezdichka.Web
 {
@@ -73,16 +71,12 @@ namespace Zvezdichka.Web
             //Configure app secrets
             services.Configure<AppKeyConfig>(this.Configuration.GetSection("AppKeys"));
 
-            // Add application services.
+            //Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IHtmlService, HtmlService>();
 
-            services.AddScoped<IApplicationUserDataService, ApplicationUserDataService>();
-            services.AddScoped<IProductsDataService, ProductsDataService>();
-            services.AddScoped<ICategoriesDataService, CategoriesDataService>();
-            services.AddScoped<IRatingsDataService, RatingsDataService>();
-            services.AddScoped<ICommentsDataService, CommentsDataService>();
-            services.AddScoped<ICartItemsDataService, CartItemsDataService>();
+            //Add data services.
+            services.AddDataServices();
 
             //Add external login options
             services.AddAuthentication().AddFacebook(facebookOptions =>
@@ -92,6 +86,8 @@ namespace Zvezdichka.Web
             });
 
             services.AddAutoMapper();
+
+            services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddMvc(options =>
             {
@@ -120,9 +116,20 @@ namespace Zvezdichka.Web
 
             app.UseMvc(routes =>
             {
+//                start with most specific, end with most generic
                 routes.MapRoute(
-                    "areas",
-                    "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+                    name: WebConstants.Routes.ProductEdit,
+                    template: "admin/edit/{title}-{id}",
+                    defaults: new {area = "Products", controller = "Home", action = "Edit"});
+
+                routes.MapRoute(
+                    name: WebConstants.Routes.ProductDetails,
+                    template: "{title}-{id}",
+                    defaults: new {area = "Products", controller = "Home", action = "Details"});
+
+                routes.MapRoute(
+                    name: "areas",
+                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
                 routes.MapRoute(
                     "default",
@@ -177,17 +184,6 @@ namespace Zvezdichka.Web
                 var createSuperUser = await userManager.CreateAsync(superUser, userPwd);
                 if (createSuperUser.Succeeded)
                     await userManager.AddToRoleAsync(superUser, "Admin");
-            }
-        }
-
-        private async Task LinkDropboxAccount()
-        {
-            var accessToken = this.Configuration.GetSection("AppKeys")["DropboxAppAccessToken"];
-
-            using (var dbx = new DropboxClient(accessToken))
-            {
-                var full = await dbx.Users.GetCurrentAccountAsync();
-                Console.WriteLine("{0} - {1}", full.Name.DisplayName, full.Email);
             }
         }
     }

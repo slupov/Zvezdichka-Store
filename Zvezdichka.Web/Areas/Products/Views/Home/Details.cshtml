@@ -1,4 +1,5 @@
-﻿@model Zvezdichka.Web.Areas.Products.Models.ProductDetailsViewModel
+﻿@using Zvezdichka.Web.Infrastructure.Constants
+@model Zvezdichka.Web.Areas.Products.Models.ProductDetailsViewModel
 @{
     ViewData["Title"] = "Details";
 }
@@ -61,7 +62,7 @@
 <div>
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
     {
-        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+        <a asp-route="@WebConstants.Routes.ProductEdit" asp-route-id="@Model.Id" asp-route-title="@Model.Name">Edit</a>
         @Html.Raw("| ")
     }
     <a asp-action="Index">Back to List</a>

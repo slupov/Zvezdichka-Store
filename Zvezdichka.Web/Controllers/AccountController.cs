@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Services.Contracts;
+using Zvezdichka.Web.Infrastructure.Extensions;
 using Zvezdichka.Web.Models.AccountViewModels;
-using Zvezdichka.Web.Services;
 
 namespace Zvezdichka.Web.Controllers
 {

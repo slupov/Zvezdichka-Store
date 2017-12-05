@@ -5,12 +5,11 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Zvezdichka.Web.Extensions.Data;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Services.Contracts.Entity;
 using Zvezdichka.Services.Extensions;
 using Zvezdichka.Web.Areas.Shopping.Models;
-using Zvezdichka.Web.Extensions.Helpers;
+using Zvezdichka.Web.Infrastructure.Extensions.Helpers;
 
 namespace Zvezdichka.Web.Areas.Shopping.Controllers
 {
@@ -21,7 +20,8 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
         private readonly UserManager<ApplicationUser> users;
         private readonly IApplicationUserDataService users2;
 
-        public HomeController(IProductsDataService products, ICartItemsDataService cartItems, IApplicationUserDataService users2,
+        public HomeController(IProductsDataService products, ICartItemsDataService cartItems,
+            IApplicationUserDataService users2,
             UserManager<ApplicationUser> users)
         {
             this.products = products;
@@ -64,7 +64,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             if (productToAdd.Stock <= 0 || productToAdd.Stock < quantity)
             {
                 this.ViewData["warning"] = "Cannot add this product to cart. Insufficient stock.";
-                return RedirectToRoute(WebConstants.ProductDetailsFriendlyRouteName,
+                return RedirectToRoute("products-details",
                     new {id = productToAdd.Id, title = title});
             }
 
@@ -78,7 +78,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
                 cartItem.Quantity += quantity;
                 this.cartItems.Update(cartItem);
 
-                return RedirectToRoute(WebConstants.ProductDetailsFriendlyRouteName,
+                return RedirectToRoute("products-details",
                     new
                     {
                         id = productToAdd.Id,
@@ -99,7 +99,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
 
             this.ViewData["success"] = $"Successfully added {quantity}x {title}!";
 
-            return RedirectToRoute(WebConstants.ProductDetailsFriendlyRouteName,
+            return RedirectToRoute("products-details",
                 new
                 {
                     id = productToAdd.Id,
