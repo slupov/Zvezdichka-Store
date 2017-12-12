@@ -144,7 +144,7 @@ namespace Zvezdichka.Services
 
         public IIncludableJoin<T, TProperty> Join<TProperty>(Expression<Func<T, TProperty>> navigationProperty)
         {
-            return ((IQueryable<T>)this._dbSet).Join(navigationProperty);
+            return ((IQueryable<T>) this._dbSet).Join(navigationProperty);
         }
     }
 }

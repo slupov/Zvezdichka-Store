@@ -3,12 +3,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Services.Contracts.Entity;
 using Zvezdichka.Web.Areas.Products.Models;
+using Zvezdichka.Web.Infrastructure.Extensions.Cloud;
 using Zvezdichka.Web.Infrastructure.Extensions.Helpers;
+using Zvezdichka.Web.Infrastructure.Extensions.Helpers.Secrets;
 using Zvezdichka.Web.Infrastructure.Extensions.SEO;
 
 namespace Zvezdichka.Web.Areas.Products.Controllers
@@ -16,10 +21,12 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
     public class HomeController : ProductsBaseController
     {
         private readonly IProductsDataService products;
+        private readonly AppKeyConfig appKeys;
 
-        public HomeController(IProductsDataService products)
+        public HomeController(IProductsDataService products, IOptions<AppKeyConfig> appKeys)
         {
             this.products = products;
+            this.appKeys = appKeys.Value;
         }
 
         public async Task<IActionResult> Index(string sortOrder,
@@ -45,13 +52,11 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                 .ProjectTo<ProductListingViewModel>()
                 .ToList();
 
-            if (!String.IsNullOrEmpty(searchString))
-            {
+            if (!string.IsNullOrEmpty(searchString))
                 productsList = productsList
                     .Where(p => p.Name.ToLower().Contains(searchString) ||
                                 p.Categories.Any(c => c.Category.Name.ToLower().Contains(searchString)))
                     .ToList();
-            }
 
             switch (sortOrder)
             {
@@ -63,7 +68,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                     break;
             }
 
-            int pageSize = 20;
+            var pageSize = 20;
             return View(PaginatedList<ProductListingViewModel>.Create(productsList, page ?? 1, pageSize));
         }
 
@@ -73,7 +78,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             if (id == null)
                 return NotFound();
 
-            ProductDetailsViewModel product =
+            var product =
                 Mapper.Map<ProductDetailsViewModel>(this.products.GetSingle(m => m.Id == id,
                     m => m.ImageSources)); //eager loading image sources
 
@@ -84,11 +89,8 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
 
             // Compare the title with the friendly title.
             if (!string.Equals(friendlyTitle, title, StringComparison.Ordinal))
-            {
-                //return url with the category inside
                 return RedirectToAction(nameof(Details),
                     new {id = id, title = friendlyTitle});
-            }
 
             return View(product);
         }
@@ -130,11 +132,8 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
 
             // Compare the title with the friendly title.
             if (!string.Equals(friendlyTitle, title, StringComparison.Ordinal))
-            {
-                //return url with the category inside
                 return RedirectToAction(nameof(Edit),
                     new {id = id, title = friendlyTitle});
-            }
 
             return View(product);
         }
@@ -144,8 +143,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,
-            [Bind("Id,Name,Description,Stock,Price,ThumbnailSource")] Product product)
+        public async Task<IActionResult> Edit(int id, string oldName, Product product)
         {
             if (id != product.Id)
                 return NotFound();
@@ -155,6 +153,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                 try
                 {
                     this.products.Update(product);
+                    RenameCloudinaryFolderAsync(oldName, product.Name);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -166,6 +165,48 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(Mapper.Map<ProductEditViewModel>(product));
+        }
+
+        /// <summary>
+        /// Renames Cloudinary item's folder asynchronously
+        /// </summary>
+        /// <param name="oldName"></param>
+        /// <param name="newName"></param>
+        /// <returns></returns>
+        private async Task RenameCloudinaryFolderAsync(string oldName, string newName)
+        {
+            var cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys);
+
+            await Task.Run(() =>
+            {
+                var toRename = cloudinary
+                    .ListResources()
+                    .Resources
+                    .Where(x => x.PublicId.StartsWith(oldName))
+                    .ToList();
+
+                foreach (var resource in toRename)
+                {
+                    cloudinary.Rename(resource.PublicId, resource.PublicId.Replace(oldName, newName));
+                }
+            });
+        }
+
+        private async Task DeleteCloudinaryFiles(string name)
+        {
+            var cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys);
+
+            await Task.Run(() =>
+            {
+                var toDelete = cloudinary
+                    .ListResources()
+                    .Resources
+                    .Where(x => x.PublicId.StartsWith(name))
+                    .Select(x => x.PublicId).ToArray();
+
+
+                cloudinary.DeleteResources(ResourceType.Image, toDelete);
+            });
         }
 
         // GET: Products/Delete/5
@@ -189,6 +230,8 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         {
             var product = this.products.GetSingle(m => m.Id == id);
             this.products.Remove(product);
+
+            DeleteCloudinaryFiles(product.Name);
             return RedirectToAction(nameof(Index));
         }
 

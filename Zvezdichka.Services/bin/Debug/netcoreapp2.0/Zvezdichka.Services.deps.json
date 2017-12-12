@@ -1,19 +1,25 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.0",
-    "signature": "e2fa616c2c5a132b07981d811f1c234dfb454654"
+    "signature": "4e952c3554c53d060dd7f774e5eb3c1eb08413ce"
   },
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v2.0": {
       "Zvezdichka.Services/1.0.0": {
         "dependencies": {
+          "CloudinaryDotNet": "1.1.1",
           "Microsoft.EntityFrameworkCore": "2.0.1",
           "Microsoft.EntityFrameworkCore.SqlServer": "2.0.1",
           "Zvezdichka.Data": "1.0.0"
         },
         "runtime": {
           "Zvezdichka.Services.dll": {}
+        }
+      },
+      "CloudinaryDotNet/1.1.1": {
+        "runtime": {
+          "lib/netstandard1.6/CloudinaryDotNet.dll": {}
         }
       },
       "Microsoft.AspNetCore.Authentication/2.0.0": {
@@ -861,6 +867,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "CloudinaryDotNet/1.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-brssM2vEdYSa7ObvU/moEsD0/svFGmBs8dtKNgiLv43MU9LeGfxnG1nVLM4NOXoUfHMyVdPXzIFNxRqYjykr0Q==",
+      "path": "cloudinarydotnet/1.1.1",
+      "hashPath": "cloudinarydotnet.1.1.1.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Authentication/2.0.0": {
       "type": "package",

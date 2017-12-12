@@ -1,25 +1,32 @@
 ﻿using System.Diagnostics;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Zvezdichka.Web.Infrastructure.Extensions.Helpers.Secrets;
 using Zvezdichka.Web.Models;
+using Zvezdichka.Web.Infrastructure.Extensions.Cloud;
 
 namespace Zvezdichka.Web.Controllers
 {
     public class HomeController : Controller
     {
-        public AppKeyConfig AppConfigs { get; }
+        private readonly AppKeyConfig appKeys;
 
-        public HomeController(IOptions<AppKeyConfig> appkeys)
+        public HomeController(IOptions<AppKeyConfig> appKeys)
         {
-            this.AppConfigs = appkeys.Value;
+            this.appKeys = appKeys.Value;
         }
 
         public IActionResult Index()
         {
-            ViewData["FacebookAppId"] = this.AppConfigs.FacebookAppId;
-            ViewData["FacebookAppSecret"] = this.AppConfigs.FacebookAppSecret;
-
+//            var uploadParams = new ImageUploadParams()
+//            {
+//                File = new FileDescription(@"https://i.ytimg.com/vi/SfLV8hD7zX4/maxresdefault.jpg")
+//            };
+//
+//            var cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys);
+//            var uploadResult = cloudinary.Upload(uploadParams);
             return View();
         }
 
@@ -32,7 +39,7 @@ namespace Zvezdichka.Web.Controllers
 
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
         }
     }
 }

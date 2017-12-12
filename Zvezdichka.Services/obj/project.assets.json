@@ -2,6 +2,15 @@
   "version": 3,
   "targets": {
     ".NETCoreApp,Version=v2.0": {
+      "CloudinaryDotNet/1.1.1": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard1.6/CloudinaryDotNet.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.6/CloudinaryDotNet.dll": {}
+        }
+      },
       "Microsoft.AspNetCore.Authentication/2.0.0": {
         "type": "package",
         "dependencies": {
@@ -1536,6 +1545,19 @@
     }
   },
   "libraries": {
+    "CloudinaryDotNet/1.1.1": {
+      "sha512": "brssM2vEdYSa7ObvU/moEsD0/svFGmBs8dtKNgiLv43MU9LeGfxnG1nVLM4NOXoUfHMyVdPXzIFNxRqYjykr0Q==",
+      "type": "package",
+      "path": "cloudinarydotnet/1.1.1",
+      "files": [
+        "cloudinarydotnet.1.1.1.nupkg.sha512",
+        "cloudinarydotnet.nuspec",
+        "lib/net/net40/Cloudinary.dll",
+        "lib/net/net40/Newtonsoft.Json.dll",
+        "lib/netstandard1.6/CloudinaryDotNet.deps.json",
+        "lib/netstandard1.6/CloudinaryDotNet.dll"
+      ]
+    },
     "Microsoft.AspNetCore.Authentication/2.0.0": {
       "sha512": "QmgG+EkJg+lObB7XffZGrbj1E8JE74ZePyVsuywhXrvPDObrjUwyvsbkOQvdtjiULhkh+8fgfhBcDTTiMr56Eg==",
       "type": "package",
@@ -5167,6 +5189,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.0": [
+      "CloudinaryDotNet >= 1.1.1",
       "Microsoft.EntityFrameworkCore >= 2.0.1",
       "Microsoft.EntityFrameworkCore.SqlServer >= 2.0.1",
       "Microsoft.NETCore.App >= 2.0.0",
@@ -5221,6 +5244,10 @@
     "frameworks": {
       "netcoreapp2.0": {
         "dependencies": {
+          "CloudinaryDotNet": {
+            "target": "Package",
+            "version": "1.1.1"
+          },
           "Microsoft.EntityFrameworkCore": {
             "target": "Package",
             "version": "2.0.1"

@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.0",
-    "signature": "8e03c96638ffdfcd370827d6428b9ce70ebfbab9"
+    "signature": "28c6b8fce17a9a133e73910f4fe152bfaa7c1dc9"
   },
   "compilationOptions": {
     "defines": [
@@ -25,6 +25,7 @@
         "dependencies": {
           "AutoMapper": "6.2.1",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "3.2.0",
+          "CloudinaryDotNet": "1.1.1",
           "FontAwesome": "4.7.0",
           "HtmlSanitizer": "4.0.181",
           "Microsoft.AspNetCore.All": "2.0.3",
@@ -101,6 +102,14 @@
         },
         "compile": {
           "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {}
+        }
+      },
+      "CloudinaryDotNet/1.1.1": {
+        "runtime": {
+          "lib/netstandard1.6/CloudinaryDotNet.dll": {}
+        },
+        "compile": {
+          "lib/netstandard1.6/CloudinaryDotNet.dll": {}
         }
       },
       "FontAwesome/4.7.0": {},
@@ -4168,6 +4177,7 @@
       },
       "Zvezdichka.Services/1.0.0": {
         "dependencies": {
+          "CloudinaryDotNet": "1.1.1",
           "Microsoft.EntityFrameworkCore": "2.0.1",
           "Microsoft.EntityFrameworkCore.SqlServer": "2.0.1",
           "Zvezdichka.Data": "1.0.0"
@@ -4383,6 +4393,13 @@
       "sha512": "sha512-528nEpAwniNn8Z6Ae9qTiM/kN4f0BxmWE9mDMEkqKKGxbuElmv6Kj9DVvTXECJkIt6ARerb9+vYbOifNpcwvXQ==",
       "path": "automapper.extensions.microsoft.dependencyinjection/3.2.0",
       "hashPath": "automapper.extensions.microsoft.dependencyinjection.3.2.0.nupkg.sha512"
+    },
+    "CloudinaryDotNet/1.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-brssM2vEdYSa7ObvU/moEsD0/svFGmBs8dtKNgiLv43MU9LeGfxnG1nVLM4NOXoUfHMyVdPXzIFNxRqYjykr0Q==",
+      "path": "cloudinarydotnet/1.1.1",
+      "hashPath": "cloudinarydotnet.1.1.1.nupkg.sha512"
     },
     "FontAwesome/4.7.0": {
       "type": "package",

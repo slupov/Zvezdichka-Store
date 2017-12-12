@@ -20,11 +20,11 @@ namespace Zvezdichka.Web.Infrastructure.Extensions.Services
                 .GetTypes();
 
             types
-                .Where(t => 
-                t.IsClass &&
-                !t.IsAbstract &&
-                t.Name.Contains("Service") &&
-                t.GetInterfaces().Any(i => i.Name == $"I{t.Name}"))
+                .Where(t =>
+                    t.IsClass &&
+                    !t.IsAbstract &&
+                    t.Name.Contains("DataService") &&
+                    t.GetInterfaces().Any(i => i.Name == $"I{t.Name}"))
                 .Select(t => new
                 {
                     Interface = t.GetInterface($"I{t.Name}"),
