@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -9,7 +9,7 @@ using Zvezdichka.Data.Models;
 using Zvezdichka.Services.Contracts.Entity;
 using Zvezdichka.Services.Extensions;
 using Zvezdichka.Web.Areas.Shopping.Models;
-using Zvezdichka.Web.Infrastructure.Extensions.Helpers;
+using Zvezdichka.Web.Infrastructure.Constants;
 
 namespace Zvezdichka.Web.Areas.Shopping.Controllers
 {
@@ -50,10 +50,13 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             var userCartItems = user.CartItems.AsQueryable().ToList();
 
             //see usercartitems
-            return View((userCartItems.AsQueryable().ProjectTo<CartItemListingViewModel>()));
+            return View(userCartItems.AsQueryable().ProjectTo<CartItemListingViewModel>());
         }
 
-        /// <param name="title">Product name</param>
+        /// <summary>
+        /// Handles an ajax add to cart request
+        /// </summary>
+        /// <param name="title"></param>
         /// <param name="quantity"></param>
         /// <returns></returns>
         [Authorize]
@@ -63,8 +66,12 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
 
             if (productToAdd.Stock <= 0 || productToAdd.Stock < quantity)
             {
-                this.ViewData["warning"] = "Cannot add this product to cart. Insufficient stock.";
-                return RedirectToRoute("products-details",
+                Warning("Cannot add this product to cart. Insufficient stock.", true);
+
+//                return Redirect() 302
+//return RedirectToAction() 302
+
+                return RedirectToRoute(WebConstants.Routes.ProductDetails,
                     new {id = productToAdd.Id, title = title});
             }
 
@@ -78,12 +85,9 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
                 cartItem.Quantity += quantity;
                 this.cartItems.Update(cartItem);
 
-                return RedirectToRoute("products-details",
-                    new
-                    {
-                        id = productToAdd.Id,
-                        title = title,
-                    });
+                Success($"Successfully added {quantity}x {title}!");
+
+                return Ok();
             }
 
             var user = this.users.FindByNameAsync(this.User.Identity.Name).GetAwaiter().GetResult();
@@ -95,16 +99,10 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             };
 
             this.cartItems.Add(cartProduct);
-//            user.CartItems.Add(cartProduct); //by what quanitty todo
 
-            this.ViewData["success"] = $"Successfully added {quantity}x {title}!";
+            Success($"Successfully added {quantity}x {title}!");
 
-            return RedirectToRoute("products-details",
-                new
-                {
-                    id = productToAdd.Id,
-                    title = title,
-                });
+            return Ok();
         }
     }
 }

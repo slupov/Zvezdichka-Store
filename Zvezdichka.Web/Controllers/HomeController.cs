@@ -9,7 +9,7 @@ using Zvezdichka.Web.Infrastructure.Extensions.Cloud;
 
 namespace Zvezdichka.Web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly AppKeyConfig appKeys;
 

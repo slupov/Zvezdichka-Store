@@ -186,10 +186,5 @@ namespace Zvezdichka.Web
                     await userManager.AddToRoleAsync(superUser, "Admin");
             }
         }
-
-        private async Task LinkCloudinary()
-        {
-            
-        }
     }
 }

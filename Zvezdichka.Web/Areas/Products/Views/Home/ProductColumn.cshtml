@@ -1,12 +1,13 @@
-﻿@using Zvezdichka.Web.Areas.Products.Models
-@using Zvezdichka.Web.Infrastructure.Constants
+﻿@using Zvezdichka.Web.Infrastructure.Constants
 @model Zvezdichka.Web.Areas.Products.Models.ProductListingViewModel
 
 <style>
-    #thumbnail { max-height: 150px; }
+    #thumbnail {
+         max-height: 150px;
+    }
 </style>
 
-<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 col-xss-12">
+<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
     <p>
         <a asp-route="@WebConstants.Routes.ProductDetails" asp-route-id="@Model.Id" asp-route-title="@Model.Name">@Model.Name</a>
     </p>

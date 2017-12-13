@@ -3,32 +3,65 @@
 @{
     ViewBag.Title = "title";
     Layout = "_Layout";
+    decimal totalPrice = 0;
 }
 
 <h2>My Cart</h2>
-<table class="table table-bordered table-responsive table-striped">
 
-    <tr>
-        <th>
-            Item:
-        </th>
-        <th>
-            Quantity:
-        </th>
-    </tr>
+<div class="row">
+    <div class="col-xs-12">
+        <table class="table table-responsive table-striped">
+            <tr>
+                <th>
+                </th>
+                <th>
+                    Product details
+                </th>
+                <th>
+                    Qty
+                </th>
+                <th>
+                    Price
+                </th>
+                <th>
+                    Total Price
+                </th>
+            </tr>
 
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @item.ProductName
-            </td>
-            <td>
-                @item.Quantity
-            </td>
-        </tr>
-    }
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <img src="@item.ThumbnailSource" class="img-responsive img-thumbnail" style="max-height: 100px"/>
+                    </td>
+                    <td>
+                        @item.ProductName
 
-</table>
+                        <div>
+                            <a asp-area="Shopping" asp-controller="CartItems" asp-action="Delete" asp-route-name="@item.ProductName"
+                               class="btn btn-default col-md-1">
+                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </td>
+                    <td>
+                        @item.Quantity
+                    </td>
+                    <td>
+                        @item.Price
+                    </td>
+                    <td>
+                        @(item.Price * item.Quantity)
+                    </td>
+                </tr>
 
-<a asp-controller="Home" asp-action="Checkout" class="btn btn-success">Checkout</a>
+                totalPrice += item.Price * item.Quantity;
+            }
+
+        </table>
+    </div>
+</div>
+
+
+<h3>Total: @totalPrice</h3>
+<a asp-controller="Home" asp-action="Checkout" asp-route-totalPrice="@totalPrice" class="btn btn-success">Checkout</a>

@@ -1,27 +1,27 @@
-﻿@if (ViewData["success"] != null)
-{
-    <div class="alert alert-success">
-        <strong>Success!</strong> @ViewData["success"]
-    </div>
-}
+﻿@using System.Globalization
+@using Zvezdichka.Web.Infrastructure.Extensions.Helpers.Html
 
-@if (ViewData["danger"] != null)
-{
-    <div class="alert alert-danger">
-        <strong>Danger!</strong> @ViewData["danger"]
-    </div>
-}
+@{
+    var alerts = TempData.ContainsKey(Alert.TempDataKey)
+        ? (List<Alert>) TempData[Alert.TempDataKey]
+        : new List<Alert>();
 
-@if (ViewData["warning"] != null)
-{
-    <div class="alert alert-warning">
-        <strong>Warning!</strong> @ViewData["warning"]
-    </div>
-}
+    if (alerts.Any())
+    {
+        <hr/>
+    }
 
-@if (ViewData["info"] != null)
-{
-    <div class="alert alert-info">
-        <strong>Info!</strong> @ViewData["info"]
-    </div>
+    foreach (var alert in alerts)
+    {
+        var dismissableClass = alert.Dismissable ? "alert-dismissable" : null;
+
+        <div class="alert alert-@alert.AlertStyle @dismissableClass">
+            @if (alert.Dismissable)
+            {
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            }
+
+            <strong>@CultureInfo.CurrentCulture.TextInfo.ToTitleCase(@alert.AlertStyle)!</strong> @alert.Message
+        </div>
+    }
 }
