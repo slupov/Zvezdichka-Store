@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -128,6 +129,10 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             if (product == null)
                 return NotFound();
 
+            //TODO
+            product.CloudinarySources = await ListCloudinaryFileNamesAsync(product.Name);
+            product.Cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys);
+
             var friendlyTitle = FriendlyUrlHelper.GetFriendlyTitle(product.Name);
 
             // Compare the title with the friendly title.
@@ -186,26 +191,67 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                     .ToList();
 
                 foreach (var resource in toRename)
-                {
-                    cloudinary.Rename(resource.PublicId, resource.PublicId.Replace(oldName, newName));
-                }
+                    cloudinary.Rename(resource.PublicId, resource.PublicId.Replace(oldName, newName), overwrite: true);
             });
         }
 
-        private async Task DeleteCloudinaryFiles(string name)
+        //TODO: ADD to helpers
+        [HttpDelete]
+        private async Task DeleteCloudinaryFolderAsync(string folder)
         {
             var cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys);
 
-            await Task.Run(() =>
+            Task.Run(() =>
             {
                 var toDelete = cloudinary
                     .ListResources()
                     .Resources
+                    .Where(x => x.PublicId.StartsWith(folder))
+                    .Select(x => x.PublicId)
+                    .ToList();
+
+                cloudinary.DeleteResources(new DelResParams()
+                {
+                    Invalidate = true,
+                    PublicIds = toDelete,
+                    ResourceType = ResourceType.Image
+                });
+            });
+        }
+
+        [HttpDelete]
+        public async Task DeleteCloudinaryFileAsync(string name)
+        {
+            var cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys);
+
+            Task.Run(() =>
+            {
+                var toDelete = cloudinary
+                    .ListResources()
+                    .Resources
+                    .Select(x => x.PublicId)
+                    .FirstOrDefault(x => x == name);
+
+                cloudinary.Destroy(new DeletionParams(toDelete)
+                {
+                    Invalidate = true,
+                    ResourceType = ResourceType.Image
+                });
+            });
+        }
+
+        private async Task<List<string>> ListCloudinaryFileNamesAsync(string name)
+        {
+            var cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys);
+
+            return await Task.Run(() =>
+            {
+                return cloudinary
+                    .ListResources()
+                    .Resources
                     .Where(x => x.PublicId.StartsWith(name))
-                    .Select(x => x.PublicId).ToArray();
-
-
-                cloudinary.DeleteResources(ResourceType.Image, toDelete);
+                    .Select(x => x.PublicId)
+                    .ToList();
             });
         }
 
@@ -231,7 +277,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             var product = this.products.GetSingle(m => m.Id == id);
             this.products.Remove(product);
 
-            DeleteCloudinaryFiles(product.Name);
+            DeleteCloudinaryFolderAsync(product.Name);
             return RedirectToAction(nameof(Index));
         }
 

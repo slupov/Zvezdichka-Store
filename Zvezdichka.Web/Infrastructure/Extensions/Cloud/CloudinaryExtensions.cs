@@ -1,5 +1,4 @@
 ﻿using CloudinaryDotNet;
-using Microsoft.Extensions.Options;
 using Zvezdichka.Web.Infrastructure.Extensions.Helpers.Secrets;
 
 namespace Zvezdichka.Web.Infrastructure.Extensions.Cloud
