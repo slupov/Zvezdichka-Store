@@ -32,6 +32,11 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\Api\Data\" />
+    <Folder Include="Areas\Api\Models\" />
+    <Folder Include="Areas\Comments\Data\" />
+    <Folder Include="Areas\Comments\Models\" />
+    <Folder Include="Areas\Comments\Views\" />
     <Folder Include="Areas\Products\Data\" />
     <Folder Include="Areas\Shopping\Data\" />
   </ItemGroup>

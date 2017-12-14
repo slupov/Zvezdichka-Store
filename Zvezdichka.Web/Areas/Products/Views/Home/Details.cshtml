@@ -54,7 +54,47 @@
             <a asp-area="Shopping" asp-controller="Home" asp-action="Index" class="btn btn-default">Cart</a>
         </dd>
     </dl>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="form-group">
+            <label class="control-label">Message:</label>
+            <textarea id="message-content" name="message-content"></textarea>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Add comment" onclick="addComment" class="btn btn-default"/>
+        </div>
+    }
+
+    <h3>Comments</h3>
+    <table class="table table-responsive table">
+        <tr>
+            <th>User</th>
+            <th>Message</th>
+            <th></th>
+        </tr>
+
+        @foreach (var comment in Model.Comments)
+        {
+            <tr>
+                <td>
+                    @comment.User.UserName
+                </td>
+                <td>
+                    @comment.Message
+                </td>
+                <td>
+                    @if (comment.User.UserName == User.Identity.Name)
+                    {
+                        <a class="btn btn-danger" onclick="deleteComment(@comment.Id)">Remove</a>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
 </div>
+
 
 <div>
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
@@ -65,23 +105,68 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-<script>
-    function addToCart(productName) {
-        $.ajax(
-                {
-                    type: "GET",
-                    traditional: true,
-                    url: "Shopping/Home/AddToCart",
-                    data: {
-                        title: productName,
-                        quantity: $('#bag-quantity').val()
-                    }
+@section Scripts{
+    <script>
+        function addToCart(productName) {
+            $.ajax(
+                    {
+                        type: "GET",
+                        traditional: true,
+                        url: "Shopping/Home/AddToCart",
+                        data: {
+                            title: productName,
+                            quantity: $('#bag-quantity').val()
+                        }
+                    })
+                .done(function() {
+                    alert("Value Added");
                 })
-            .done(function() {
-                alert("Value Added");
-            })
-            .error(function() {
-                alert("Error adding to shopping cart");
-            });
-    }
-</script>
+                .error(function() {
+                    alert("Error adding to shopping cart");
+                });
+        }
+    </script>
+
+    <script>
+        function addComment() {
+            var commentText = $("#message-content").val();
+
+            $.ajax(
+                    {
+                        type: "POST",
+                        traditional: true,
+                        url: "Comments/Home/Add",
+                        data: {
+                            comment: { Message: commentText }
+                        }
+                    })
+                .done(function() {
+                    alert("Value Added");
+                })
+                .error(function() {
+                    alert("Error adding comments");
+                });
+        }
+
+        function deleteComment(commentId) {
+            $.ajax(
+                    {
+                        type: "DELETE",
+                        traditional: true,
+                        url: "Comments/Home/Delete/" + commentId,
+
+                    })
+                .done(function() {
+                    alert("Comment deleted");
+                })
+                .error(function() {
+                    alert("Error deleting comments");
+                });
+        }
+    </script>
+
+
+    <script type="text/javascript">
+        addCkEditor("message-content", "comment-form");
+    </script>
+}

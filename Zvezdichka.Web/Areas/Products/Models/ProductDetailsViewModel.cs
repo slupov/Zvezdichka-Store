@@ -10,6 +10,7 @@ namespace Zvezdichka.Web.Areas.Products.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public ICollection<ImageSource> ImageSources { get; set; }
+        public ICollection<Comment> Comments { get; set; }
         public decimal Price { get; set; }
         public bool IsInStock { get; set; }
 

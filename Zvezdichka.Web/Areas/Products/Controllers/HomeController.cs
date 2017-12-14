@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Services.Contracts.Entity;
+using Zvezdichka.Services.Extensions;
 using Zvezdichka.Web.Areas.Products.Models;
 using Zvezdichka.Web.Infrastructure.Extensions.Cloud;
 using Zvezdichka.Web.Infrastructure.Extensions.Helpers;
@@ -78,9 +79,12 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             if (id == null)
                 return NotFound();
 
-            var product =
-                Mapper.Map<ProductDetailsViewModel>(this.products.GetSingle(m => m.Id == id,
-                    m => m.ImageSources)); //eager loading image sources
+            var dbProduct = this.products
+                .Join(x => x.Comments).ThenJoin(x => x.User)
+                .Join(x => x.ImageSources)
+                .FirstOrDefault(x => x.Id == id);
+
+            var product = Mapper.Map<ProductDetailsViewModel>(dbProduct);
 
             if (product == null)
                 return NotFound();
@@ -190,7 +194,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                     .ToList();
 
                 foreach (var resource in toRename)
-                    cloudinary.Rename(resource.PublicId, resource.PublicId.Replace(oldName, newName), overwrite: true);
+                    cloudinary.Rename(resource.PublicId, resource.PublicId.Replace(oldName, newName), true);
             });
         }
 
