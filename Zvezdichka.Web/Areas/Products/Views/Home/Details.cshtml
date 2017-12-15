@@ -4,66 +4,75 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
+<div class="row">
+    <div class="product-container col-xs-12">
+        <div class="row">
+            <div id="product-images" class="col-xs-12 col-sm-6 col-md-4">
+                <div class="thumbnails-wrapper">
+                    <div class="alternate-images col-md-6">
+                        @*                    show alternate images*@
+                        <ul id="piThumbList" class="col-xs-4 col-sm-12">
+                            @foreach (var img in Model.ImageSources)
+                            {
+                                <li class="col-sm-12">
+                                    <img src="@img.Source" class="img-responsive thumbnail-image"/>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div id="productImageContainer" class="col-md-6">
+                        @*                    show main image*@
+                        @if (Model.ImageSources.Count > 0)
+                        {
+                            <img src="@Model.ImageSources.First().Source" id="main-image" class="img-responsive"/>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div id="product-alldetails" class="col-xs-12 col-sm-6 col-md-4">
+                <div class="col-xs-12 title">
+                    <h3>
+                        @Model.Name
+                    </h3>
+                </div>
+                <div class="col-xs-12 price">
+                    @Model.Price leva.
+                </div>
+                <div class="col-xs-12 product-details">
+                    @Html.Raw(@Model.Description)
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
 
 <div>
-    <h4>Product</h4>
-    <hr/>
-
-    @if (Model.ImageSources.Count > 0)
-    {
-        var all = Model.ImageSources.Select(s => s.Source);
-        @(await Html.PartialAsync("ImageCarousel", all))
-    }
-
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.Raw(Model.Description)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.IsInStock)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IsInStock)
-        </dd>
-
-        <dd>
-            <input type="number" id="bag-quantity" class="form-control"/>
-        </dd>
-        <dd>
-            <a class="btn btn-success" onclick="addToCart('@Model.Name')">Add to Cart AJAX</a>
-        </dd>
-
-        <dd>
-            <a asp-area="Shopping" asp-controller="Home" asp-action="Index" class="btn btn-default">Cart</a>
-        </dd>
-    </dl>
 
     @if (User.Identity.IsAuthenticated)
     {
+        //Shopping
+        <div class="form-group row">
+            <div class="col-xs-2">
+                <input type="number" id="bag-quantity" class="form-control"/>
+            </div>
+            <div>
+                <a class="btn btn-success" onclick="addToCart('@Model.Name')">Add to Cart</a>
+            </div>
+            <div>
+                <a asp-area="Shopping" asp-controller="Home" asp-action="Index" class="btn btn-default">Cart</a>
+            </div>
+        </div>
+
+        // Comments
         <div class="form-group">
             <label class="control-label">Message:</label>
             <textarea id="message-content" name="message-content"></textarea>
         </div>
 
         <div class="form-group">
-            <input type="submit" value="Add comment" onclick="addComment" class="btn btn-default"/>
+            <a onclick="addComment()" class="btn btn-default">Add Comment</a>
         </div>
     }
 
@@ -82,7 +91,7 @@
                     @comment.User.UserName
                 </td>
                 <td>
-                    @comment.Message
+                    @Html.Raw(comment.Message)
                 </td>
                 <td>
                     @if (comment.User.UserName == User.Identity.Name)
@@ -106,6 +115,10 @@
 </div>
 
 @section Scripts{
+    <script type="text/javascript">
+        addCkEditor("message-content", "comment-form");
+    </script>
+
     <script>
         function addToCart(productName) {
             $.ajax(
@@ -125,20 +138,24 @@
                     alert("Error adding to shopping cart");
                 });
         }
-    </script>
 
-    <script>
         function addComment() {
-            var commentText = $("#message-content").val();
+            var commentText = CKEDITOR.instances["message-content"].getData();
+            console.log(commentText);
+
+            var dataToSend = {
+                "Message": commentText,
+                "ProductId": @Model.Id,
+                "Username": '@User.Identity.Name'
+            };
 
             $.ajax(
                     {
                         type: "POST",
                         traditional: true,
-                        url: "Comments/Home/Add",
-                        data: {
-                            comment: { Message: commentText }
-                        }
+                        url: "api/comments",
+                        contentType: "application/json",
+                        data: JSON.stringify(dataToSend)
                     })
                 .done(function() {
                     alert("Value Added");
@@ -165,8 +182,18 @@
         }
     </script>
 
-
-    <script type="text/javascript">
-        addCkEditor("message-content", "comment-form");
+    <script>
+        //a function that changes the main image on hove of some of the thumbnails
+        $(document).ready(function() {
+            $(".thumbnail-image").hover(
+                function() {
+                    $(this).addClass("thumbnail-image-hovered");
+                    $("#main-image").attr("src", $(this).attr('src'));
+                },
+                function() {
+                    $(this).removeClass("thumbnail-image-hovered");
+                }
+            );
+        });
     </script>
 }
