@@ -68,9 +68,6 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             {
                 Warning("Cannot add this product to cart. Insufficient stock.", true);
 
-//                return Redirect() 302
-//return RedirectToAction() 302
-
                 return RedirectToRoute(WebConstants.Routes.ProductDetails,
                     new {id = productToAdd.Id, title = title});
             }

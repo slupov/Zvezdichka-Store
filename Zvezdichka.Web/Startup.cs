@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
+using Ganss.XSS;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -73,7 +74,9 @@ namespace Zvezdichka.Web
 
             //Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
-            services.AddTransient<IHtmlService, HtmlService>();
+
+            services.AddScoped<IHtmlSanitizer, HtmlSanitizer>();
+            services.AddScoped<IHtmlService, HtmlService>();
 
             //Add data services.
             services.AddDataServices();

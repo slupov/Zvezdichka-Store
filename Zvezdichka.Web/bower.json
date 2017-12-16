@@ -6,6 +6,8 @@
     "jquery": "2.2.0",
     "jquery-validation": "1.14.0",
     "jquery-validation-unobtrusive": "3.2.6",
-    "cloudinary-core": "2.3.0"
+    "cloudinary-core": "2.3.0",
+    "bootstrap-select": "v2.0.0-beta1",
+    "seiyria-bootstrap-slider": "v10.0.0"
   }
 }

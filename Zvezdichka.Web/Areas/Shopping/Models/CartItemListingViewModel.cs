@@ -5,6 +5,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Models
 {
     public class CartItemListingViewModel : IMapFrom<CartItem>, IHaveCustomMapping
     {
+        public int Id { get; set; }
         public byte Quantity { get; set; }
         public string ProductName { get; set; }
         public string ThumbnailSource { get; set; }

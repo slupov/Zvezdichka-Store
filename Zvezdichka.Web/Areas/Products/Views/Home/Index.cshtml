@@ -1,7 +1,10 @@
-﻿@model Zvezdichka.Web.Infrastructure.Extensions.Helpers.PaginatedList<Zvezdichka.Web.Areas.Products.Models.ProductListingViewModel>
+﻿@using Microsoft.EntityFrameworkCore.Internal
+@model Zvezdichka.Web.Infrastructure.Extensions.Helpers.PaginatedList<Zvezdichka.Web.Areas.Products.Models.ProductListingViewModel>
 
 @{
     ViewData["Title"] = "Index";
+    var minPrice = @Model.Min(x => x.Price);
+    var maxPrice = @Model.Max(x => x.Price);
 }
 
 <h2>Products</h2>
@@ -16,6 +19,40 @@
 <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-default">Sort</a>
 
 <div class="container">
+
+    <div id="filterPanel">
+        <br/>
+
+        Filter by price interval: 
+        <b>@minPrice</b>
+            <input id="price-slider" type="text" class="span2" value="" data-slider-min="@minPrice" data-slider-max="@maxPrice" data-slider-step="5" data-slider-value="[@minPrice,@maxPrice]" onblur="filterProducts()"/>
+        <b>@maxPrice</b>
+
+        <div id="filters"></div>
+        <span>Sort by: </span>
+        <br/>
+        <select id="sort-by-filters" onchange="filterProducts()" class="selectpicker" title="Choose one of the following...">
+            <option value="name,asc">Name [A-Z]</option>
+            <option value="name,desc">Name [Z-A]</option>
+            <option value="price,asc">Price, Ascending</option>
+            <option value="price,desc">Price, Descending</option>
+        </select>
+
+        @{
+            var categories = Model.SelectMany(x => x.Categories).Select(x => x.Category.Name).ToList().Distinct();
+        }
+
+        <select id="sort-by-categories" onchange="filterProducts()" class="selectpicker" multiple title="Choose categories...">
+
+            @foreach (var cat in categories)
+            {
+                <option value="@cat">@cat</option>
+            }
+        </select>
+        <br/>
+    </div>
+
+    @*    products grid system*@
     <div class="row text-center text-lg-left">
         @foreach (var item in Model)
         {
@@ -55,3 +92,40 @@
    class="btn btn-default @nextDisabled">
     Next
 </a>
+
+@section Scripts{
+    <script>
+        var slider = $("#price-slider").slider({});
+    </script>
+
+    <script>
+        
+        function filterProducts() {
+            //get checked categories
+            var checkedCategories = $("#sort-by-categories").val();
+            var priceSlider = $("#price-slider").slider({}).val();
+
+            console.dir(checkedCategories);
+            console.dir(priceSlider);
+            
+            //todo
+            $.ajax({
+                type: "GET",
+                traditional: true,
+                url: "products",
+                data: {
+                    categories: category,
+                    checkedFilters: checkedFilters,
+                    searchString: searchTerms,
+                    minPriceInput: $('#min-price-slider').val(),
+                    maxPriceInput: $('#max-price-slider').val(),
+                    orderBy: $("#order-by").val()
+                },
+                success: function(response) {
+                    var returnedProducts = $(response).find('#products-panel').html();
+                    $("#products-panel").html(returnedProducts);
+                }
+            });
+        }
+    </script>
+}

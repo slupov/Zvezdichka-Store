@@ -5,7 +5,7 @@ using Zvezdichka.Web.Controllers.Extensions;
 
 namespace Zvezdichka.Web.Areas.Api.Controllers
 {
-    public class CategoriesController : BaseController
+    public class CategoriesController : ApiBaseController
     {
         private ICategoriesDataService categories;
 

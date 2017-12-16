@@ -96,7 +96,7 @@
                 <td>
                     @if (comment.User.UserName == User.Identity.Name)
                     {
-                        <a class="btn btn-danger" onclick="deleteComment(@comment.Id)">Remove</a>
+                        <a class="btn btn-danger" onclick="deleteComment('@comment.Id')">Remove</a>
                     }
                 </td>
             </tr>
@@ -170,14 +170,14 @@
                     {
                         type: "DELETE",
                         traditional: true,
-                        url: "Comments/Home/Delete/" + commentId,
-
+                        url: "api/comments",
+                        data: ({ 'id': commentId })
                     })
                 .done(function() {
                     alert("Comment deleted");
                 })
                 .error(function() {
-                    alert("Error deleting comments");
+                    alert("Error deleting comment");
                 });
         }
     </script>

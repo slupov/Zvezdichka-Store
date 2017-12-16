@@ -55,10 +55,17 @@
 
 .alternate-images { }
 
-.thumbnail-image-hovered { border: 10px solid #099;
-                           padding: 200px
+.thumbnail-image-hovered {
+    border: 10px solid #099;
+    padding: 200px
 }
 
-#productImageContainer {
-    height: 500px
+#productImageContainer { height: 500px }
+
+/*Side bar collapse*/
+
+#filterPanel {
+    float: left;
+    width: 20%;
+    height: 100%;
 }

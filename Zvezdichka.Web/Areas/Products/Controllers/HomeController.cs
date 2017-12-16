@@ -30,46 +30,29 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             this.appKeys = appKeys.Value;
         }
 
-        public async Task<IActionResult> Index(string sortOrder,
-            string currentFilter,
-            string searchString,
-            int? page)
+        public async Task<IActionResult> Index(string searchString, int? page,
+            int pageSize = 20)
         {
             if (searchString != null)
             {
                 searchString = searchString.ToLower();
                 page = 1;
             }
-            else
-            {
-                searchString = currentFilter;
-            }
 
-            this.ViewData["CurrentFilter"] = searchString;
-
-
-            var productsList = this.products.GetAll()
+            var productsList = this.products
+                .Join(x => x.Categories).ThenJoin(c => c.Category)
                 .AsQueryable()
                 .ProjectTo<ProductListingViewModel>()
                 .ToList();
 
             if (!string.IsNullOrEmpty(searchString))
+            {
                 productsList = productsList
                     .Where(p => p.Name.ToLower().Contains(searchString) ||
                                 p.Categories.Any(c => c.Category.Name.ToLower().Contains(searchString)))
                     .ToList();
-
-            switch (sortOrder)
-            {
-                case "name_desc":
-                    productsList = productsList.OrderByDescending(s => s.Name).ToList();
-                    break;
-                default:
-                    productsList = productsList.OrderBy(p => p.Name).ToList();
-                    break;
             }
 
-            var pageSize = 20;
             return View(PaginatedList<ProductListingViewModel>.Create(productsList, page ?? 1, pageSize));
         }
 
@@ -117,6 +100,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                 this.products.Add(product);
                 return RedirectToAction(nameof(Index));
             }
+
             return View(product);
         }
 

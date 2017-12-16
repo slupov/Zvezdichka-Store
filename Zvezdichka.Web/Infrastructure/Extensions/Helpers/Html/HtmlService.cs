@@ -4,11 +4,11 @@ namespace Zvezdichka.Web.Infrastructure.Extensions.Helpers.Html
 {
     public class HtmlService : IHtmlService
     {
-        private readonly HtmlSanitizer htmlSanitizer;
+        private readonly IHtmlSanitizer htmlSanitizer;
 
-        public HtmlService()
+        public HtmlService(IHtmlSanitizer html)
         {
-            this.htmlSanitizer = new HtmlSanitizer();
+            this.htmlSanitizer = html;
             this.htmlSanitizer.AllowedAttributes.Add("class");
         }
 

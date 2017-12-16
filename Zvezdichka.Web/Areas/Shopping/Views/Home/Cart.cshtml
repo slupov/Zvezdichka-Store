@@ -45,7 +45,13 @@
                         </div>
                     </td>
                     <td>
-                        @item.Quantity
+                        <div>
+                            <input type="number" class="form-control" value="@item.Quantity" id="bag-quantity-@item.Id"/>
+                        </div>
+
+                        <div>
+                            <a class="btn btn-info" onclick="updateBag(@item.Id)">Update bag</a>
+                        </div>
                     </td>
                     <td>
                         @item.Price
@@ -65,3 +71,30 @@
 
 <h3>Total: @totalPrice</h3>
 <a asp-controller="Home" asp-action="Checkout" asp-route-totalPrice="@totalPrice" class="btn btn-success">Checkout</a>
+
+@section Scripts
+{
+    <script>
+        function updateBag(cartItemId) {
+            var newQuantity = $("#bag-quantity-" + cartItemId).val();
+
+            $.ajax(
+                    {
+                        type: "PUT",
+                        traditional: true,
+                        url: "/api/cartItems",
+                        data: {
+                            id: cartItemId,
+                            quantity: newQuantity
+                        }
+                    })
+                .done(function() {
+                    location.reload();
+                })
+                .error(function() {
+                    alert("Error updating shopping cart");
+                });
+        }
+    </script>
+
+}
