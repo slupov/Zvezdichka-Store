@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Zvezdichka.Data.Models;
+using Zvezdichka.Data.Models.Mapping;
 using Zvezdichka.Services.Contracts.Entity;
 using Zvezdichka.Services.Extensions;
 using Zvezdichka.Web.Areas.Products.Models;
@@ -22,38 +24,48 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
     public class HomeController : ProductsBaseController
     {
         private readonly IProductsDataService products;
+        private readonly ICategoriesDataService categories;
         private readonly AppKeyConfig appKeys;
 
-        public HomeController(IProductsDataService products, IOptions<AppKeyConfig> appKeys)
+        public HomeController(IProductsDataService products, ICategoriesDataService categories, IOptions<AppKeyConfig> appKeys)
         {
             this.products = products;
+            this.categories = categories;
             this.appKeys = appKeys.Value;
         }
 
-        public async Task<IActionResult> Index(string searchString, int? page,
+        //try making it post with another method, get the data and redirect to httpget index
+        [HttpGet]
+        public async Task<IActionResult> Index(string searchString,
+            int? page,
             int pageSize = 20)
         {
-            if (searchString != null)
-            {
-                searchString = searchString.ToLower();
-                page = 1;
-            }
+            this.ModelState.Clear();
+            var filtered = this.TempData.Get<List<ProductListingViewModel>>("FilteredProducts");
 
-            var productsList = this.products
-                .Join(x => x.Categories).ThenJoin(c => c.Category)
-                .AsQueryable()
-                .ProjectTo<ProductListingViewModel>()
-                .ToList();
-
-            if (!string.IsNullOrEmpty(searchString))
+            if (filtered == null)
             {
-                productsList = productsList
-                    .Where(p => p.Name.ToLower().Contains(searchString) ||
-                                p.Categories.Any(c => c.Category.Name.ToLower().Contains(searchString)))
+                filtered = this.products.Join(x => x.Categories).ThenJoin(x => x.Category)
+                    .AsQueryable()
+                    .ProjectTo<ProductListingViewModel>()
                     .ToList();
             }
 
-            return View(PaginatedList<ProductListingViewModel>.Create(productsList, page ?? 1, pageSize));
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                this.ViewData["SearchFilter"] = searchString;
+                filtered = filtered.Where(x => x.Name.ToLower().Contains(searchString.ToLower()))
+                    .ToList();
+            }
+
+            return View(PaginatedList<ProductListingViewModel>.Create(filtered, page ?? 1, pageSize));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index([FromBody] List<ProductListingViewModel> filtered)
+        {
+            this.TempData.Put("FilteredProducts",filtered);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: www.zvezdichka.com/big-toy-1
@@ -85,7 +97,12 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
-            return View();
+            ProductCreateModel vm = new ProductCreateModel()
+            {
+                Categories = this.categories.GetAll().Select(x => x.Name).ToList()
+            };
+
+            return View(vm);
         }
 
         // POST: Products/Create
@@ -93,15 +110,26 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Product product)
+        public async Task<IActionResult> Create(ProductCreateModel product)
         {
-            if (this.ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
-                this.products.Add(product);
-                return RedirectToAction(nameof(Index));
+                return View(nameof(Create));
             }
 
-            return View(product);
+            this.products.Add(new Product()
+            {
+                Name = product.Name,
+                Description = product.Description,
+                ThumbnailSource = product.ThumbnailSource,
+                Price = product.Price,
+                Stock = product.Stock,
+//                Categories = product.Categories.AsQueryable().ProjectTo<CategoryProduct>().ToList();
+            });
+
+            var created = this.products.GetSingle(x => x.Name == product.Name);
+
+            return RedirectToAction(nameof(Details),new {id=created.Id, title=created.Name});
         }
 
         // GET: Products/Edit/5
@@ -182,7 +210,6 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             });
         }
 
-        //TODO: ADD to helpers
         [HttpDelete]
         private async Task DeleteCloudinaryFolderAsync(string folder)
         {

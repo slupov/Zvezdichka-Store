@@ -1,10 +1,18 @@
-﻿@using Microsoft.EntityFrameworkCore.Internal
+﻿@using Zvezdichka.Web.Infrastructure.Constants
 @model Zvezdichka.Web.Infrastructure.Extensions.Helpers.PaginatedList<Zvezdichka.Web.Areas.Products.Models.ProductListingViewModel>
 
 @{
     ViewData["Title"] = "Index";
-    var minPrice = @Model.Min(x => x.Price);
-    var maxPrice = @Model.Max(x => x.Price);
+
+    decimal minPrice = 0;
+    decimal maxPrice = 0;
+
+    if (Model.Count > 0)
+    {
+        minPrice = Model.Min(x => x.Price);
+        maxPrice = Model.Max(x => x.Price);
+    }
+
 }
 
 <h2>Products</h2>
@@ -23,23 +31,23 @@
     <div id="filterPanel">
         <br/>
 
-        Filter by price interval: 
+        Filter by price interval:
         <b>@minPrice</b>
-            <input id="price-slider" type="text" class="span2" value="" data-slider-min="@minPrice" data-slider-max="@maxPrice" data-slider-step="5" data-slider-value="[@minPrice,@maxPrice]" onblur="filterProducts()"/>
+        <input id="price-slider" type="text" class="span2 slider" value="" data-slider-min="@minPrice" data-slider-max="@maxPrice" data-slider-step="5" data-slider-value="[@minPrice,@maxPrice]" onblur="filterProducts()"/>
         <b>@maxPrice</b>
 
         <div id="filters"></div>
         <span>Sort by: </span>
         <br/>
-        <select id="sort-by-filters" onchange="filterProducts()" class="selectpicker" title="Choose one of the following...">
-            <option value="name,asc">Name [A-Z]</option>
-            <option value="name,desc">Name [Z-A]</option>
-            <option value="price,asc">Price, Ascending</option>
-            <option value="price,desc">Price, Descending</option>
+        <select id="order-by" onchange="filterProducts()" class="selectpicker" title="Choose one of the following...">
+            <option value="@((int) WebConstants.OrderBy.NameAsc)">Name [A-Z]</option>
+            <option value="@((int) WebConstants.OrderBy.NameDesc)">Name [Z-A]</option>
+            <option value="@((int) WebConstants.OrderBy.PriceAsc)">Price, Ascending</option>
+            <option value="@((int) WebConstants.OrderBy.PriceDesc)">Price, Descending</option>
         </select>
 
         @{
-            var categories = Model.SelectMany(x => x.Categories).Select(x => x.Category.Name).ToList().Distinct();
+            var categories = Model.SelectMany(x => x.Categories).ToList().Distinct();
         }
 
         <select id="sort-by-categories" onchange="filterProducts()" class="selectpicker" multiple title="Choose categories...">
@@ -95,37 +103,59 @@
 
 @section Scripts{
     <script>
-        var slider = $("#price-slider").slider({});
+        var priceSlider = $("#price-slider").slider({});
+
+        $('.slider').on('blur',
+            function() {
+                filterProducts();
+            });
+
     </script>
 
     <script>
-        
+
         function filterProducts() {
             //get checked categories
             var checkedCategories = $("#sort-by-categories").val();
-            var priceSlider = $("#price-slider").slider({}).val();
+            var prices = priceSlider.val().split(',');
 
-            console.dir(checkedCategories);
-            console.dir(priceSlider);
-            
-            //todo
+            var dataToSend = {
+                categories: checkedCategories,
+                minPrice: prices[0],
+                maxPrice: prices[1],
+                orderBy: $("#order-by").val()
+            };
+
             $.ajax({
                 type: "GET",
                 traditional: true,
-                url: "products",
-                data: {
-                    categories: category,
-                    checkedFilters: checkedFilters,
-                    searchString: searchTerms,
-                    minPriceInput: $('#min-price-slider').val(),
-                    maxPriceInput: $('#max-price-slider').val(),
-                    orderBy: $("#order-by").val()
-                },
+                url: "api/products",
+                contentType: "application/json",
+                data: dataToSend,
                 success: function(response) {
-                    var returnedProducts = $(response).find('#products-panel').html();
-                    $("#products-panel").html(returnedProducts);
+                    redirectToFilteredProducts(response);
+                },
+                error: function(err) {
                 }
             });
         }
+
+        function redirectToFilteredProducts(filtered) {
+
+            var dataToSend = JSON.stringify(filtered);
+
+        $.ajax({
+            type: "POST",
+            url: "products",
+            traditional: true,
+            contentType: 'application/json',
+            dataType: 'json',
+            data: dataToSend
+        }).
+            done(function() {
+                alert("redirect");
+            });
+        };
+
     </script>
 }

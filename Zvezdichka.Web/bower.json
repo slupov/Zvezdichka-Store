@@ -9,5 +9,8 @@
     "cloudinary-core": "2.3.0",
     "bootstrap-select": "v2.0.0-beta1",
     "seiyria-bootstrap-slider": "v10.0.0"
+  },
+  "resolutions": {
+    "jquery": "1.9.1 - 3"
   }
 }
