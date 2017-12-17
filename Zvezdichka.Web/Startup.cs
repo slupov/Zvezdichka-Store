@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Zvezdichka.Data;
-using Zvezdichka.Data.Helpers;
+using Zvezdichka.Data.Import.Helpers;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Services.Contracts;
 using Zvezdichka.Services.Implementations;

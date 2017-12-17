@@ -2,6 +2,7 @@
 @model Zvezdichka.Web.Areas.Products.Models.ProductDetailsViewModel
 @{
     ViewData["Title"] = "Details";
+    var newCommentMessage = "";
 }
 
 <div class="row">
@@ -61,7 +62,7 @@
 
     @if (User.Identity.IsAuthenticated)
     {
-        //Shopping
+        //        Shopping
         <div class="form-group row">
             <div class="col-xs-2">
                 <input type="number" id="bag-quantity" class="form-control"/>
@@ -74,45 +75,67 @@
             </div>
         </div>
 
-        // Comments
-        <div class="form-group">
+        //         Comments
+        <div class="form-group" id="add-comment-div">
             <label class="control-label">Message:</label>
-            <textarea id="message-content" name="message-content"></textarea>
+            <textarea id="add-message-content" name="add-message-content"></textarea>
         </div>
 
         <div class="form-group">
-            <a onclick="addComment()" class="btn btn-default">Add Comment</a>
+            <a onclick="addComment('@Model.Id', '@User.Identity.Name')" class="btn btn-default">Add Comment</a>
         </div>
     }
 
     <h3>Comments</h3>
-    <table class="table table-responsive table">
-        <tr>
-            <th>User</th>
-            <th>Message</th>
-            <th></th>
-        </tr>
 
-        @foreach (var comment in Model.Comments)
-        {
+    <div class="comments-container">
+        <table class="table table-responsive" id="comments-table">
             <tr>
-                <td>
-                    @comment.User.UserName
-                </td>
-                <td>
-                    @Html.Raw(comment.Message)
-                </td>
-                <td>
-                    @if (comment.User.UserName == User.Identity.Name)
-                    {
-                        <a class="btn btn-danger" onclick="deleteComment('@comment.Id')">Remove</a>
-                    }
-                </td>
+                <th>User</th>
+                <th>Message</th>
+                <th></th>
             </tr>
-        }
-    </table>
-</div>
 
+            @foreach (var comment in Model.Comments)
+            {
+                <tr>
+                    <td>
+                        @comment.User.UserName
+
+                        <div>
+                            @if (@comment.IsEdited)
+                            {
+                                <div>
+                                    <i>Edited on @comment.DateEdited</i>
+                                </div>
+                                <div>
+                                    <i>Originaly added on @comment.DateEdited</i>
+                                </div>
+                            }
+                            else
+                            {
+                                <p>Added on @comment.DateAdded</p>
+                            }
+
+                        </div>
+                    </td>
+                    <td>
+                        @Html.Raw(comment.Message)
+                    </td>
+                    <td>
+                        @if (comment.User.UserName == User.Identity.Name)
+                        {
+                            <div class="row">
+                                <a class="btn btn-danger col-xs-5" onclick="deleteComment(this,'@comment.Id')">X</a>
+                                <a class="btn btn-primary col-xs-offset-1 col-xs-6" onclick="editComment('@comment.Id')">Edit</a>
+                            </div>
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
 
 <div>
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
@@ -125,84 +148,7 @@
 
 @section Scripts{
     <script type="text/javascript">
-        addCkEditor("message-content", "comment-form");
-    </script>
-
-    <script>
-        function addToCart(productName) {
-            $.ajax(
-                    {
-                        type: "GET",
-                        traditional: true,
-                        url: "Shopping/Home/AddToCart",
-                        data: {
-                            title: productName,
-                            quantity: $('#bag-quantity').val()
-                        }
-                    })
-                .done(function() {
-                    alert("Value Added");
-                })
-                .error(function() {
-                    alert("Error adding to shopping cart");
-                });
-        }
-
-        function addComment() {
-            var commentText = CKEDITOR.instances["message-content"].getData();
-            console.log(commentText);
-
-            var dataToSend = {
-                "Message": commentText,
-                "ProductId": @Model.Id,
-                "Username": '@User.Identity.Name'
-            };
-
-            $.ajax(
-                    {
-                        type: "POST",
-                        traditional: true,
-                        url: "api/comments",
-                        contentType: "application/json",
-                        data: JSON.stringify(dataToSend)
-                    })
-                .done(function() {
-                    alert("Value Added");
-                })
-                .error(function() {
-                    alert("Error adding comments");
-                });
-        }
-
-        function deleteComment(commentId) {
-            $.ajax(
-                    {
-                        type: "DELETE",
-                        traditional: true,
-                        url: "api/comments",
-                        data: ({ 'id': commentId })
-                    })
-                .done(function() {
-                    alert("Comment deleted");
-                })
-                .error(function() {
-                    alert("Error deleting comment");
-                });
-        }
-    </script>
-
-    <script>
-        //a function that changes the main image on hove of some of the thumbnails
-        $(document).ready(function() {
-            $(".thumbnail-image").hover(
-                function() {
-                    $(this).addClass("thumbnail-image-hovered");
-                    $("#main-image").attr("src", $(this).attr('src'));
-                },
-                function() {
-                    $(this).removeClass("thumbnail-image-hovered");
-                }
-            );
-        });
+        addCkEditor("add-message-content", "comment-form");
+        changeThumbnailOnHover();
     </script>
 }

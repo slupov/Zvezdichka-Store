@@ -219,6 +219,12 @@ namespace Zvezdichka.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<DateTime>("DateAdded");
+
+                    b.Property<DateTime?>("DateEdited");
+
+                    b.Property<bool>("IsEdited");
+
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasMaxLength(2000);

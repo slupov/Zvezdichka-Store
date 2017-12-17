@@ -1,11 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Ganss.XSS;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Services.Contracts.Entity;
+using Zvezdichka.Web.Areas.Api.Models.CartItems;
 using Zvezdichka.Web.Areas.Api.Models.Comments;
+using Zvezdichka.Web.Infrastructure.Extensions.Helpers.Html;
 
 namespace Zvezdichka.Web.Areas.Api.Controllers
 {
@@ -13,10 +16,10 @@ namespace Zvezdichka.Web.Areas.Api.Controllers
     {
         private readonly ICommentsDataService comments;
         private readonly IProductsDataService products;
-        private readonly IHtmlSanitizer html;
+        private readonly IHtmlService html;
         private readonly UserManager<ApplicationUser> users;
 
-        public CommentsController(ICommentsDataService comments, IProductsDataService products, IHtmlSanitizer html,
+        public CommentsController(ICommentsDataService comments, IProductsDataService products, IHtmlService html,
             UserManager<ApplicationUser> users)
         {
             this.comments = comments;
@@ -38,16 +41,36 @@ namespace Zvezdichka.Web.Areas.Api.Controllers
             if (user == null || product == null)
                 return NotFound();
 
-            this.comments.Add(new Comment()
+            var message = this.html.Sanitize(comment.Message); //html sanitizer removes everything
+
+            var commentToAdd = new Comment()
             {
-                Message = this.html.Sanitize(comment.Message),
+                Message = message,
                 Product = product,
-                User = user
-            });
+                User = user,
+                DateAdded = DateTime.Now
+            };
+
+            this.comments.Add(commentToAdd);
 
             return Ok();
         }
 
+        [HttpPut]
+        public async Task<IActionResult> Edit([FromBody] PutRequestCommentModel comment)
+        {
+            //create new comment from model
+            if (!this.ModelState.IsValid)
+                return NotFound();
+
+            var dbComment = this.comments.GetSingle(x => x.Id == comment.Id);
+
+            dbComment.DateEdited = DateTime.Now;
+            dbComment.IsEdited = true;
+            dbComment.Message = this.html.Sanitize(comment.Message);
+
+            return Ok();
+        }
         [HttpDelete]
         [Authorize]
         public async Task<IActionResult> Delete(int id)

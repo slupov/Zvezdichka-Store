@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Web.Models.Automapper;
 

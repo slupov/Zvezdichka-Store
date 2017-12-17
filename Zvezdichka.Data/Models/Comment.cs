@@ -9,7 +9,6 @@ namespace Zvezdichka.Data.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(2000)]
         public string Message { get; set; }
 
         [Required]
@@ -21,5 +20,14 @@ namespace Zvezdichka.Data.Models
         public string UserId { get; set; }
 
         public ApplicationUser User { get; set; }
+
+        [Required]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MMMM/YYYY HH:mm:ss}")]
+        public DateTime DateAdded { get; set; }
+
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MMMM/YYYY HH:mm:ss}")]
+        public DateTime? DateEdited { get; set; }
+
+        public bool IsEdited { get; set; }
     }
 }

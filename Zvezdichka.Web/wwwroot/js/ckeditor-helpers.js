@@ -1,6 +1,9 @@
 ﻿function addCkEditor(toReplace, formId) {
-    $(document).ready(function() {
         CKEDITOR.replace(toReplace);
+
+        if (formId === "") {
+            return;
+        }
 
         $("#" + formId).on("submit",
             function() {
@@ -11,5 +14,4 @@
                     }
                 }
             });
-    });
 }
