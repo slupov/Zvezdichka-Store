@@ -25,8 +25,6 @@ namespace Zvezdichka.Data.Models
 
         public ICollection<ImageSource> ImageSources { get; set; } = new HashSet<ImageSource>();
 
-        public ICollection<CartItem> CartItems { get; set; } = new HashSet<CartItem>();
-
         public ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
 
         public ICollection<Rating> Ratings { get; set; } = new HashSet<Rating>();

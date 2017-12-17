@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Web.Models.Automapper;
 
@@ -11,6 +12,7 @@ namespace Zvezdichka.Web.Areas.Products.Models
         public string Description { get; set; }
         public ICollection<ImageSource> ImageSources { get; set; }
         public ICollection<Comment> Comments { get; set; }
+        public ICollection<string> Categories { get; set; }
         public decimal Price { get; set; }
         public bool IsInStock { get; set; }
 
@@ -18,7 +20,9 @@ namespace Zvezdichka.Web.Areas.Products.Models
         {
             config
                 .CreateMap<Product, ProductDetailsViewModel>()
-                .ForMember(pdv => pdv.IsInStock, cfg => cfg.MapFrom(c => c.Stock > 0));
+                .ForMember(pdv => pdv.IsInStock, cfg => cfg.MapFrom(c => c.Stock > 0))
+                .ForMember(x => x.Categories, m => m.MapFrom(c => c.Categories.Select(x => x.Category.Name)));
+
         }
     }
 }

@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 using Zvezdichka.Data;
 
@@ -254,13 +256,13 @@ namespace Zvezdichka.Data.Migrations
 
             modelBuilder.Entity("Zvezdichka.Data.Models.Mapping.CategoryProduct", b =>
                 {
-                    b.Property<int>("CategoryId");
-
                     b.Property<int>("ProductId");
 
-                    b.HasKey("CategoryId", "ProductId");
+                    b.Property<int>("CategoryId");
 
-                    b.HasIndex("ProductId");
+                    b.HasKey("ProductId", "CategoryId");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("CategoryProduct");
                 });
@@ -356,7 +358,7 @@ namespace Zvezdichka.Data.Migrations
             modelBuilder.Entity("Zvezdichka.Data.Models.CartItem", b =>
                 {
                     b.HasOne("Zvezdichka.Data.Models.Product", "Product")
-                        .WithMany("CartItems")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -389,13 +391,13 @@ namespace Zvezdichka.Data.Migrations
 
             modelBuilder.Entity("Zvezdichka.Data.Models.Mapping.CategoryProduct", b =>
                 {
-                    b.HasOne("Zvezdichka.Data.Models.Product", "Product")
-                        .WithMany("Categories")
+                    b.HasOne("Zvezdichka.Data.Models.Category", "Category")
+                        .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Zvezdichka.Data.Models.Category", "Category")
-                        .WithMany("Products")
+                    b.HasOne("Zvezdichka.Data.Models.Product", "Product")
+                        .WithMany("Categories")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

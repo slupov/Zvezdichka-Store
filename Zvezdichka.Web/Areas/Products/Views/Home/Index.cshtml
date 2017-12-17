@@ -20,11 +20,9 @@
 <p>
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
     {
-        <a asp-action="Create">Create New</a>
+        <a asp-action="Create" class="btn btn-success">Create New</a>
     }
 </p>
-
-<a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-default">Sort</a>
 
 <div class="container">
 

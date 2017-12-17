@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using CloudinaryDotNet.Actions;
+using Ganss.XSS;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +13,13 @@ using Microsoft.Extensions.Options;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Data.Models.Mapping;
 using Zvezdichka.Services.Contracts.Entity;
+using Zvezdichka.Services.Contracts.Entity.Mapping;
 using Zvezdichka.Services.Extensions;
 using Zvezdichka.Web.Areas.Products.Models;
+using Zvezdichka.Web.Infrastructure.Constants;
 using Zvezdichka.Web.Infrastructure.Extensions.Cloud;
 using Zvezdichka.Web.Infrastructure.Extensions.Helpers;
+using Zvezdichka.Web.Infrastructure.Extensions.Helpers.Html;
 using Zvezdichka.Web.Infrastructure.Extensions.Helpers.Secrets;
 using Zvezdichka.Web.Infrastructure.Extensions.SEO;
 
@@ -25,13 +29,19 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
     {
         private readonly IProductsDataService products;
         private readonly ICategoriesDataService categories;
+        private readonly ICategoryProductsDataService categoryProducts;
+        private readonly IHtmlService html;
         private readonly AppKeyConfig appKeys;
 
-        public HomeController(IProductsDataService products, ICategoriesDataService categories, IOptions<AppKeyConfig> appKeys)
+        public HomeController(IProductsDataService products, ICategoriesDataService categories,
+            ICategoryProductsDataService categoryProducts, IHtmlService html,
+            IOptions<AppKeyConfig> appKeys)
         {
             this.products = products;
             this.categories = categories;
             this.appKeys = appKeys.Value;
+            this.categoryProducts = categoryProducts;
+            this.html = html;
         }
 
         //try making it post with another method, get the data and redirect to httpget index
@@ -64,7 +74,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         [HttpPost]
         public async Task<IActionResult> Index([FromBody] List<ProductListingViewModel> filtered)
         {
-            this.TempData.Put("FilteredProducts",filtered);
+            this.TempData.Put("FilteredProducts", filtered);
             return RedirectToAction(nameof(Index));
         }
 
@@ -77,6 +87,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             var dbProduct = this.products
                 .Join(x => x.Comments).ThenJoin(x => x.User)
                 .Join(x => x.ImageSources)
+                .Join(x => x.Categories).ThenJoin(c => c.Category)
                 .FirstOrDefault(x => x.Id == id);
 
             var product = Mapper.Map<ProductDetailsViewModel>(dbProduct);
@@ -117,19 +128,35 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                 return View(nameof(Create));
             }
 
-            this.products.Add(new Product()
+            var productToAdd = new Product()
             {
                 Name = product.Name,
                 Description = product.Description,
                 ThumbnailSource = product.ThumbnailSource,
                 Price = product.Price,
                 Stock = product.Stock,
-//                Categories = product.Categories.AsQueryable().ProjectTo<CategoryProduct>().ToList();
-            });
+            };
 
-            var created = this.products.GetSingle(x => x.Name == product.Name);
+            List<CategoryProduct> categoryProducts = new List<CategoryProduct>();
+            var categoriesToAdd = this.categories.GetList(x => product.Categories.Contains(x.Name));
 
-            return RedirectToAction(nameof(Details),new {id=created.Id, title=created.Name});
+            //add product to database
+            this.products.Add(productToAdd);
+            var dbProduct = this.products.GetSingle(x => x.Name == product.Name);
+
+            //add categories to the database product
+            foreach (var category in categoriesToAdd)
+            {
+                categoryProducts.Add(new CategoryProduct()
+                {
+                    ProductId = dbProduct.Id,
+                    Category = category
+                });
+            }
+
+            this.categoryProducts.Add(categoryProducts.ToArray());
+
+            return RedirectToAction(nameof(Details), new {id = dbProduct.Id, title = dbProduct.Name});
         }
 
         // GET: Products/Edit/5
@@ -141,8 +168,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             var product =
                 Mapper.Map<ProductEditViewModel>(this.products.GetSingle(m => m.Id == id, m => m.ImageSources));
 
-            if (product == null)
-                return NotFound();
+            product.Categories = this.categories.GetAll().Select(x => x.Name).ToList();
 
             //TODO
             product.CloudinarySources = await ListCloudinaryFileNamesAsync(product.Name);
@@ -163,28 +189,72 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, string oldName, Product product)
+        public async Task<IActionResult> Edit(int id, string oldName, ProductEditViewModel product)
         {
-            if (id != product.Id)
-                return NotFound();
+            var dbProduct = this.products.GetSingle(x => x.Name == oldName);
 
-            if (this.ModelState.IsValid)
+            if (dbProduct == null || id != dbProduct.Id)
             {
-                try
-                {
-                    this.products.Update(product);
-                    RenameCloudinaryFolderAsync(oldName, product.Name);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(product.Id))
-                        return NotFound();
-                    else
-                        throw;
-                }
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            return View(Mapper.Map<ProductEditViewModel>(product));
+
+            if (!this.ModelState.IsValid)
+            {
+                return View(product);
+            }
+
+            //update model
+            dbProduct.Name = product.Name;
+            dbProduct.Description = this.html.Sanitize(product.Description);
+            dbProduct.ImageSources = product.ImageSources;
+            dbProduct.Price = product.Price;
+            dbProduct.Stock = product.Stock;
+            dbProduct.ThumbnailSource = product.ThumbnailSource;
+
+            //update model categories
+            var dbCategories = this.categoryProducts.Join(x => x.Category).Where(x => x.ProductId == dbProduct.Id).ToList();
+
+
+            //remove unnecessary categories
+            foreach (var dbCategory in dbCategories.Where(x => x.ProductId == dbProduct.Id))
+            {
+                //dbCategory is not in currently selected
+                if (!product.Categories.Contains(dbCategory.Category.Name))
+                {
+                    this.categoryProducts.Remove(dbCategory);
+                }
+            }
+
+            //add selected categories
+            foreach (var productCategory in product.Categories)
+            {
+                var dbCategory = dbCategories
+                    .FirstOrDefault(x => x.Category.Name == productCategory);
+                
+                //product is not in this category
+                if (dbCategory == null)
+                {
+                    this.categoryProducts.Add(new CategoryProduct()
+                    {
+                        ProductId = dbProduct.Id,
+                        CategoryId = this.categories.GetSingle(x => x.Name == productCategory).Id
+                    });
+                }
+            }
+
+            try
+            {
+                this.products.Update(dbProduct);
+                RenameCloudinaryFolderAsync(oldName, product.Name);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ProductExists(dbProduct.Id))
+                    return NotFound();
+                else
+                    throw;
+            }
+            return RedirectToRoute(WebConstants.Routes.ProductDetails, new {id = dbProduct.Id, title = dbProduct.Name});
         }
 
         /// <summary>

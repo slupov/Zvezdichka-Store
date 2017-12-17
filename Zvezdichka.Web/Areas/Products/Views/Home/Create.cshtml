@@ -42,7 +42,7 @@
             <select asp-for="Categories" class="selectpicker" multiple title="Choose categories...">
                 @foreach (var cat in Model.Categories)
                 {
-                    <option asp-for="PossibleCategories" value="@cat">@cat</option>
+                    <option value="@cat">@cat</option>
                 }
             </select>
             <div class="form-group">
@@ -56,7 +56,6 @@
 </div>
 
 @section Scripts{
-
     <script>
         function appendSuggestionsDiv() {
             var input = $('#categories-input').val();

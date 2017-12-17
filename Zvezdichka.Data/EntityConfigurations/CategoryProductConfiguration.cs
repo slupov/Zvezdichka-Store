@@ -10,17 +10,17 @@ namespace Zvezdichka.Data.EntityConfigurations
         {
             entity.HasKey(bc => new
                 {
+                    bc.ProductId,
                     bc.CategoryId,
-                    bc.ProductId
-                });
+            });
 
             entity.HasOne(bc => bc.Category)
                 .WithMany(b => b.Products)
-                .HasForeignKey(bc => bc.ProductId);
+                .HasForeignKey(bc => bc.CategoryId);
 
             entity.HasOne(bc => bc.Product)
                 .WithMany(c => c.Categories)
-                .HasForeignKey(bc => bc.CategoryId);
+                .HasForeignKey(bc => bc.ProductId);
         }
     }
 }

@@ -12,8 +12,7 @@ namespace Zvezdichka.Data.EntityConfigurations
             entity.ToTable("CartItems");
 
             entity
-                .HasOne(c => c.Product)
-                .WithMany(p => p.CartItems);
+                .HasOne(c => c.Product);
 
             entity.HasOne(c => c.User)
                 .WithMany(u => u.CartItems)

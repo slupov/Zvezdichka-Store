@@ -35,7 +35,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control"/>
+                <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -45,19 +45,26 @@
             </div>
             <div class="form-group">
                 <label asp-for="Stock" class="control-label"></label>
-                <input asp-for="Stock" class="form-control"/>
+                <input asp-for="Stock" class="form-control" />
                 <span asp-validation-for="Stock" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control"/>
+                <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ThumbnailSource" class="control-label"></label>
-                <input asp-for="ThumbnailSource" class="form-control"/>
+                <input asp-for="ThumbnailSource" class="form-control" />
                 <span asp-validation-for="ThumbnailSource" class="text-danger"></span>
             </div>
+
+            <select asp-for="Categories" class="selectpicker" multiple title="Choose categories...">
+                @foreach (var cat in Model.Categories)
+                {
+                    <option value="@cat">@cat</option>
+                }
+            </select>
 
             <div class="form-group">
                 @* Images list *@
@@ -65,41 +72,41 @@
 
                 <div class="row">
                     @{
-                        var images = @Model.ImageSources.Select(x => x.Source).ToArray();
-                        var cloudinaryImages = @Model.CloudinarySources.ToArray();
+                var images = @Model.ImageSources.Select(x => x.Source).ToArray();
+                var cloudinaryImages = @Model.CloudinarySources.ToArray();
                     }
 
                     @for (int i = 0; i < @Model.ImageSources.Count; i++)
-                    {
-                        <div class="col-lg-3 col-md-4 col-xs-12 img-wrapper">
-                            <img src="@images[i]" class="img-responsive"/>
+            {
+                <div class="col-lg-3 col-md-4 col-xs-12 img-wrapper">
+                    <img src="@images[i]" class="img-responsive" />
 
-                            <div class="img-overlay">
-                                <a class="btn btn-md btn-danger" onclick="">Remove</a>
-                            </div>
-                        </div>
-                    }
+                    <div class="img-overlay">
+                        <a class="btn btn-md btn-danger" onclick="">Remove</a>
+                    </div>
+                </div>
+    }
 
                     CLOUDINARY IMAGES
                     @for (int i = 0; i < @Model.CloudinarySources.Count; i++)
-                    {
-                        <div class="col-lg-3 col-md-4 col-xs-12 img-wrapper">
+            {
+                <div class="col-lg-3 col-md-4 col-xs-12 img-wrapper">
 
-                            @Html.Raw(@Model.Cloudinary
-                                .Api
-                                .UrlImgUp
-                                .BuildImageTag(cloudinaryImages[i], new StringDictionary()
-                                {
-                                    new KeyValuePair<string, string>("class", "img-responsive")
-                                }))
+                    @Html.Raw(@Model.Cloudinary
+                     .Api
+                     .UrlImgUp
+                     .BuildImageTag(cloudinaryImages[i], new StringDictionary()
+                     {
+                                new KeyValuePair<string, string>("class", "img-responsive")
+                     }))
 
-                            <div class="img-overlay">
-                                <a class="btn btn-md btn-danger" asp-area="Products" asp-controller="Home" asp-action="DeleteCloudinaryFileAsync" asp-route-name="@cloudinaryImages[i]">Remove</a>
+                    <div class="img-overlay">
+                        <a class="btn btn-md btn-danger" asp-area="Products" asp-controller="Home" asp-action="DeleteCloudinaryFileAsync" asp-route-name="@cloudinaryImages[i]">Remove</a>
 
-                                <a class="btn btn-md btn-danger" onclick="deleteCloudinaryPhoto('@cloudinaryImages[i]')">AJAX Remove</a>
-                            </div>
-                        </div>
-                    }
+                        <a class="btn btn-md btn-danger" onclick="deleteCloudinaryPhoto('@cloudinaryImages[i]')">AJAX Remove</a>
+                    </div>
+                </div>
+    }
                 </div>
                 <span asp-validation-for="ImageSources" class="text-danger"></span>
             </div>
@@ -107,7 +114,7 @@
             <a href="#" id="upload_widget_opener" class="btn btn-primary">Upload multiple images</a>
 
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default"/>
+                <input type="submit" value="Save" class="btn btn-default" />
             </div>
         </form>
     </div>
@@ -128,8 +135,8 @@
             var deleteUrl = '/products/home/deletecloudinaryfileasync?name=' + photoId;
 
             $.ajax({
-                url: deleteUrl,
-                method: 'DELETE'
+                    url: deleteUrl,
+                    method: 'DELETE'
                 })
                 .done(function() {
                     alert('deleted');
