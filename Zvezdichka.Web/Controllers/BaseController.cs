@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Zvezdichka.Web.Infrastructure.Extensions.Helpers;
 using Zvezdichka.Web.Infrastructure.Extensions.Helpers.Html;
 
 namespace Zvezdichka.Web.Controllers
@@ -29,7 +30,7 @@ namespace Zvezdichka.Web.Controllers
         private void AddAlert(string alertStyle, string message, bool dismissable)
         {
             var alerts = this.TempData.ContainsKey(Alert.TempDataKey)
-                ? (List<Alert>) this.TempData[Alert.TempDataKey]
+                ? this.TempData.Get<List<Alert>>(Alert.TempDataKey)
                 : new List<Alert>();
 
             alerts.Add(new Alert
@@ -39,7 +40,7 @@ namespace Zvezdichka.Web.Controllers
                 Dismissable = dismissable
             });
 
-            this.TempData[Alert.TempDataKey] = alerts;
+            this.TempData.Put(Alert.TempDataKey, alerts);
         }
     }
 }

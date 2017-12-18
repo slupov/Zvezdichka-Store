@@ -1,17 +1,20 @@
-﻿function addCkEditor(toReplace, formId) {
-        CKEDITOR.replace(toReplace);
+﻿function addCkEditor(textareaId, formId) {
+    //attaches the editor to the text area
+    CKEDITOR.replace(textareaId);
 
-        if (formId === "") {
-            return;
+    updateEditorElements();
+    if (formId === "") {
+        return;
+    }
+
+    $("#" + formId).on("submit", updateEditorElements);
+}
+
+function updateEditorElements() {
+    var instance;
+    for (instance in CKEDITOR.instances) {
+        if (CKEDITOR.instances.hasOwnProperty(instance)) {
+            CKEDITOR.instances[instance].updateElement(() => all);
         }
-
-        $("#" + formId).on("submit",
-            function() {
-                var instance;
-                for (instance in CKEDITOR.instances) {
-                    if (CKEDITOR.instances.hasOwnProperty(instance)) {
-                        CKEDITOR.instances[instance].updateElement(() => all);
-                    }
-                }
-            });
+    }
 }

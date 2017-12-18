@@ -72,6 +72,7 @@
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
 
+@*page navigation buttons*@
 <a asp-action="Index"
    asp-route-sortOrder="@ViewData["CurrentSort"]"
    asp-route-page="@(Model.PageIndex - 1)"

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
@@ -10,6 +11,7 @@ using Zvezdichka.Services.Contracts.Entity;
 using Zvezdichka.Services.Extensions;
 using Zvezdichka.Web.Areas.Shopping.Models;
 using Zvezdichka.Web.Infrastructure.Constants;
+using Zvezdichka.Web.Infrastructure.Extensions.Helpers;
 
 namespace Zvezdichka.Web.Areas.Shopping.Controllers
 {
@@ -37,7 +39,16 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
 
         public IActionResult Checkout()
         {
-            return View();
+            var items = this.TempData.Get<List<CheckoutProductsModel>>("items");
+            return View(items);
+        }
+
+        [HttpPost]
+        public IActionResult Checkout([FromBody] List<CheckoutProductsModel> items)
+        {
+            this.TempData.Put("items", items);
+
+            return RedirectToAction(nameof(Checkout));
         }
 
         public async Task<IActionResult> Cart()
@@ -81,8 +92,6 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             {
                 cartItem.Quantity += quantity;
                 this.cartItems.Update(cartItem);
-
-                Success($"Successfully added {quantity}x {title}!");
 
                 return Ok();
             }

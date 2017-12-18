@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using CloudinaryDotNet.Actions;
-using Ganss.XSS;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -79,7 +77,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         }
 
         // GET: www.zvezdichka.com/big-toy-1
-        public async Task<IActionResult> Details(int? id, string title)
+        public async Task<IActionResult> Details(int? id, string title, int? commentsPageIndex = 1)
         {
             if (id == null)
                 return NotFound();
@@ -90,17 +88,20 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                 .Join(x => x.Categories).ThenJoin(c => c.Category)
                 .FirstOrDefault(x => x.Id == id);
 
-            var product = Mapper.Map<ProductDetailsViewModel>(dbProduct);
-
-            if (product == null)
+            if (dbProduct == null)
+            {
                 return NotFound();
+            }
+
+            var product = Mapper.Map<ProductDetailsViewModel>(dbProduct);
+            product.Comments = PaginatedList<Comment>.Create(dbProduct.Comments.OrderByDescending(x=>x.DateAdded).ToList(), commentsPageIndex ?? 1, 7);
 
             var friendlyTitle = FriendlyUrlHelper.GetFriendlyTitle(product.Name);
 
             // Compare the title with the friendly title.
             if (!string.Equals(friendlyTitle, title, StringComparison.Ordinal))
                 return RedirectToAction(nameof(Details),
-                    new {id = id, title = friendlyTitle});
+                    new {id = id, title = friendlyTitle, commentsPageIndex = commentsPageIndex });
 
             return View(product);
         }

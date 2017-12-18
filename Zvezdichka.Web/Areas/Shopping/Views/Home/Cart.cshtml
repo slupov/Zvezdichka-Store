@@ -35,7 +35,7 @@
                         <img src="@item.ThumbnailSource" class="img-responsive img-thumbnail" style="max-height: 100px"/>
                     </td>
                     <td>
-                        @item.ProductName
+                        <span class="product-name" name="product-@item.Id">@item.ProductName</span>
 
                         <div>
                             <a asp-area="Shopping" asp-controller="CartItems" asp-action="Delete" asp-route-name="@item.ProductName"
@@ -70,11 +70,42 @@
 
 
 <h3>Total: @totalPrice</h3>
-<a asp-controller="Home" asp-action="Checkout" asp-route-totalPrice="@totalPrice" class="btn btn-success">Checkout</a>
+@*<a asp-controller="Home" asp-action="Checkout" onclick="checkOut()" class="btn btn-success">Checkout</a>*@
+<a onclick="checkOut()" class="btn btn-success">Checkout</a>
 
 @section Scripts
 {
     <script>
+        function checkOut() {
+            var products = new Array();
+            var productNames = $('.product-name').each(function(index) {
+                var nameAttr = $(this).attr('name');
+                var productId = nameAttr.substr(nameAttr.indexOf('-') + 1);
+                var bagQuantity = $("#bag-quantity-" + productId).val();
+
+                var productName = $(this).text();
+
+                products.push({ name: productName, quantity: bagQuantity });
+                console.log(index + ": productId=" + productId + " productName=" + productName);
+            });
+
+            console.dir(products);
+
+            $.ajax(
+                    {
+                        type: "POST",
+                        traditional: true,
+                        url: "/shopping/home/checkout",
+                        contentType: "application/json",
+                        data: JSON.stringify(products)
+                    })
+                .done(function() {
+//                    location.reload();
+                })
+                .fail(function() {
+                });
+        }
+
         function updateBag(cartItemId) {
             var newQuantity = $("#bag-quantity-" + cartItemId).val();
 
@@ -91,7 +122,7 @@
                 .done(function() {
                     location.reload();
                 })
-                .error(function() {
+                .fail(function() {
                     alert("Error updating shopping cart");
                 });
         }

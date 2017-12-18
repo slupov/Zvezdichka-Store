@@ -96,43 +96,78 @@
                 <th></th>
             </tr>
 
-            @foreach (var comment in Model.Comments)
+            @*            ////////*@
+            @foreach (var item in Model.Comments)
             {
                 <tr>
                     <td>
-                        @comment.User.UserName
+                        @item.User.UserName
 
                         <div>
-                            @if (@comment.IsEdited)
+                            @if (@item.IsEdited)
                             {
                                 <div>
-                                    <i>Edited on @comment.DateEdited</i>
+                                    <i>Edited on @item.DateEdited</i>
                                 </div>
                                 <div>
-                                    <i>Originaly added on @comment.DateEdited</i>
+                                    <i>Originaly added on @item.DateEdited</i>
                                 </div>
                             }
                             else
                             {
-                                <p>Added on @comment.DateAdded</p>
+                                <p>Added on @item.DateAdded</p>
                             }
 
                         </div>
                     </td>
                     <td>
-                        @Html.Raw(comment.Message)
+                        @Html.Raw(item.Message)
                     </td>
                     <td>
-                        @if (comment.User.UserName == User.Identity.Name)
+                        @if (item.User.UserName == User.Identity.Name)
                         {
                             <div class="row">
-                                <a class="btn btn-danger col-xs-5" onclick="deleteComment(this,'@comment.Id')">X</a>
-                                <a class="btn btn-primary col-xs-offset-1 col-xs-6" onclick="editComment('@comment.Id')">Edit</a>
+                                <a class="btn btn-danger col-xs-5" onclick="deleteComment(this, '@item.Id')">X</a>
+                                <a class="btn btn-primary col-xs-offset-1 col-xs-6" onclick="editComment('@item.Id')">Edit</a>
                             </div>
                         }
                     </td>
                 </tr>
             }
+            
+            
+            @{
+                var prevDisabled = !Model.Comments.HasPreviousPage ? "disabled" : "";
+                var nextDisabled = !Model.Comments.HasNextPage ? "disabled" : "";
+            }
+
+            @*page navigation buttons*@
+            <a asp-action="Details"
+               asp-route-id="@Model.Id"
+               asp-route-title="@Model.Name"
+               asp-route-commentsPageIndex="@(Model.Comments.PageIndex - 1)"
+               class="btn btn-default @prevDisabled">
+                Previous
+            </a>
+
+            @for (int i = 1; i <= Model.Comments.TotalPages; i++)
+            {
+                <a asp-action="Details"
+                   asp-route-id="@Model.Id"
+                   asp-route-title="@Model.Name"
+                   asp-route-commentsPageIndex="@i"
+                   class="btn btn-primary">
+                    [@i]
+                </a>
+            }
+
+            <a asp-action="Details"
+               asp-route-id="@Model.Id"
+               asp-route-title="@Model.Name"
+               asp-route-commentsPageIndex="@(Model.Comments.PageIndex + 1)"
+               class="btn btn-default @nextDisabled">
+                Next
+            </a>
         </table>
     </div>
 </div>

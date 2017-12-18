@@ -44,9 +44,12 @@ function addComment(productId, username) {
                 contentType: "application/json",
                 data: JSON.stringify(dataToSend)
             })
-        .done(function() {
-            $("#comments-table").append(newComment);
-            newComment.fadeIn("slow");
+        .done(function () {
+            $("#comments-table tr:first").after(newComment);
+
+            $('html, body').animate({ scrollTop: $('#comments-table').offset().top }, 1000);
+
+            newComment.fadeIn(3000);
         })
         .fail(function() {
             alert("Error adding comments");
@@ -75,8 +78,7 @@ function editComment(commentId) {
 
 function sendEditAjax(commentId) {
     console.log("sendEditAjax");
-    console.dir(CKEDITOR);
-    console.dir(CKEDITOR.instances);
+    console.log(JSON.stringify(CKEDITOR.instances));
 
 //    var commentText = CKEDITOR.instances["edit-message-content"].getData();
 
