@@ -69,6 +69,7 @@ namespace Zvezdichka.Web.Areas.Api.Controllers
             dbComment.IsEdited = true;
             dbComment.Message = this.html.Sanitize(comment.Message);
 
+            this.comments.Update(dbComment);
             return Ok();
         }
         [HttpDelete]

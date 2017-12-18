@@ -75,10 +75,10 @@
             </div>
         </div>
 
-        //         Comments
-        <div class="form-group" id="add-comment-div">
-            <label class="control-label">Message:</label>
-            <textarea id="add-message-content" name="add-message-content"></textarea>
+        //         Leave a Comment
+        <div class="form-group basic-textarea rounded-corners shadow-textarea" id="add-comment-div">
+            <label for="add-comment">Shadow and placeholder</label>
+            <textarea class="form-control z-depth-1 comment-message" id="add-comment-message" rows="3" placeholder="Write something here..."></textarea>
         </div>
 
         <div class="form-group">
@@ -96,10 +96,9 @@
                 <th></th>
             </tr>
 
-            @*            ////////*@
             @foreach (var item in Model.Comments)
             {
-                <tr>
+                <tr id="comment-@item.Id">
                     <td>
                         @item.User.UserName
 
@@ -120,11 +119,11 @@
 
                         </div>
                     </td>
-                    <td>
-                        @Html.Raw(item.Message)
+                    <td class="comment-content">
+                        @item.Message
                     </td>
                     <td>
-                        @if (item.User.UserName == User.Identity.Name)
+                        @if (item.User.UserName == User.Identity.Name || User.IsInRole("Admin"))
                         {
                             <div class="row">
                                 <a class="btn btn-danger col-xs-5" onclick="deleteComment(this, '@item.Id')">X</a>
@@ -134,8 +133,8 @@
                     </td>
                 </tr>
             }
-            
-            
+
+
             @{
                 var prevDisabled = !Model.Comments.HasPreviousPage ? "disabled" : "";
                 var nextDisabled = !Model.Comments.HasNextPage ? "disabled" : "";
@@ -183,7 +182,6 @@
 
 @section Scripts{
     <script type="text/javascript">
-        addCkEditor("add-message-content", "comment-form");
         changeThumbnailOnHover();
     </script>
 }

@@ -7,7 +7,7 @@ function addToCart(productName) {
                 url: "Shopping/Home/AddToCart",
                 data: {
                     title: productName,
-                    quantity: $('#bag-quantity').val()
+                    quantity: $("#bag-quantity").val()
                 }
             })
         .done(function() {
@@ -19,16 +19,16 @@ function addToCart(productName) {
 }
 
 function addComment(productId, username) {
-    var commentText = CKEDITOR.instances["add-message-content"].getData();
+    var commentText = $("#add-comment-message").val();
 
     var newComment = $('<tr style="display: none;"><td>' +
         username +
-        '<div><p>Added ' +
-        'just Now' +
-        '</p></div></td>' +
-        '<td>' +
+        "<div><p>Added " +
+        "just Now" +
+        "</p></div></td>" +
+        "<td>" +
         commentText +
-        '</td><td></td></tr>');
+        "</td><td></td></tr>");
 
     var dataToSend = {
         "Message": commentText,
@@ -44,12 +44,11 @@ function addComment(productId, username) {
                 contentType: "application/json",
                 data: JSON.stringify(dataToSend)
             })
-        .done(function () {
+        .done(function() {
             $("#comments-table tr:first").after(newComment);
-
-            $('html, body').animate({ scrollTop: $('#comments-table').offset().top }, 1000);
-
-            newComment.fadeIn(3000);
+            $("html, body").animate({ scrollTop: $("#comments-table").offset().top }, 1000);
+            newComment.fadeIn(1500);
+            $("#add-comment-message").val('');
         })
         .fail(function() {
             alert("Error adding comments");
@@ -58,35 +57,58 @@ function addComment(productId, username) {
 
 function editComment(commentId) {
 
-    if (document.getElementById('edit-comment-div') !== null) {
+    var oldComment = $("#comment-" + commentId).find('td.comment-content').text().trim();
+
+    if (document.getElementById("edit-comment-div") !== null) {
+        $("#edit-comment-div").parent().fadeOut(300,
+            function() {
+                $("#edit-comment-div").parent().remove();
+            });
         return;
     }
 
-    var newTextEditor = $('<div class="form-group" id="edit-comment-div">' +
-        '<label class="control-label">Message:</label>' +
-        '<textarea id="edit-message-content" name="edit-message-content"></textarea>' +
-        '</div>');
+    var testElement = $('<tr style="display: none;">' +
+        '</tr>');
 
-    var newTextArea = newTextEditor.find('textarea');
+    console.dir(testElement);
 
-    //attach CK editor to the new textarea
-    addCkEditor(newTextArea.attr('id'));
+    var newTextEditor = $(
+        '<tr style="display: none;">' +
+        '<td>' +
+        '<div class="form-group basic-textarea rounded-corners" id="edit-comment-div">' +
+        '<label for="edit-comment">Message: </label>' +
+        '<textarea onkeypress="sendEditAjax(' +
+        commentId +
+        ');" class="form-control z-depth-1 comment-message" id="edit-comment-message" rows="3" placeholder="Write something here...">' +
+        oldComment +
+        '</textarea>' +
+        '</div>' +
+        '</td>' +
+        '</tr>');
 
-    $(".comments-container").prepend(newTextEditor);
-    sendEditAjax(commentId);
+    console.dir(newTextEditor);
+    var commentRow = $("#comment-" + commentId);
+
+    console.log("commentRow");
+    console.dir(commentRow);
+
+    commentRow.after(newTextEditor);
+    newTextEditor.fadeIn(300);
 }
 
 function sendEditAjax(commentId) {
-    console.log("sendEditAjax");
-    console.log(JSON.stringify(CKEDITOR.instances));
+    var key = window.event.keyCode;
 
-//    var commentText = CKEDITOR.instances["edit-message-content"].getData();
+    // If the user hasn't pressed enter
+    if (key !== 13) {
+        return;
+    }
 
-    console.log(commentText);
+    var newMessage = $("#edit-comment-message").val();
 
     var dataToSend = {
         'id': commentId,
-        'Message': commentText
+        'Message': newMessage
     };
 
     $.ajax(
@@ -94,12 +116,22 @@ function sendEditAjax(commentId) {
                 type: "PUT",
                 traditional: true,
                 url: "api/comments",
-                data: (JSON.stringify(dataToSend))
+                contentType: "application/json",
+                data: JSON.stringify(dataToSend)
             })
         .done(function() {
             alert("Comment edited");
+
+            //remove editor
+            $("#edit-comment-div").parent().fadeOut(300,
+                function () {
+                    $("#edit-comment-div").parent().remove();
+                });
+
+            //update comment field
+            $("#comment-" + commentId).find('td.comment-content').html(newMessage);
         })
-        .error(function() {
+        .fail(function() {
             alert("Error editing comment");
         });
 }
@@ -127,7 +159,7 @@ function changeThumbnailOnHover() {
         $(".thumbnail-image").hover(
             function() {
                 $(this).addClass("thumbnail-image-hovered");
-                $("#main-image").attr("src", $(this).attr('src'));
+                $("#main-image").attr("src", $(this).attr("src"));
             },
             function() {
                 $(this).removeClass("thumbnail-image-hovered");
