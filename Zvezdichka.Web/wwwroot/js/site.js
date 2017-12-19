@@ -1,6 +1,6 @@
 ﻿// Write your JavaScript code.
 
-$("img").on('error',
+$("img").on("error",
     function() {
         $(this).parent().hide();
         $(this).parent().remove();
@@ -8,14 +8,28 @@ $("img").on('error',
 
 $(".alert-dismissable").delay(2000).fadeOut(3000);
 
-function deleteCloudinaryPhoto(photoId) {
-    photoId = photoId.replace('/', '%2F');
+function addAlert(url, alertStyle, message) {
+    //The required URL parameter specifies the URL you wish to load.
+    //The optional data parameter specifies a set of querystring key/value pairs to send along with the request.
+    // data -> {string alertStyle, string message, bool dismissable}
 
-    var deleteUrl = '/products/home/deletecloudinaryfileasync?name=' + photoId;
+    var urlWithQuery = url + '?alertStyle=' + alertStyle + '&message=' + encodeURIComponent(message);
+    console.log("alert message: " + message);
+    console.log("alert url: " + urlWithQuery);
+
+    $("#alerts-container").load(urlWithQuery, function() {
+        $(".alert-dismissable").delay(2000).fadeOut(3000);
+    });
+}
+
+function deleteCloudinaryPhoto(photoId) {
+    photoId = photoId.replace("/", "%2F");
+
+    var deleteUrl = "/products/home/deletecloudinaryfileasync?name=" + photoId;
 
     $.ajax({
             url: deleteUrl,
-            method: 'DELETE'
+            method: "DELETE"
         })
         .done(function() {
             $("#cloudinary-" + photoId).fadeOut(300,
@@ -23,25 +37,25 @@ function deleteCloudinaryPhoto(photoId) {
                     $("#cloudinary-" + photoId).remove();
                 });
 
-            alert('deleted');
+            alert("deleted");
         });
 }
 
 function updateProductThumbnailSource(productName, thumbnailNumber) {
 
-    var cloudinaryUrl = $("#cloudinary-image-" + thumbnailNumber).attr('src');
+    var cloudinaryUrl = $("#cloudinary-image-" + thumbnailNumber).attr("src");
     console.log(cloudinaryUrl);
 
     $.ajax({
-            url: '/api/products',
-            method: 'PUT',
+            url: "/api/products",
+            method: "PUT",
             data: { productName: productName, newThumbnailSource: cloudinaryUrl }
         })
         .done(function() {
-            alert('Thumbnail Updated');
+            alert("Thumbnail Updated");
         })
         .fail(function() {
-            alert('Thumbnail update failed');
+            alert("Thumbnail update failed");
         });
 }
 
@@ -103,10 +117,13 @@ function addComment(productId, username) {
                 data: JSON.stringify(dataToSend)
             })
         .done(function() {
+
             $("#comments-table tr:first").after(newComment);
             $("html, body").animate({ scrollTop: $("#comments-table").offset().top }, 1000);
             newComment.fadeIn(1500);
-            $("#add-comment-message").val('');
+            $("#add-comment-message").val("");
+
+            addAlert(alertURL, 'Success', 'Successfully added comment!');
         })
         .fail(function() {
             alert("Error adding comments");
@@ -115,34 +132,35 @@ function addComment(productId, username) {
 
 function editComment(commentId) {
 
-    var oldComment = $("#comment-" + commentId).find('td.comment-content').text().trim();
+    var oldComment = $("#comment-" + commentId).find("td.comment-content").text().trim();
 
     if (document.getElementById("edit-comment-div") !== null) {
         $("#edit-comment-div").parent().fadeOut(300,
             function() {
                 $("#edit-comment-div").parent().remove();
+
             });
         return;
     }
 
     var testElement = $('<tr style="display: none;">' +
-        '</tr>');
+        "</tr>");
 
     console.dir(testElement);
 
     var newTextEditor = $(
         '<tr style="display: none;">' +
-        '<td>' +
+        "<td>" +
         '<div class="form-group basic-textarea rounded-corners" id="edit-comment-div">' +
         '<label for="edit-comment">Message: </label>' +
         '<textarea onkeypress="sendEditAjax(' +
         commentId +
         ');" class="form-control z-depth-1 comment-message" id="edit-comment-message" rows="3" placeholder="Write something here...">' +
         oldComment +
-        '</textarea>' +
-        '</div>' +
-        '</td>' +
-        '</tr>');
+        "</textarea>" +
+        "</div>" +
+        "</td>" +
+        "</tr>");
 
     console.dir(newTextEditor);
     var commentRow = $("#comment-" + commentId);
@@ -178,7 +196,7 @@ function sendEditAjax(commentId) {
                 data: JSON.stringify(dataToSend)
             })
         .done(function() {
-            alert("Comment edited");
+            addAlert(alertURL,'info','Comment edited.')
 
             //remove editor
             $("#edit-comment-div").parent().fadeOut(300,
@@ -187,7 +205,7 @@ function sendEditAjax(commentId) {
                 });
 
             //update comment field
-            $("#comment-" + commentId).find('td.comment-content').html(newMessage);
+            $("#comment-" + commentId).find("td.comment-content").html(newMessage);
         })
         .fail(function() {
             alert("Error editing comment");

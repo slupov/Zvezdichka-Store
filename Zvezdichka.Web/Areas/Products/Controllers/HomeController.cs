@@ -400,6 +400,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            Warning("You are about to delete an item !!!");
             if (id == null)
                 return NotFound();
 

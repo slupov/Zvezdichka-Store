@@ -7,13 +7,9 @@
 
 /* Set some basic padding to keep content from hitting the edges */
 
-#thumbnail {
-    max-height: 150px;
-}
+#thumbnail { max-height: 150px; }
 
-#thumbnail-container {
-    height: 150px;
-}
+#thumbnail-container { height: 150px; }
 
 .body-content {
     padding-left: 15px;
@@ -96,3 +92,15 @@
     /* adjust 'height' to position overlay content vertically */
     height: 50%;
 }
+/**/
+/*.product-column-price {*/
+/*    color: #EE3425;*/
+/*    font-family: "Arial", Arial, serif;*/
+/*    font-weight: bold;*/
+/*    font-size: 20px;*/
+/*}*/
+/**/
+/*.product-column-title:link {*/
+/*    text-decoration: none;*/
+/*    color: #636363*/
+/*}*/

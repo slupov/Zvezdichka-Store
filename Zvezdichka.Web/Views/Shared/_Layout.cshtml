@@ -71,9 +71,11 @@
         </div>
     </div>
 </nav>
-
-
+    
 <div class="container body-content">
+    
+@*    Used for rendering the alerts-container with ajax*@
+    <div id="alerts-container"></div>
     @await Html.PartialAsync("BootlstrapAlerts")
     @RenderBody()
     <hr/>
@@ -89,6 +91,7 @@
     <script src="~/lib/seiyria-bootstrap-slider/dist/bootstrap-slider.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
 
+    <script src="~/js/constants.js"></script>
     <script src="~/js/ckeditor/ckeditor.js"></script>
     <script src="~/js/cloudinary-helpers.js"></script>
     <script src="~/js/ckeditor-helpers.js"></script>
