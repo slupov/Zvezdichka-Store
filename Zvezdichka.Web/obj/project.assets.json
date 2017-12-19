@@ -5146,6 +5146,16 @@
           "lib/netstandard1.3/Microsoft.WindowsAzure.Storage.dll": {}
         }
       },
+      "Zvezdichka.Common/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.0",
+        "compile": {
+          "bin/placeholder/Zvezdichka.Common.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Zvezdichka.Common.dll": {}
+        }
+      },
       "Zvezdichka.Data/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v2.0",
@@ -5153,7 +5163,8 @@
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "2.0.0",
           "Microsoft.EntityFrameworkCore": "2.0.1",
           "Microsoft.EntityFrameworkCore.SqlServer": "2.0.1",
-          "Newtonsoft.Json": "10.0.3"
+          "Newtonsoft.Json": "10.0.3",
+          "Zvezdichka.Common": "1.0.0"
         },
         "compile": {
           "bin/placeholder/Zvezdichka.Data.dll": {}
@@ -13464,6 +13475,11 @@
         "windowsazure.storage.8.1.4.nupkg.sha512",
         "windowsazure.storage.nuspec"
       ]
+    },
+    "Zvezdichka.Common/1.0.0": {
+      "type": "project",
+      "path": "../Zvezdichka.Common/Zvezdichka.Common.csproj",
+      "msbuildProject": "../Zvezdichka.Common/Zvezdichka.Common.csproj"
     },
     "Zvezdichka.Data/1.0.0": {
       "type": "project",

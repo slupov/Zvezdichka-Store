@@ -16,6 +16,7 @@
             PriceDesc
         }
 
+
         public const string ProductsArea = "Products";
         public const string ApiArea = "Api";
         public const string AdminArea = "Admin";

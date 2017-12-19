@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zvezdichka.Services", "Zvez
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zvezdichka.Data", "Zvezdichka.Data\Zvezdichka.Data.csproj", "{27CF7560-E927-4FE9-A30F-ED70B8A4FE5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zvezdichka.Tests", "Zvezdichka.Tests\Zvezdichka.Tests.csproj", "{70D53BA3-8E88-4333-8890-78C0AFBE67C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zvezdichka.Tests", "Zvezdichka.Tests\Zvezdichka.Tests.csproj", "{70D53BA3-8E88-4333-8890-78C0AFBE67C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zvezdichka.Common", "Zvezdichka.Common\Zvezdichka.Common.csproj", "{F13FED39-99BD-40FA-AB4B-4B53293AB124}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{70D53BA3-8E88-4333-8890-78C0AFBE67C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70D53BA3-8E88-4333-8890-78C0AFBE67C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70D53BA3-8E88-4333-8890-78C0AFBE67C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F13FED39-99BD-40FA-AB4B-4B53293AB124}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F13FED39-99BD-40FA-AB4B-4B53293AB124}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F13FED39-99BD-40FA-AB4B-4B53293AB124}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F13FED39-99BD-40FA-AB4B-4B53293AB124}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

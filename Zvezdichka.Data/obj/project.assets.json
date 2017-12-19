@@ -1516,6 +1516,16 @@
         "runtime": {
           "lib/netstandard1.3/System.Xml.XmlDocument.dll": {}
         }
+      },
+      "Zvezdichka.Common/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.0",
+        "compile": {
+          "bin/placeholder/Zvezdichka.Common.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Zvezdichka.Common.dll": {}
+        }
       }
     }
   },
@@ -5142,6 +5152,11 @@
         "system.xml.xmldocument.4.3.0.nupkg.sha512",
         "system.xml.xmldocument.nuspec"
       ]
+    },
+    "Zvezdichka.Common/1.0.0": {
+      "type": "project",
+      "path": "../Zvezdichka.Common/Zvezdichka.Common.csproj",
+      "msbuildProject": "../Zvezdichka.Common/Zvezdichka.Common.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -5150,7 +5165,8 @@
       "Microsoft.EntityFrameworkCore >= 2.0.1",
       "Microsoft.EntityFrameworkCore.SqlServer >= 2.0.1",
       "Microsoft.NETCore.App >= 2.0.0",
-      "Newtonsoft.Json >= 10.0.3"
+      "Newtonsoft.Json >= 10.0.3",
+      "Zvezdichka.Common >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -5188,7 +5204,11 @@
       },
       "frameworks": {
         "netcoreapp2.0": {
-          "projectReferences": {}
+          "projectReferences": {
+            "D:\\Github\\Zvezdichka-Store\\Zvezdichka.Common\\Zvezdichka.Common.csproj": {
+              "projectPath": "D:\\Github\\Zvezdichka-Store\\Zvezdichka.Common\\Zvezdichka.Common.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

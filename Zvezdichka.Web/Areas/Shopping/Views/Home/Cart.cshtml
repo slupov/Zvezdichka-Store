@@ -38,7 +38,7 @@
                         <span class="product-name" name="product-@item.Id">@item.ProductName</span>
 
                         <div>
-                            <a asp-area="Shopping" asp-controller="CartItems" asp-action="Delete" asp-route-name="@item.ProductName"
+                            <a onclick="deleteCartItem('@item.ProductName')"
                                class="btn btn-default col-md-1">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
                             </a>
@@ -122,8 +122,27 @@
                 .done(function() {
                     location.reload();
                 })
+                .fail(function (resp) {
+                    console.dir(resp);
+                    addAlert("danger",
+                        resp.responseText
+                    );
+                });
+        }
+
+        function deleteCartItem(productName) {
+            $.ajax(
+                    {
+                        type: "DELETE",
+                        traditional: true,
+                        url: "/api/cartitems",
+                        data: ({ productName: productName })
+                    })
+                .done(function() {
+                    location.reload();
+                })
                 .fail(function() {
-                    alert("Error updating shopping cart");
+                    addAlert("danger", "Error deleting comment");
                 });
         }
     </script>

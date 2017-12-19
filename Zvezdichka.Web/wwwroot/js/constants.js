@@ -1,1 +1,1 @@
-﻿var alertURL = "helper/showbootstrapalert"
+﻿var alertURL = "/helper/showbootstrapalert"

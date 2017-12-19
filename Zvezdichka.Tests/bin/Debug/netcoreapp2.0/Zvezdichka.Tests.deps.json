@@ -3704,12 +3704,18 @@
           "Microsoft.NET.Test.Sdk": "15.5.0"
         }
       },
+      "Zvezdichka.Common/1.0.0": {
+        "runtime": {
+          "Zvezdichka.Common.dll": {}
+        }
+      },
       "Zvezdichka.Data/1.0.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "2.0.1",
           "Microsoft.EntityFrameworkCore": "2.0.1",
           "Microsoft.EntityFrameworkCore.SqlServer": "2.0.1",
-          "Newtonsoft.Json": "10.0.3"
+          "Newtonsoft.Json": "10.0.3",
+          "Zvezdichka.Common": "1.0.0"
         },
         "runtime": {
           "Zvezdichka.Data.dll": {}
@@ -5947,6 +5953,11 @@
       "sha512": "sha512-B+RtW4dyBquEyjSAFyV5RMifaOZOirDwlzcIq2DNVGo1gzJS8PAPu5S+2y1n6ZgEMWbpqJf9TkZ55+X6FLdy3A==",
       "path": "xunit.runner.visualstudio/2.3.1",
       "hashPath": "xunit.runner.visualstudio.2.3.1.nupkg.sha512"
+    },
+    "Zvezdichka.Common/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     },
     "Zvezdichka.Data/1.0.0": {
       "type": "project",

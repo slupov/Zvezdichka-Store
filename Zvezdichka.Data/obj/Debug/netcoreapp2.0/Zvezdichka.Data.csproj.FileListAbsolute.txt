@@ -16,3 +16,5 @@ D:\Github\Zvezdichka-Store\Zvezdichka.Data\obj\Debug\netcoreapp2.0\Zvezdichka.Da
 D:\Github\Zvezdichka-Store\Zvezdichka.Data\obj\Debug\netcoreapp2.0\Zvezdichka.Data.AssemblyInfo.cs
 D:\Github\Zvezdichka-Store\Zvezdichka.Data\obj\Debug\netcoreapp2.0\Zvezdichka.Data.dll
 D:\Github\Zvezdichka-Store\Zvezdichka.Data\obj\Debug\netcoreapp2.0\Zvezdichka.Data.pdb
+D:\Github\Zvezdichka-Store\Zvezdichka.Data\bin\Debug\netcoreapp2.0\Zvezdichka.Common.dll
+D:\Github\Zvezdichka-Store\Zvezdichka.Data\bin\Debug\netcoreapp2.0\Zvezdichka.Common.pdb

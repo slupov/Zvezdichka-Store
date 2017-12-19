@@ -20,3 +20,5 @@ D:\Github\Zvezdichka-Store\Zvezdichka.Services\obj\Debug\netcoreapp2.0\Zvezdichk
 D:\Github\Zvezdichka-Store\Zvezdichka.Services\obj\Debug\netcoreapp2.0\Zvezdichka.Services.AssemblyInfo.cs
 D:\Github\Zvezdichka-Store\Zvezdichka.Services\obj\Debug\netcoreapp2.0\Zvezdichka.Services.dll
 D:\Github\Zvezdichka-Store\Zvezdichka.Services\obj\Debug\netcoreapp2.0\Zvezdichka.Services.pdb
+D:\Github\Zvezdichka-Store\Zvezdichka.Services\bin\Debug\netcoreapp2.0\Zvezdichka.Common.dll
+D:\Github\Zvezdichka-Store\Zvezdichka.Services\bin\Debug\netcoreapp2.0\Zvezdichka.Common.pdb

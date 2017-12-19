@@ -8,12 +8,12 @@ $("img").on("error",
 
 $(".alert-dismissable").delay(2000).fadeOut(3000);
 
-function addAlert(url, alertStyle, message) {
+function addAlert(alertStyle, message) {
     //The required URL parameter specifies the URL you wish to load.
     //The optional data parameter specifies a set of querystring key/value pairs to send along with the request.
     // data -> {string alertStyle, string message, bool dismissable}
 
-    var urlWithQuery = url + '?alertStyle=' + alertStyle + '&message=' + encodeURIComponent(message);
+    var urlWithQuery = alertURL + '?alertStyle=' + alertStyle + '&message=' + encodeURIComponent(message);
     console.log("alert message: " + message);
     console.log("alert url: " + urlWithQuery);
 

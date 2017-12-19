@@ -18,3 +18,5 @@ D:\Github\Zvezdichka-Store\Zvezdichka.Tests\bin\Debug\netcoreapp2.0\Zvezdichka.W
 D:\Github\Zvezdichka-Store\Zvezdichka.Tests\bin\Debug\netcoreapp2.0\Zvezdichka.Tests.pdb
 D:\Github\Zvezdichka-Store\Zvezdichka.Tests\obj\Debug\netcoreapp2.0\Zvezdichka.Tests.dll
 D:\Github\Zvezdichka-Store\Zvezdichka.Tests\obj\Debug\netcoreapp2.0\Zvezdichka.Tests.pdb
+D:\Github\Zvezdichka-Store\Zvezdichka.Tests\bin\Debug\netcoreapp2.0\Zvezdichka.Common.dll
+D:\Github\Zvezdichka-Store\Zvezdichka.Tests\bin\Debug\netcoreapp2.0\Zvezdichka.Common.pdb

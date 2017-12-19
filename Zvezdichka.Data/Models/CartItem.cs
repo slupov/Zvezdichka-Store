@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Zvezdichka.Common;
 
 namespace Zvezdichka.Data.Models
 {
@@ -6,7 +7,7 @@ namespace Zvezdichka.Data.Models
     {
         public int Id { get; set; }
 
-        [Range(1,256)]
+        [Range(1,256, ErrorMessage = CommonConstants.WrongStockAmount)]
         public byte Quantity { get; set; }
 
         [Required]
