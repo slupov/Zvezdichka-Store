@@ -19,19 +19,18 @@ namespace Zvezdichka.Web.Infrastructure.Extensions.Services
                 .GetAssembly(typeof(IService))
                 .GetTypes();
 
-            types
+            var needed = types
                 .Where(t =>
-                    t.IsClass &&
-                    !t.IsAbstract &&
-                    t.Name.Contains("DataService") &&
-                    t.GetInterfaces().Any(i => i.Name == $"I{t.Name}"))
+                    t.IsClass && t.GetInterfaces().Any(i => i.Name == $"I{t.Name}") &&
+                    (!t.IsAbstract && t.Name.Contains("DataService")))
                 .Select(t => new
                 {
                     Interface = t.GetInterface($"I{t.Name}"),
                     Implementation = t
                 })
-                .ToList()
-                .ForEach(s => services.AddScoped(s.Interface, s.Implementation));
+                .ToList();
+
+            needed.ForEach(s => services.AddTransient(s.Interface, s.Implementation));
 
             return services;
         }

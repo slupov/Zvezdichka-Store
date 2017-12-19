@@ -34,10 +34,5 @@ namespace Zvezdichka.Data
             base.OnModelCreating(builder);
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder builder)
-        {
-            builder.UseSqlServer("Server=.;Database=Zvezdichka;Trusted_Connection=True;MultipleActiveResultSets=true");
-            base.OnConfiguring(builder);
-        }
     }
 }

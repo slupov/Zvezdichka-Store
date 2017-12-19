@@ -75,8 +75,8 @@ namespace Zvezdichka.Web
             //Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
-            services.AddScoped<IHtmlSanitizer, HtmlSanitizer>();
-            services.AddScoped<IHtmlService, HtmlService>();
+            services.AddTransient<IHtmlSanitizer, HtmlSanitizer>();
+            services.AddTransient<IHtmlService, HtmlService>();
 
             //Add data services.
             services.AddDataServices();

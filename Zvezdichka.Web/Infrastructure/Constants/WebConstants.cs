@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Zvezdichka.Web.Infrastructure.Constants
+﻿namespace Zvezdichka.Web.Infrastructure.Constants
 {
     public class WebConstants
     {
@@ -17,5 +15,7 @@ namespace Zvezdichka.Web.Infrastructure.Constants
             PriceAsc,
             PriceDesc
         }
+
+        public const string ProductsArea = "Products";
     }
 }
