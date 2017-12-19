@@ -12,8 +12,6 @@ namespace Zvezdichka.Web.Areas.Products.Models
         public string Description { get; set; }
         public byte Stock { get; set; }
         public decimal Price { get; set; }
-        public ICollection<ImageSource> ImageSources { get; set; }
-        public string ThumbnailSource { get; set; }
 
         public ICollection<string> CloudinarySources { get; set; }
         public Cloudinary Cloudinary { get; set; }

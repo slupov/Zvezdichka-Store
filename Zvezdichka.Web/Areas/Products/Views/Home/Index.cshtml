@@ -1,18 +1,9 @@
-﻿@using Zvezdichka.Web.Infrastructure.Constants
-@model Zvezdichka.Web.Infrastructure.Extensions.Helpers.PaginatedList<Zvezdichka.Web.Areas.Products.Models.ProductListingViewModel>
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@using Zvezdichka.Web.Infrastructure.Constants
+@model Zvezdichka.Web.Areas.Products.Models.ProductIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
-
-    decimal minPrice = 0;
-    decimal maxPrice = 0;
-
-    if (Model.Count > 0)
-    {
-        minPrice = Model.Min(x => x.Price);
-        maxPrice = Model.Max(x => x.Price);
-    }
-
 }
 
 <h2>Products</h2>
@@ -26,41 +17,44 @@
 
 <div class="container">
 
+    @*    Filters*@
     <div id="filterPanel">
         <br/>
 
-        Filter by price interval:
-        <b>@minPrice</b>
-        <input id="price-slider" type="text" class="span2 slider" value="" data-slider-min="@minPrice" data-slider-max="@maxPrice" data-slider-step="5" data-slider-value="[@minPrice,@maxPrice]" onblur="filterProducts()"/>
-        <b>@maxPrice</b>
+        <form method="post" asp-area="Products" asp-controller="Home" asp-action="Index">
 
-        <div id="filters"></div>
-        <span>Sort by: </span>
-        <br/>
-        <select id="order-by" onchange="filterProducts()" class="selectpicker" title="Choose one of the following...">
-            <option value="@((int) WebConstants.OrderBy.NameAsc)">Name [A-Z]</option>
-            <option value="@((int) WebConstants.OrderBy.NameDesc)">Name [Z-A]</option>
-            <option value="@((int) WebConstants.OrderBy.PriceAsc)">Price, Ascending</option>
-            <option value="@((int) WebConstants.OrderBy.PriceDesc)">Price, Descending</option>
-        </select>
-
-        @{
-            var categories = Model.SelectMany(x => x.Categories).ToList().Distinct();
-        }
-
-        <select id="sort-by-categories" onchange="filterProducts()" class="selectpicker" multiple title="Choose categories...">
-
-            @foreach (var cat in categories)
-            {
-                <option value="@cat">@cat</option>
+            <h4>Filter by price interval:</h4>
+            <b>@Model.MinPrice</b>
+            <input name="pricerange" id="price-slider" type="text" class="span2 slider" value="" data-slider-min="@Model.MinPrice" data-slider-max="@Model.MaxPrice" data-slider-step="5" data-slider-value="[@Model.Products.Min(x => x.Price),@Model.Products.Max(x => x.Price)]"/>
+            <b>@Model.MaxPrice</b>
+            <div id="filters"></div>
+            <span>Sort by: </span>
+            <br/>
+            <select name="orderby" id="order-by" class="selectpicker" title="Choose one of the following...">
+                <option value="@((int) WebConstants.OrderBy.NameAsc)">Name [A-Z]</option>
+                <option value="@((int) WebConstants.OrderBy.NameDesc)">Name [Z-A]</option>
+                <option value="@((int) WebConstants.OrderBy.PriceAsc)">Price, Ascending</option>
+                <option value="@((int) WebConstants.OrderBy.PriceDesc)">Price, Descending</option>
+            </select>
+            @{
+                var categories = Model.Products.SelectMany(x => x.Categories).ToList().Distinct();
             }
-        </select>
+
+            <select name="categories" id="sort-by-categories" class="selectpicker" multiple title="Choose categories...">
+                @foreach (var cat in categories)
+                {
+                    <option value="@cat">@cat</option>
+                }
+            </select>
+
+            <input type="submit" class="btn btn-default"/>
+        </form>
         <br/>
     </div>
 
     @*    products grid system*@
     <div class="row text-center text-lg-left">
-        @foreach (var item in Model)
+        @foreach (var item in Model.Products)
         {
             @Html.Partial("ProductColumn", item)
         }
@@ -68,20 +62,20 @@
 </div>
 
 @{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var prevDisabled = !Model.Products.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Products.HasNextPage ? "disabled" : "";
 }
 
 @*page navigation buttons*@
 <a asp-action="Index"
    asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-page="@(Model.PageIndex - 1)"
+   asp-route-page="@(Model.Products.PageIndex - 1)"
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
    class="btn btn-default @prevDisabled">
     Previous
 </a>
 
-@for (int i = 1; i <= Model.TotalPages; i++)
+@for (int i = 1; i <= Model.Products.TotalPages; i++)
 {
     <a asp-action="Index"
        asp-route-sortOrder="@ViewData["CurrentSort"]"
@@ -94,7 +88,7 @@
 
 <a asp-action="Index"
    asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-page="@(Model.PageIndex + 1)"
+   asp-route-page="@(Model.Products.PageIndex + 1)"
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
    class="btn btn-default @nextDisabled">
     Next
@@ -103,58 +97,5 @@
 @section Scripts{
     <script>
         var priceSlider = $("#price-slider").slider({});
-
-        $('.slider').on('blur',
-            function() {
-                filterProducts();
-            });
-
-    </script>
-
-    <script>
-
-        function filterProducts() {
-            //get checked categories
-            var checkedCategories = $("#sort-by-categories").val();
-            var prices = priceSlider.val().split(',');
-
-            var dataToSend = {
-                categories: checkedCategories,
-                minPrice: prices[0],
-                maxPrice: prices[1],
-                orderBy: $("#order-by").val()
-            };
-
-            $.ajax({
-                type: "GET",
-                traditional: true,
-                url: "api/products",
-                contentType: "application/json",
-                data: dataToSend,
-                success: function(response) {
-                    redirectToFilteredProducts(response);
-                },
-                error: function(err) {
-                }
-            });
-        }
-
-        function redirectToFilteredProducts(filtered) {
-
-            var dataToSend = JSON.stringify(filtered);
-
-        $.ajax({
-            type: "POST",
-            url: "products",
-            traditional: true,
-            contentType: 'application/json',
-            dataType: 'json',
-            data: dataToSend
-        }).
-            done(function() {
-                alert("redirect");
-            });
-        };
-
     </script>
 }

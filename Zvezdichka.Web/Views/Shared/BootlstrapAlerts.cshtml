@@ -1,9 +1,10 @@
 ﻿@using System.Globalization
+@using Zvezdichka.Web.Infrastructure.Extensions.Helpers
 @using Zvezdichka.Web.Infrastructure.Extensions.Helpers.Html
 
 @{
     var alerts = TempData.ContainsKey(Alert.TempDataKey)
-        ? (List<Alert>) TempData[Alert.TempDataKey]
+        ? TempData.Get<List<Alert>>(Alert.TempDataKey)
         : new List<Alert>();
 
     if (alerts.Any())

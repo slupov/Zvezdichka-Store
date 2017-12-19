@@ -7,6 +7,14 @@
 
 /* Set some basic padding to keep content from hitting the edges */
 
+#thumbnail {
+    max-height: 150px;
+}
+
+#thumbnail-container {
+    height: 150px;
+}
+
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
@@ -55,10 +63,7 @@
 
 .alternate-images { }
 
-.thumbnail-image-hovered {
-    border: 10px solid #099;
-    padding: 200px
-}
+.thumbnail-image-hovered { border: 1px solid #099; }
 
 #productImageContainer { height: 500px }
 
@@ -70,11 +75,24 @@
     height: 100%;
 }
 
-.shadow-textarea textarea.form-control[placeholder] {
-    font-weight: 300;
+.shadow-textarea textarea.form-control[placeholder] { font-weight: 300; }
+
+.shadow-textarea textarea.form-control { padding-left: 0.8rem; }
+
+.img-wrapper { position: relative; }
+
+.img-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
 }
 
-.shadow-textarea textarea.form-control {
-    padding-left: 0.8rem;
+.img-overlay:before {
+    content: ' ';
+    display: block;
+    /* adjust 'height' to position overlay content vertically */
+    height: 50%;
 }
-      

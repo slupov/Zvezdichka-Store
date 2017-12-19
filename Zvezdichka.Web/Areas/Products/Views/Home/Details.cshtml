@@ -1,4 +1,5 @@
-﻿@using Zvezdichka.Web.Infrastructure.Constants
+﻿@using CloudinaryDotNet
+@using Zvezdichka.Web.Infrastructure.Constants
 @model Zvezdichka.Web.Areas.Products.Models.ProductDetailsViewModel
 @{
     ViewData["Title"] = "Details";
@@ -12,20 +13,29 @@
                 <div class="thumbnails-wrapper">
                     <div class="alternate-images col-md-6">
                         @*                    show alternate images*@
-                        <ul id="piThumbList" class="col-xs-4 col-sm-12">
-                            @foreach (var img in Model.ImageSources)
+                        <ul id="piThumbList" class="col-xs-4 col-sm-12" style="list-style-type: none;">
+
+                            @foreach (var img in Model.CloudinarySources)
                             {
                                 <li class="col-sm-12">
-                                    <img src="@img.Source" class="img-responsive thumbnail-image"/>
+                                    @Html.Raw(@Model.Cloudinary.Api.UrlImgUp.BuildImageTag(img, new StringDictionary()
+                                    {
+                                        new KeyValuePair<string, string>("class", "img-responsive thumbnail-image cloudinary-thumbnail")
+                                    }))
                                 </li>
                             }
                         </ul>
                     </div>
                     <div id="productImageContainer" class="col-md-6">
-                        @*                    show main image*@
-                        @if (Model.ImageSources.Count > 0)
+
+                        @if (Model.CloudinarySources.Count > 0)
                         {
-                            <img src="@Model.ImageSources.First().Source" id="main-image" class="img-responsive"/>
+                            @Html.Raw(@Model.Cloudinary.Api.UrlImgUp.BuildImageTag(Model.CloudinarySources.First(), new StringDictionary()
+                            {
+                                new KeyValuePair<string, string>("class", "img-responsive cloudinary-thumbnail"),
+                                new KeyValuePair<string, string>("id", "main-image"),
+                            }))
+                            ;
                         }
                     </div>
                 </div>
@@ -53,8 +63,6 @@
                 </div>
             </div>
         </div>
-
-
     </div>
 </div>
 
@@ -65,7 +73,7 @@
         //        Shopping
         <div class="form-group row">
             <div class="col-xs-2">
-                <input type="number" id="bag-quantity" class="form-control"/>
+                <input type="number" id="bag-quantity" class="form-control" value="1"/>
             </div>
             <div>
                 <a class="btn btn-success" onclick="addToCart('@Model.Name')">Add to Cart</a>
@@ -75,10 +83,19 @@
             </div>
         </div>
 
+        <div>
+            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
+                <a asp-route="@WebConstants.Routes.ProductEdit" asp-route-id="@Model.Id" asp-route-title="@Model.Name" class="btn btn-primary">Edit</a>
+                @Html.Raw("| ")
+            }
+            <a asp-action="Index" class="btn btn-default">Back to List</a>
+        </div>
+
         //         Leave a Comment
         <div class="form-group basic-textarea rounded-corners shadow-textarea" id="add-comment-div">
             <label for="add-comment">Shadow and placeholder</label>
-            <textarea class="form-control z-depth-1 comment-message" id="add-comment-message" rows="3" placeholder="Write something here..."></textarea>
+            <textarea onkeypress="addCommentOnEnter('@Model.Id', '@User.Identity.Name')" class="form-control z-depth-1 comment-message" id="add-comment-message" rows="3" placeholder="Write something here..."></textarea>
         </div>
 
         <div class="form-group">
@@ -171,17 +188,9 @@
     </div>
 </div>
 
-<div>
-    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
-    {
-        <a asp-route="@WebConstants.Routes.ProductEdit" asp-route-id="@Model.Id" asp-route-title="@Model.Name">Edit</a>
-        @Html.Raw("| ")
-    }
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts{
-    <script type="text/javascript">
-        changeThumbnailOnHover();
+   <script type="text/javascript">
+        $(document).ready(changeThumbnailOnHover());
     </script>
 }

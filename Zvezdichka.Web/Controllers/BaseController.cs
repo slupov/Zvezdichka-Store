@@ -7,12 +7,12 @@ namespace Zvezdichka.Web.Controllers
 {
     public class BaseController : Controller
     {
-        public void Success(string message, bool dismissable = false)
+        public void Success(string message, bool dismissable = true)
         {
             AddAlert(AlertStyles.Success, message, dismissable);
         }
 
-        public void Information(string message, bool dismissable = false)
+        public void Information(string message, bool dismissable = true)
         {
             AddAlert(AlertStyles.Information, message, dismissable);
         }
@@ -40,7 +40,7 @@ namespace Zvezdichka.Web.Controllers
                 Dismissable = dismissable
             });
 
-            this.TempData.Put(Alert.TempDataKey, alerts);
+            this.TempData.Put<List<Alert>>(Alert.TempDataKey, alerts);
         }
     }
 }

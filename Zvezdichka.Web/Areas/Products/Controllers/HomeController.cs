@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -13,6 +14,7 @@ using Zvezdichka.Data.Models.Mapping;
 using Zvezdichka.Services.Contracts.Entity;
 using Zvezdichka.Services.Contracts.Entity.Mapping;
 using Zvezdichka.Services.Extensions;
+using Zvezdichka.Web.Areas.Api.Models.Products;
 using Zvezdichka.Web.Areas.Products.Models;
 using Zvezdichka.Web.Infrastructure.Constants;
 using Zvezdichka.Web.Infrastructure.Extensions.Cloud;
@@ -48,15 +50,48 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             int? page,
             int pageSize = 20)
         {
-            this.ModelState.Clear();
-            var filtered = this.TempData.Get<List<ProductListingViewModel>>("FilteredProducts");
+            var filter = this.TempData.Get<ProductFilterModel>("ProductFilter");
 
-            if (filtered == null)
+            var filtered = this.products.Join(x => x.Categories).ThenJoin(x => x.Category)
+                .AsQueryable()
+                .ProjectTo<ProductListingViewModel>()
+                .ToList();
+
+            ProductIndexViewModel vm = new ProductIndexViewModel()
             {
-                filtered = this.products.Join(x => x.Categories).ThenJoin(x => x.Category)
-                    .AsQueryable()
-                    .ProjectTo<ProductListingViewModel>()
+                MinPrice = filtered.Min(x => x.Price),
+                MaxPrice = filtered.Max(x => x.Price)
+            };
+
+            if (filter != null)
+            {
+                //apply filter by price
+                filtered = filtered
+                    .Where(x => x.Price >= filter.MinPrice && x.Price <= filter.MaxPrice)
                     .ToList();
+
+                //apply filter by categories
+                if (filter.Categories != null && filter.Categories.Count != 0)
+                {
+                    filtered = filtered.Where(x => x.Categories.Any(y => filter.Categories.Contains(y))).ToList();
+                }
+
+                //apply order by filtration
+                switch (filter.OrderBy)
+                {
+                    case WebConstants.OrderBy.NameAsc:
+                        filtered = filtered.OrderBy(x => x.Name).ToList();
+                        break;
+                    case WebConstants.OrderBy.NameDesc:
+                        filtered = filtered.OrderByDescending(x => x.Name).ToList();
+                        break;
+                    case WebConstants.OrderBy.PriceAsc:
+                        filtered = filtered.OrderBy(x => x.Price).ToList();
+                        break;
+                    case WebConstants.OrderBy.PriceDesc:
+                        filtered = filtered.OrderByDescending(x => x.Price).ToList();
+                        break;
+                }
             }
 
             if (!string.IsNullOrEmpty(searchString))
@@ -66,13 +101,30 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                     .ToList();
             }
 
-            return View(PaginatedList<ProductListingViewModel>.Create(filtered, page ?? 1, pageSize));
+            vm.Products = PaginatedList<ProductListingViewModel>.Create(filtered, page ?? 1, pageSize);
+
+            if (filter != null)
+            {
+                Success("Successfully filtered products.");
+            }
+            return View(vm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index([FromBody] List<ProductListingViewModel> filtered)
+        [ActionName("Index")]
+        public async Task<IActionResult> IndexPost(ProductFiltrationModel filtered)
         {
-            this.TempData.Put("FilteredProducts", filtered);
+            var prices = filtered.PriceRange.Split(",").Select(decimal.Parse).ToArray();
+
+            ProductFilterModel filter = new ProductFilterModel()
+            {
+                Categories = filtered.Categories,
+                MinPrice = prices[0],
+                MaxPrice = prices[1],
+                OrderBy = filtered.OrderBy
+            };
+
+            this.TempData.Put("ProductFilter", filter);
             return RedirectToAction(nameof(Index));
         }
 
@@ -94,14 +146,19 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             }
 
             var product = Mapper.Map<ProductDetailsViewModel>(dbProduct);
-            product.Comments = PaginatedList<Comment>.Create(dbProduct.Comments.OrderByDescending(x=>x.DateAdded).ToList(), commentsPageIndex ?? 1, 7);
+            product.Comments =
+                PaginatedList<Comment>.Create(dbProduct.Comments.OrderByDescending(x => x.DateAdded).ToList(),
+                    commentsPageIndex ?? 1, 7);
+
+            product.CloudinarySources = await ListCloudinaryFileNamesAsync(product.Name);
+            product.Cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys);
 
             var friendlyTitle = FriendlyUrlHelper.GetFriendlyTitle(product.Name);
 
             // Compare the title with the friendly title.
             if (!string.Equals(friendlyTitle, title, StringComparison.Ordinal))
                 return RedirectToAction(nameof(Details),
-                    new {id = id, title = friendlyTitle, commentsPageIndex = commentsPageIndex });
+                    new {id = id, title = friendlyTitle, commentsPageIndex = commentsPageIndex});
 
             return View(product);
         }
@@ -171,7 +228,6 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
 
             product.Categories = this.categories.GetAll().Select(x => x.Name).ToList();
 
-            //TODO
             product.CloudinarySources = await ListCloudinaryFileNamesAsync(product.Name);
             product.Cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys);
 
@@ -207,13 +263,12 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             //update model
             dbProduct.Name = product.Name;
             dbProduct.Description = this.html.Sanitize(product.Description);
-            dbProduct.ImageSources = product.ImageSources;
             dbProduct.Price = product.Price;
             dbProduct.Stock = product.Stock;
-            dbProduct.ThumbnailSource = product.ThumbnailSource;
 
             //update model categories
-            var dbCategories = this.categoryProducts.Join(x => x.Category).Where(x => x.ProductId == dbProduct.Id).ToList();
+            var dbCategories = this.categoryProducts.Join(x => x.Category).Where(x => x.ProductId == dbProduct.Id)
+                .ToList();
 
 
             //remove unnecessary categories
@@ -231,7 +286,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             {
                 var dbCategory = dbCategories
                     .FirstOrDefault(x => x.Category.Name == productCategory);
-                
+
                 //product is not in this category
                 if (dbCategory == null)
                 {
@@ -334,7 +389,9 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                 return cloudinary
                     .ListResources()
                     .Resources
-                    .Where(x => x.PublicId.StartsWith(name))
+                    .Where(x => x.PublicId.StartsWith(name) &&
+                                x.StatusCode !=
+                                HttpStatusCode.NotFound) //todo: filtration still doesnt work like that in this api
                     .Select(x => x.PublicId)
                     .ToList();
             });

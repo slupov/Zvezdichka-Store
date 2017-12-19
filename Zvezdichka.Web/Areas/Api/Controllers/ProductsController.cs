@@ -66,5 +66,21 @@ namespace Zvezdichka.Web.Areas.Api.Controllers
 
             return Ok(filteredProducts);
         }
+
+        [HttpPut]
+        public IActionResult ChangeThumbnail(string productName, string newThumbnailSource)
+        {
+            var product = this.products.GetSingle(x => x.Name == productName);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            product.ThumbnailSource = newThumbnailSource;
+            this.products.Update(product);
+
+            return Ok();
+        }
     }
 }

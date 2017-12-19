@@ -1,4 +1,50 @@
 ﻿// Write your JavaScript code.
+
+$("img").on('error',
+    function() {
+        $(this).parent().hide();
+        $(this).parent().remove();
+    });
+
+$(".alert-dismissable").delay(2000).fadeOut(3000);
+
+function deleteCloudinaryPhoto(photoId) {
+    photoId = photoId.replace('/', '%2F');
+
+    var deleteUrl = '/products/home/deletecloudinaryfileasync?name=' + photoId;
+
+    $.ajax({
+            url: deleteUrl,
+            method: 'DELETE'
+        })
+        .done(function() {
+            $("#cloudinary-" + photoId).fadeOut(300,
+                function() {
+                    $("#cloudinary-" + photoId).remove();
+                });
+
+            alert('deleted');
+        });
+}
+
+function updateProductThumbnailSource(productName, thumbnailNumber) {
+
+    var cloudinaryUrl = $("#cloudinary-image-" + thumbnailNumber).attr('src');
+    console.log(cloudinaryUrl);
+
+    $.ajax({
+            url: '/api/products',
+            method: 'PUT',
+            data: { productName: productName, newThumbnailSource: cloudinaryUrl }
+        })
+        .done(function() {
+            alert('Thumbnail Updated');
+        })
+        .fail(function() {
+            alert('Thumbnail update failed');
+        });
+}
+
 function addToCart(productName) {
     $.ajax(
             {
@@ -18,7 +64,19 @@ function addToCart(productName) {
         });
 }
 
+function addCommentOnEnter(productId, username) {
+    var key = window.event.keyCode;
+
+    // If the user hasn't pressed enter
+    if (key !== 13) {
+        return;
+    }
+
+    addComment(productId, username);
+}
+
 function addComment(productId, username) {
+
     var commentText = $("#add-comment-message").val();
 
     var newComment = $('<tr style="display: none;"><td>' +
@@ -124,7 +182,7 @@ function sendEditAjax(commentId) {
 
             //remove editor
             $("#edit-comment-div").parent().fadeOut(300,
-                function () {
+                function() {
                     $("#edit-comment-div").parent().remove();
                 });
 
@@ -155,15 +213,15 @@ function deleteComment(e, commentId) {
 
 //a function that changes the main image on hove of some of the thumbnails
 function changeThumbnailOnHover() {
-    $(document).ready(function() {
-        $(".thumbnail-image").hover(
-            function() {
-                $(this).addClass("thumbnail-image-hovered");
-                $("#main-image").attr("src", $(this).attr("src"));
-            },
-            function() {
-                $(this).removeClass("thumbnail-image-hovered");
-            }
-        );
-    });
+
+    console.log("change thumbnail on hover");
+    $(".thumbnail-image").hover(
+        function() {
+            $(this).addClass("thumbnail-image-hovered");
+            $("#main-image").attr("src", $(this).attr("src"));
+        },
+        function() {
+            $(this).removeClass("thumbnail-image-hovered");
+        }
+    );
 }
