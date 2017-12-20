@@ -1,0 +1,10 @@
+﻿@model System.Linq.IQueryable<Zvezdichka.Web.Areas.Shopping.Models.CheckoutProductsModel>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h1>Checkout</h1>
+
+@await Html.PartialAsync("Invoice",Model)

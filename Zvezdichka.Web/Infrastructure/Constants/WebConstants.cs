@@ -21,5 +21,7 @@
         public const string ApiArea = "Api";
         public const string AdminArea = "Admin";
         public const string ShoppingArea = "Shopping";
+
+        public const decimal TaxPercent = 0.2m;
     }
 }

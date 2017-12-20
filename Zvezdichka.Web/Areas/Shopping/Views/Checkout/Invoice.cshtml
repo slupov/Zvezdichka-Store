@@ -1,0 +1,94 @@
+﻿@using Zvezdichka.Common
+@using Zvezdichka.Web.Infrastructure.Constants
+@model System.Linq.IQueryable<Zvezdichka.Web.Areas.Shopping.Models.CheckoutProductsModel>
+
+
+@{
+    decimal subTotal = Model.Sum(x => x.Price * x.Quantity);
+    decimal tax = subTotal * WebConstants.TaxPercent;
+    decimal totalPrice = subTotal + tax;
+}
+
+<div class="row invoice-header">
+    <div class="col-xs-6">
+        <h1>INVOICE</h1>
+    </div>
+
+    <div class="col-xs-3">
+        <div>@CommonVariables.StorePhoneNumber</div>
+        <div>@CommonVariables.StoreEmailAddress</div>
+        <div>@CommonVariables.StoreWebAddress</div>
+    </div>
+
+    <div class="col-xs-3">
+        <div>@CommonVariables.StoreStreetAddress</div>
+        <div>@CommonVariables.StoreCityAddress</div>
+        <div>@CommonVariables.StoreZipCode</div>
+    </div>
+</div>
+
+<div class="row invoice-billing-info">
+
+    <div class="col-xs-3">
+        <span>Billed To</span>
+        <div>TODO: INVOICE NUMBER</div>
+    </div>
+
+    <div class="col-xs-3">
+        <span>Date Of Issue</span>
+        <div>@DateTime.Now.Date.ToString("dd-MM-yy")</div>
+    </div>
+
+    <div class="col-xs-6">
+        <h1>@totalPrice.ToString("F2") leva</h1>
+    </div>
+</div>
+
+<div>
+    <table class="table table-striped table-responsive">
+        <tr>
+            <th>
+                Description
+            </th>
+            <th>
+                Unit Cost
+            </th>
+            <th>
+                Qty
+            </th>
+            <th>
+                Amount
+            </th>
+        </tr>
+
+        @foreach (var prod in Model)
+        {
+            <tr>
+                <td>
+                    @prod.Name
+                </td>
+                <td>
+                    @prod.Price
+                </td>
+                <td>
+                    @prod.Quantity
+                </td>
+                <td>
+                    @(@prod.Price * prod.Quantity)
+                </td>
+            </tr>
+        }
+        <tr>
+            <td></td>
+            <td></td>
+            <td>
+                <div>Subtotal</div>
+                <div>Tax</div>
+            </td>
+            <td>
+                <div>@subTotal</div>
+                <div>@tax.ToString("F2")</div>
+            </td>
+        </tr>
+    </table>
+</div>

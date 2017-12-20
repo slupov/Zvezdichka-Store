@@ -8,6 +8,8 @@
 
 <h2>My Cart</h2>
 
+<form asp-area="Shopping" asp-controller="Checkout" asp-action="Index" id="checkOutForm" method="get"></form>
+
 <div class="row">
     <div class="col-xs-12">
         <table class="table table-responsive table-striped">
@@ -38,20 +40,25 @@
                         <span class="product-name" name="product-@item.Id">@item.ProductName</span>
 
                         <div>
-                            <a onclick="deleteCartItem('@item.ProductName')"
-                               class="btn btn-default col-md-1">
-                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                            <a asp-area="Shopping" asp-controller="Home" asp-action="DeleteCart" asp-route-id="@item.Id"class="btn btn-default">
+                                <i class="fa fa-trash-o col-md-12" aria-hidden="true"></i>
                             </a>
                         </div>
                     </td>
-                    <td>
-                        <div>
-                            <input type="number" class="form-control" value="@item.Quantity" id="bag-quantity-@item.Id"/>
-                        </div>
+                    <td class="row">
+                        <form asp-area="Shopping" asp-controller="Home" asp-action="UpdateCart" method="post">
+                            <div>
+                                <input type="number" class="form-control" name="quantity" value="@item.Quantity" id="bag-quantity-@item.Id" class="col-xs-12" />
+                            </div>
 
-                        <div>
-                            <a class="btn btn-info" onclick="updateBag(@item.Id)">Update bag</a>
-                        </div>
+                            <div>
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <input type="hidden" name="id" value="@item.Id" form="checkOutForm" />
+
+                                <button type="submit" class="btn btn-info col-xs-12" value="Update bag">Update bag</button>
+                            </div>
+                        </form>
+
                     </td>
                     <td>
                         @item.Price
@@ -70,8 +77,7 @@
 
 
 <h3>Total: @totalPrice</h3>
-@*<a asp-controller="Home" asp-action="Checkout" onclick="checkOut()" class="btn btn-success">Checkout</a>*@
-<a onclick="checkOut()" class="btn btn-success">Checkout</a>
+<button type="submit" class="btn btn-success" form="checkOutForm">Checkout</button>
 
 @section Scripts
 {
@@ -103,46 +109,6 @@
 //                    location.reload();
                 })
                 .fail(function() {
-                });
-        }
-
-        function updateBag(cartItemId) {
-            var newQuantity = $("#bag-quantity-" + cartItemId).val();
-
-            $.ajax(
-                    {
-                        type: "PUT",
-                        traditional: true,
-                        url: "/api/cartItems",
-                        data: {
-                            id: cartItemId,
-                            quantity: newQuantity
-                        }
-                    })
-                .done(function() {
-                    location.reload();
-                })
-                .fail(function (resp) {
-                    console.dir(resp);
-                    addAlert("danger",
-                        resp.responseText
-                    );
-                });
-        }
-
-        function deleteCartItem(productName) {
-            $.ajax(
-                    {
-                        type: "DELETE",
-                        traditional: true,
-                        url: "/api/cartitems",
-                        data: ({ productName: productName })
-                    })
-                .done(function() {
-                    location.reload();
-                })
-                .fail(function() {
-                    addAlert("danger", "Error deleting comment");
                 });
         }
     </script>

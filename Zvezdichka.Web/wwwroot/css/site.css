@@ -92,6 +92,13 @@
     /* adjust 'height' to position overlay content vertically */
     height: 50%;
 }
+
+.invoice-header {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    color: white;
+    background: #000E52;
+}
 /**/
 /*.product-column-price {*/
 /*    color: #EE3425;*/

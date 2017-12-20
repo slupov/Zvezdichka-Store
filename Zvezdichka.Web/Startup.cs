@@ -158,7 +158,7 @@ namespace Zvezdichka.Web
             //initializing custom roles 
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-            string[] roleNames = {"Admin", "Manager", "Member"};
+            string[] roleNames = {"Admin", "Manager"};
 
             foreach (var roleName in roleNames)
             {

@@ -22,12 +22,9 @@ namespace Zvezdichka.Web.Areas.Api.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete(string productName)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (string.IsNullOrEmpty(productName))
-                return NotFound();
-
-            var cartItem = this.cartItems.Join(m => m.Product).FirstOrDefault(m => m.Product.Name == productName);
+            var cartItem = this.cartItems.GetSingle(x => x.Id == id);
 
             if (cartItem == null)
                 return NotFound();
@@ -43,31 +40,23 @@ namespace Zvezdichka.Web.Areas.Api.Controllers
             var toUpdate = this.cartItems.Join(x => x.Product).FirstOrDefault(x => x.Id == cartItem.Id);
 
             if (toUpdate == null)
-            {
                 return NotFound();
-            }
 
             if (toUpdate.Product.Stock < cartItem.Quantity)
-            {
                 return BadRequest(CommonConstants.StockAmountExceededError);
-            }
 
             if (!this.ModelState.IsValid)
             {
                 var errorMsg = string.Empty;
 
                 foreach (var modelState in this.ModelState.Values)
-                {
-                    foreach (ModelError error in modelState.Errors)
-                    {
-                        errorMsg += error.ErrorMessage + "\n";
-                    }
-                }
+                foreach (var error in modelState.Errors)
+                    errorMsg += error.ErrorMessage + "\n";
 
                 return BadRequest(errorMsg);
             }
 
-            toUpdate.Quantity = (byte)cartItem.Quantity;
+            toUpdate.Quantity = (byte) cartItem.Quantity;
             this.cartItems.Update(toUpdate);
 
             return Ok();

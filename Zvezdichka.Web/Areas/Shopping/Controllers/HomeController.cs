@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Zvezdichka.Common;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Services.Contracts.Entity;
 using Zvezdichka.Services.Extensions;
+using Zvezdichka.Web.Areas.Api.Models.CartItems;
 using Zvezdichka.Web.Areas.Shopping.Models;
 using Zvezdichka.Web.Infrastructure.Constants;
-using Zvezdichka.Web.Infrastructure.Extensions.Helpers;
 
 namespace Zvezdichka.Web.Areas.Shopping.Controllers
 {
@@ -32,23 +31,9 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             this.users2 = users2;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return RedirectToAction(nameof(Cart));
-        }
-
-        public IActionResult Checkout()
-        {
-            var items = this.TempData.Get<List<CheckoutProductsModel>>("items");
-            return View(items);
-        }
-
-        [HttpPost]
-        public IActionResult Checkout([FromBody] List<CheckoutProductsModel> items)
-        {
-            this.TempData.Put("items", items);
-
-            return RedirectToAction(nameof(Checkout));
         }
 
         public async Task<IActionResult> Cart()
@@ -71,7 +56,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
         /// <param name="quantity"></param>
         /// <returns></returns>
         [Authorize]
-        public IActionResult AddToCart(string title, byte quantity)
+        public async Task<IActionResult> AddToCart(string title, byte quantity)
         {
             var productToAdd = this.products.GetSingle(p => p.Name == title);
 
@@ -109,6 +94,52 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             Success($"Successfully added {quantity}x {title}!");
 
             return Ok();
+        }
+
+        public async Task<IActionResult> DeleteCart(int id)
+        {
+            var cartItem = this.cartItems.Join(x => x.Product).FirstOrDefault(x => x.Id == id);
+
+            if (cartItem == null)
+                return NotFound();
+
+            this.cartItems.Remove(cartItem);
+
+            Success(string.Format(CommonConstants.DeletedCartItemSuccessfully, cartItem.Product.Name));
+            return RedirectToAction(nameof(Cart));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateCart(CartItemUpdateModel cartItem)
+        {
+            var toUpdate = this.cartItems.Join(x => x.Product).FirstOrDefault(x => x.Id == cartItem.Id);
+
+            if (toUpdate == null)
+                return NotFound();
+
+            if (toUpdate.Product.Stock < cartItem.Quantity)
+            {
+                Danger(CommonConstants.StockAmountExceededError);
+                return RedirectToAction(nameof(Cart));
+            }
+
+            if (!this.ModelState.IsValid)
+            {
+                var errorMsg = string.Empty;
+
+                foreach (var modelState in this.ModelState.Values)
+                foreach (var error in modelState.Errors)
+                    errorMsg += error.ErrorMessage + "\n";
+
+                Danger(CommonConstants.StockAmountExceededError);
+                return RedirectToAction(nameof(Cart));
+            }
+
+            toUpdate.Quantity = (byte) cartItem.Quantity;
+            this.cartItems.Update(toUpdate);
+
+            Success(CommonConstants.UpdatedCartItemSuccessfully);
+            return RedirectToAction(nameof(Cart));
         }
     }
 }

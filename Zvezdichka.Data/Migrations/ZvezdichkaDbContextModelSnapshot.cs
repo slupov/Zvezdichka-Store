@@ -226,8 +226,7 @@ namespace Zvezdichka.Data.Migrations
                     b.Property<bool>("IsEdited");
 
                     b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(2000);
+                        .IsRequired();
 
                     b.Property<int>("ProductId");
 
@@ -258,6 +257,22 @@ namespace Zvezdichka.Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ImageSources");
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.Invoice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("DateOfIssue");
+
+                    b.Property<string>("ProductsWithPrices");
+
+                    b.Property<string>("User");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Invoices");
                 });
 
             modelBuilder.Entity("Zvezdichka.Data.Models.Mapping.CategoryProduct", b =>
