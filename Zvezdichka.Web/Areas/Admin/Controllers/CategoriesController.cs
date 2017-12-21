@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Services.Contracts.Entity;
+using Zvezdichka.Web.Areas.Admin.Models;
+using Zvezdichka.Web.Infrastructure.Constants;
 
 namespace Zvezdichka.Web.Areas.Admin.Controllers
 {
@@ -49,11 +51,25 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Create(EditCategoryModel category)
         {
+            var dbCategory = this.categories.GetSingle(x => x.Name == category.Name);
+
+            if (dbCategory != null)
+            {
+                Danger(WebConstants.SuchCategoryExists);
+                return RedirectToAction(nameof(Create));
+            }
+
             if (this.ModelState.IsValid)
             {
-                this.categories.Add(category);
+                var categoryToAdd = new Category()
+                {
+                    Name = category.Name
+                };
+
+                this.categories.Add(categoryToAdd);
+                Success(string.Format(WebConstants.CategoryCreated, category.Name));
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -72,6 +88,7 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+
             return View(category);
         }
 
@@ -80,30 +97,21 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Authorize(Roles = "Admin, Manager")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Edit(int id, EditCategoryModel category)
         {
-            if (id != category.Id)
+            var dbCategory = this.categories.GetSingle(x => x.Name == category.Name);
+
+            if (dbCategory == null)
             {
                 return NotFound();
             }
 
             if (this.ModelState.IsValid)
             {
-                try
-                {
-                    this.categories.Update(category);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CategoryExists(category.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                dbCategory.Name = category.Name;
+
+                this.categories.Update(dbCategory);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(category);

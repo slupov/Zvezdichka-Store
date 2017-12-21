@@ -31,16 +31,6 @@ table {
     margin: 0 auto;
 }
 
-/* Wrapping element */
-
-/* Set some basic padding to keep content from hitting the edges */
-
-#thumbnail { max-height: 150px; }
-
-#thumbnail-container { height: 150px; }
-
-.products-grid { min-height: 100vh; }
-
 /* Carousel */
 
 .carousel-caption p {
@@ -125,6 +115,22 @@ table {
     background: #000E52;
 }
 
+/* Wrapping element */
+
+/* Set some basic padding to keep content from hitting the edges */
+
+#thumbnail {
+    max-height: 150px;
+}
+
+#thumbnail-container {
+    height: 150px;
+}
+
+.products-grid {
+    min-height: 100vh;
+}
+
 .product-column-wrapper { padding-bottom: 10px; }
 
 .product-column {
@@ -139,6 +145,19 @@ table {
     padding-right: 5px;
     padding-left: 5px;
 }
+
+.product-column-title-wrapper {
+    max-height: 30px;
+}
+.product-column-title {
+    height: 10px;
+}
+
+#filterPanelCollapseBtn {
+    position: fixed;
+    display: block;
+}
+
 /**/
 /*.product-column-price {*/
 /*    color: #EE3425;*/

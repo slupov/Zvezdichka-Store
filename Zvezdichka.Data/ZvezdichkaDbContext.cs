@@ -21,10 +21,10 @@ namespace Zvezdichka.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Category>().ToTable("Categories");
             builder.Entity<Rating>().ToTable("Ratings");
-            builder.Entity<Product>().ToTable("Products");
 
+            builder.AddConfiguration(new ProductConfiguration());
+            builder.AddConfiguration(new CategoryConfiguration());
             builder.AddConfiguration(new CartItemConfiguration());
             builder.AddConfiguration(new CategoryProductConfiguration());
             builder.AddConfiguration(new CommentConfiguration());

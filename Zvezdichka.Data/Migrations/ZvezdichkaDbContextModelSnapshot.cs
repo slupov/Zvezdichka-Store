@@ -211,6 +211,9 @@ namespace Zvezdichka.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Categories");
                 });
 
@@ -273,6 +276,9 @@ namespace Zvezdichka.Data.Migrations
                     b.Property<string>("ThumbnailSource");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Products");
                 });

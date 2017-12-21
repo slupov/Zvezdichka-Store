@@ -7,4 +7,9 @@
 
 <h1>Checkout</h1>
 
-@await Html.PartialAsync("Invoice",Model)
+<form method="post" asp-area="Shopping" asp-controller="Checkout" asp-action="SecureCheckout">
+    @await Html.PartialAsync("Invoice", Model)
+    
+    <button type="submit" class="btn btn-success">Secure Checkout</button>
+</form>
+

@@ -35,5 +35,8 @@
 
         public const decimal TaxPercent = 0.2m;
         public const int CommentsPerPage = 7;
+        public const string SuchCategoryExists = "Such category already exists.";
+        public const string CategoryCreated = "Category {0} successfully created.";
+        public const string CheckoutSecured = "Payment successfull. Your shipment is on its way.";
     }
 }
