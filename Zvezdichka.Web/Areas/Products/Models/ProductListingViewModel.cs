@@ -11,6 +11,7 @@ namespace Zvezdichka.Web.Areas.Products.Models
         public string Name { get; set; }
         public string ThumbnailSource { get; set; }
         public decimal Price { get; set; }
+        public byte Stock { get; set; }
 
         public ICollection<string> Categories { get; set; }
 

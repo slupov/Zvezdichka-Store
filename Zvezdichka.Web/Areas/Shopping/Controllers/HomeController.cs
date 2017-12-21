@@ -62,7 +62,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
 
             if (productToAdd.Stock <= 0 || productToAdd.Stock < quantity)
             {
-                Warning("Cannot add this product to cart. Insufficient stock.", true);
+                Warning(string.Format(CommonConstants.StockAmountExceededForError,productToAdd.Name), true);
 
                 return RedirectToRoute(WebConstants.Routes.ProductDetails,
                     new {id = productToAdd.Id, title = title});
@@ -90,8 +90,6 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             };
 
             this.cartItems.Add(cartProduct);
-
-            Success($"Successfully added {quantity}x {title}!");
 
             return Ok();
         }

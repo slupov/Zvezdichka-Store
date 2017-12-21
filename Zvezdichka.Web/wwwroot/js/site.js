@@ -19,6 +19,7 @@ function addAlert(alertStyle, message) {
 
     $("#alerts-container").load(urlWithQuery, function() {
         $(".alert-dismissable").delay(2000).fadeOut(3000);
+        $("html, body").animate({ scrollTop: $("body").offset().top }, 1000);
     });
 }
 
@@ -52,29 +53,31 @@ function updateProductThumbnailSource(productName, thumbnailNumber) {
             data: { productName: productName, newThumbnailSource: cloudinaryUrl }
         })
         .done(function() {
-            alert("Thumbnail Updated");
+            addAlert("Success", thumbnailUpdateSuccessfulMessage);
         })
-        .fail(function() {
-            alert("Thumbnail update failed");
-        });
+        .fail(function () {
+            addAlert("Danger", thumbnailUpdateFailedMessage);
+       });
 }
 
 function addToCart(productName) {
     $.ajax(
             {
-                type: "GET",
+                type: "POST",
                 traditional: true,
-                url: "Shopping/Home/AddToCart",
+                url: "api/cartitems",
                 data: {
                     title: productName,
                     quantity: $("#bag-quantity").val()
                 }
             })
-        .done(function() {
-            addAlert("Success","Successfully added this product to the cart.");
+        .done(function (resp) {
+            console.dir(resp);
+            addAlert("Success",resp.responseText);
         })
-        .error(function() {
-            addAlert("danger","Error adding to shopping cart");
+        .fail(function (resp) {
+            console.dir(resp);
+            addAlert("danger", resp.responseText);
         });
 }
 
@@ -122,8 +125,6 @@ function addComment(productId, username) {
             $("html, body").animate({ scrollTop: $("#comments-table").offset().top }, 1000);
             newComment.fadeIn(1500);
             $("#add-comment-message").val("");
-
-            addAlert(alertURL, 'Success', 'Successfully added comment!');
         })
         .fail(function() {
             alert("Error adding comments");
@@ -138,7 +139,6 @@ function editComment(commentId) {
         $("#edit-comment-div").parent().fadeOut(300,
             function() {
                 $("#edit-comment-div").parent().remove();
-
             });
         return;
     }

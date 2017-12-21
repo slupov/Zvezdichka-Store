@@ -29,7 +29,37 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
                 .Join(x => x.Product)
                 .Where(x => id.Any(y => y == x.Id))
                 .AsQueryable()
-                .ProjectTo<CheckoutProductsModel>();
+                .ProjectTo<CheckoutProductsModel>()
+                .ToList();
+
+
+            var dbProducts = this.products.GetList(x => checkoutItems.Select(y => y.Name).ToList().Contains(x.Name));
+            string errorMsg = string.Empty;
+            bool hasErrors = false;
+
+            //check for errors
+            for (int i = 0; i < checkoutItems.Count; i++)
+            {
+                var product = dbProducts.FirstOrDefault(x => x.Name == checkoutItems[i].Name);
+
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                if (product.Stock < checkoutItems[i].Quantity)
+                {
+                    hasErrors = true;
+                    errorMsg += string.Format(CommonConstants.StockAmountExceededForError, checkoutItems[i].Name) +
+                                Environment.NewLine;
+                }
+            }
+
+            if (hasErrors)
+            {
+                Danger(errorMsg);
+                return RedirectToAction("Cart", "Home", new { area = "Shopping" });
+            }
 
             return View(checkoutItems);
         }

@@ -1,4 +1,6 @@
-﻿namespace Zvezdichka.Common
+﻿using System;
+
+namespace Zvezdichka.Common
 {
     public class CommonConstants
     {
@@ -12,7 +14,9 @@
                 "You have requested quantities for {0} that exceed our stock level. Please reduce the amount or remove the item and try again."
             ;
 
-        public static string DeletedCartItemSuccessfully = "Successfully removed {0} from your bag!";
-        public static string UpdatedCartItemSuccessfully = "Successfully updated your bag!";
+        public const string DeletedCartItemSuccessfully = "Successfully removed {0} from your bag!";
+        public const string UpdatedCartItemSuccessfully = "Successfully updated your bag!";
+        public const string SuccessfullyAddedCartItem = "Successfully added this product to the cart.";
+        public const string  SuccessfullyAddedMoreOfThisItem = "Successfully added more of this product to the cart.";
     }
 }
