@@ -18,7 +18,6 @@ namespace Zvezdichka.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Rating> Ratings { get; set; }
-        public DbSet<ImageSource> ImageSources { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -28,7 +27,6 @@ namespace Zvezdichka.Data
 
             builder.AddConfiguration(new CartItemConfiguration());
             builder.AddConfiguration(new CategoryProductConfiguration());
-            builder.AddConfiguration(new ImageSourceConfiguration());
             builder.AddConfiguration(new CommentConfiguration());
 
             base.OnModelCreating(builder);

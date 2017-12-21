@@ -23,8 +23,6 @@ namespace Zvezdichka.Data.Models
 
         public string ThumbnailSource { get; set; }
 
-        public ICollection<ImageSource> ImageSources { get; set; } = new HashSet<ImageSource>();
-
         public ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
 
         public ICollection<Rating> Ratings { get; set; } = new HashSet<Rating>();

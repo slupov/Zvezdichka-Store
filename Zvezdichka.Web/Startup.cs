@@ -119,7 +119,12 @@ namespace Zvezdichka.Web
 
             app.UseMvc(routes =>
             {
-//                start with most specific, end with most generic
+                //                start with most specific, end with most generic
+                routes.MapRoute(
+                    name: WebConstants.Routes.ProductsPaginatedListing,
+                    template: "products/{page}",
+                    defaults: new { area = "Products", controller = "Home", action = "Index" });
+
                 routes.MapRoute(
                     name: WebConstants.Routes.ProductEdit,
                     template: "admin/edit/{title}-{id}",
@@ -127,8 +132,8 @@ namespace Zvezdichka.Web
 
                 routes.MapRoute(
                     name: WebConstants.Routes.ProductDetails,
-                    template: "{title}-{id}",
-                    defaults: new {area = "Products", controller = "Home", action = "Details"});
+                    template: "{title}-{id}/{commentsPageIndex}",
+                    defaults: new {area = "Products", controller = "Home", action = "Details", commentsPageIndex = 1});
 
                 routes.MapRoute(
                     name: "areas",
@@ -140,7 +145,7 @@ namespace Zvezdichka.Web
             });
 
 
-            //scope seed db
+//            scope seed db
             using (var serviceScope =
                 app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {

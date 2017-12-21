@@ -3,6 +3,34 @@
     padding-bottom: 20px;
 }
 
+footer {
+
+    color: white;
+    font-size: 13px;
+    text-align: center;
+    vertical-align: middle;
+    max-height: 15px;
+}
+
+.body-content {
+    background: aliceblue;
+    border-radius: 5px;
+    padding: 10px;
+    min-height: 100vh;
+}
+
+table {
+    background-color: white;
+}
+
+.page-navigation-buttons {
+    display: block;
+    text-align: center;
+}
+.page-navigation-buttons a {
+    margin: 0 auto;
+}
+
 /* Wrapping element */
 
 /* Set some basic padding to keep content from hitting the edges */
@@ -11,10 +39,7 @@
 
 #thumbnail-container { height: 150px; }
 
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
-}
+.products-grid { min-height: 100vh; }
 
 /* Carousel */
 
@@ -98,6 +123,21 @@
     padding-bottom: 20px;
     color: white;
     background: #000E52;
+}
+
+.product-column-wrapper { padding-bottom: 10px; }
+
+.product-column {
+
+    border-radius: 10px;
+
+    background-color: beige;
+    margin-bottom: 10px;
+
+    padding-bottom: 10px;
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
 }
 /**/
 /*.product-column-price {*/

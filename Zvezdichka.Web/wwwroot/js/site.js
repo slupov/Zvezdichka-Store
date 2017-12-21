@@ -71,10 +71,10 @@ function addToCart(productName) {
                 }
             })
         .done(function() {
-            alert("Value Added");
+            addAlert("Success","Successfully added this product to the cart.");
         })
         .error(function() {
-            alert("Error adding to shopping cart");
+            addAlert("danger","Error adding to shopping cart");
         });
 }
 

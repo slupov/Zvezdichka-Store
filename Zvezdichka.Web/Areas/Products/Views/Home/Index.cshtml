@@ -15,84 +15,92 @@
     }
 </p>
 
-<div class="container">
+<input type="hidden" id="selected-categories" value="@string.Join(",", Model.Products.SelectMany(x => x.Categories).Distinct())"/>
 
-    @*    Filters*@
-    <div id="filterPanel">
+@*    Filters*@
+<div id="filterPanel">
+    <br/>
+
+    <form method="post" asp-area="Products" asp-controller="Home" asp-action="Index">
+
+        <h4>Filter by price interval:</h4>
+        <b>@Model.MinPrice</b>
+        <input name="pricerange" id="price-slider" type="text" class="span2 slider" value="" data-slider-min="@Model.MinPrice" data-slider-max="@Model.MaxPrice" data-slider-step="5" data-slider-value="[@Model.Products.Min(x => x.Price),@Model.Products.Max(x => x.Price)]"/>
+        <b>@Model.MaxPrice</b>
+        <div id="filters"></div>
+        <span>Sort by: </span>
         <br/>
+        <select name="orderby" id="order-by" class="selectpicker" title="Choose one of the following...">
+            <option value="@((int) WebConstants.OrderBy.NameAsc)">Name [A-Z]</option>
+            <option value="@((int) WebConstants.OrderBy.NameDesc)">Name [Z-A]</option>
+            <option value="@((int) WebConstants.OrderBy.PriceAsc)">Price, Ascending</option>
+            <option value="@((int) WebConstants.OrderBy.PriceDesc)">Price, Descending</option>
+        </select>
 
-        <form method="post" asp-area="Products" asp-controller="Home" asp-action="Index">
+        @{
+            var categories = Model.AllCategories;
+        }
 
-            <h4>Filter by price interval:</h4>
-            <b>@Model.MinPrice</b>
-            <input name="pricerange" id="price-slider" type="text" class="span2 slider" value="" data-slider-min="@Model.MinPrice" data-slider-max="@Model.MaxPrice" data-slider-step="5" data-slider-value="[@Model.Products.Min(x => x.Price),@Model.Products.Max(x => x.Price)]"/>
-            <b>@Model.MaxPrice</b>
-            <div id="filters"></div>
-            <span>Sort by: </span>
-            <br/>
-            <select name="orderby" id="order-by" class="selectpicker" title="Choose one of the following...">
-                <option value="@((int) WebConstants.OrderBy.NameAsc)">Name [A-Z]</option>
-                <option value="@((int) WebConstants.OrderBy.NameDesc)">Name [Z-A]</option>
-                <option value="@((int) WebConstants.OrderBy.PriceAsc)">Price, Ascending</option>
-                <option value="@((int) WebConstants.OrderBy.PriceDesc)">Price, Descending</option>
-            </select>
-            @{
-                var categories = Model.Products.SelectMany(x => x.Categories).ToList().Distinct();
+        <select name="categories" id="sort-by-categories" class="selectpicker" multiple title="Choose categories...">
+            @foreach (var cat in categories)
+            {
+                <option value="@cat">@cat</option>
             }
+        </select>
 
-            <select name="categories" id="sort-by-categories" class="selectpicker" multiple title="Choose categories...">
-                @foreach (var cat in categories)
-                {
-                    <option value="@cat">@cat</option>
-                }
-            </select>
+        <input type="submit" class="btn btn-default"/>
+    </form>
+    <br/>
+</div>
 
-            <input type="submit" class="btn btn-default"/>
-        </form>
-        <br/>
-    </div>
+@*    products grid system*@
+<div class="container-fluid products-grid">
 
-    @*    products grid system*@
-    <div class="row text-center text-lg-left">
+    <div class="row text-center">
         @foreach (var item in Model.Products)
         {
             @Html.Partial("ProductColumn", item)
         }
     </div>
+    
+    <div class="page-navigation-buttons">
+
+        @{
+            var prevDisabled = !Model.Products.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.Products.HasNextPage ? "disabled" : "";
+        }
+
+        @*page navigation buttons*@
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-page="@(Model.Products.PageIndex - 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn btn-default @prevDisabled">
+            Previous
+        </a>
+
+        @for (int i = 1; i <= Model.Products.TotalPages; i++)
+        {
+            <a asp-action="Index"
+               asp-route-sortOrder="@ViewData["CurrentSort"]"
+               asp-route-page="@i"
+               asp-route-currentFilter="@ViewData["CurrentFilter"]"
+               class="btn btn-primary">
+                [@i]
+            </a>
+        }
+
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-page="@(Model.Products.PageIndex + 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn btn-default @nextDisabled">
+            Next
+        </a>
+    </div>
+
 </div>
 
-@{
-    var prevDisabled = !Model.Products.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.Products.HasNextPage ? "disabled" : "";
-}
-
-@*page navigation buttons*@
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-page="@(Model.Products.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @prevDisabled">
-    Previous
-</a>
-
-@for (int i = 1; i <= Model.Products.TotalPages; i++)
-{
-    <a asp-action="Index"
-       asp-route-sortOrder="@ViewData["CurrentSort"]"
-       asp-route-page="@i"
-       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-       class="btn btn-primary">
-        [@i]
-    </a>
-}
-
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-page="@(Model.Products.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @nextDisabled">
-    Next
-</a>
 
 @section Scripts{
     <script>

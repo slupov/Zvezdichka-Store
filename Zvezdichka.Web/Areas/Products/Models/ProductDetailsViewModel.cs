@@ -12,7 +12,6 @@ namespace Zvezdichka.Web.Areas.Products.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public ICollection<ImageSource> ImageSources { get; set; }
         public ICollection<string> Categories { get; set; }
         public PaginatedList<Comment> Comments { get; set; }
         public decimal Price { get; set; }

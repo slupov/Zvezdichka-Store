@@ -63,6 +63,8 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                 MaxPrice = filtered.Max(x => x.Price)
             };
 
+            vm.AllCategories = this.categories.GetAll().Select(x => x.Name).Distinct().ToList();
+
             if (filter != null)
             {
                 //apply filter by price
@@ -101,6 +103,12 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                     .ToList();
             }
 
+            //parameter tampering defence
+            if (page > Math.Ceiling((decimal) filtered.Count / pageSize) || page < 1 || page == null)
+            {
+                page = 1;
+            }
+
             vm.Products = PaginatedList<ProductListingViewModel>.Create(filtered, page ?? 1, pageSize);
 
             if (filter != null)
@@ -136,7 +144,6 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
 
             var dbProduct = this.products
                 .Join(x => x.Comments).ThenJoin(x => x.User)
-                .Join(x => x.ImageSources)
                 .Join(x => x.Categories).ThenJoin(c => c.Category)
                 .FirstOrDefault(x => x.Id == id);
 
@@ -146,9 +153,16 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             }
 
             var product = Mapper.Map<ProductDetailsViewModel>(dbProduct);
+
+            //parameter tampering defence
+            if (commentsPageIndex > Math.Ceiling((decimal)dbProduct.Comments.Count / WebConstants.CommentsPerPage) || commentsPageIndex < 1 || commentsPageIndex == null)
+            {
+                commentsPageIndex = 1;
+            }
+
             product.Comments =
                 PaginatedList<Comment>.Create(dbProduct.Comments.OrderByDescending(x => x.DateAdded).ToList(),
-                    commentsPageIndex ?? 1, 7);
+                    commentsPageIndex ?? 1, WebConstants.CommentsPerPage);
 
             product.CloudinarySources = await ListCloudinaryFileNamesAsync(product.Name);
             product.Cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys.Value);
@@ -226,7 +240,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                 return NotFound();
 
             var product =
-                Mapper.Map<ProductEditViewModel>(this.products.GetSingle(m => m.Id == id, m => m.ImageSources));
+                Mapper.Map<ProductEditViewModel>(this.products.GetSingle(m => m.Id == id));
 
             product.Categories = this.categories.GetAll().Select(x => x.Name).ToList();
 

@@ -6,6 +6,7 @@
         {
             public const string ProductDetails = "product_details";
             public const string ProductEdit = "product_edit";
+            public const string ProductsPaginatedListing = "products_paginated_listing";
         }
 
         public class RoleNames
@@ -33,5 +34,6 @@
         
 
         public const decimal TaxPercent = 0.2m;
+        public const int CommentsPerPage = 7;
     }
 }

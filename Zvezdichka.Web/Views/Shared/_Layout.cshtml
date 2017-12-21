@@ -71,18 +71,23 @@
         </div>
     </div>
 </nav>
-    
+
 <div class="container body-content">
-    
-@*    Used for rendering the alerts-container with ajax*@
+
+    @*    Used for rendering the alerts-container with ajax*@
     <div id="alerts-container"></div>
     @await Html.PartialAsync("BootlstrapAlerts")
     @RenderBody()
     <hr/>
-    <footer>
-        <p>&copy; @DateTime.Now.Year - Zvezdichka online</p>
-    </footer>
 </div>
+
+<footer class="navbar navbar-fixed-bottom navbar-inverse">
+    <div class="row">
+        <div class="col-xs-12">
+            &copy; @DateTime.Now.Year - Zvezdichka online
+        </div>
+    </div>
+</footer>
 
 <environment include="Development">
     <script src="https://use.fontawesome.com/da65837c38.js"></script>

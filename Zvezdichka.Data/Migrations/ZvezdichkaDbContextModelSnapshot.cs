@@ -242,39 +242,6 @@ namespace Zvezdichka.Data.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("Zvezdichka.Data.Models.ImageSource", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("ProductId");
-
-                    b.Property<string>("Source")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ImageSources");
-                });
-
-            modelBuilder.Entity("Zvezdichka.Data.Models.Invoice", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("DateOfIssue");
-
-                    b.Property<string>("ProductsWithPrices");
-
-                    b.Property<string>("User");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Invoices");
-                });
-
             modelBuilder.Entity("Zvezdichka.Data.Models.Mapping.CategoryProduct", b =>
                 {
                     b.Property<int>("ProductId");
@@ -399,14 +366,6 @@ namespace Zvezdichka.Data.Migrations
                     b.HasOne("Zvezdichka.Data.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Zvezdichka.Data.Models.ImageSource", b =>
-                {
-                    b.HasOne("Zvezdichka.Data.Models.Product", "Product")
-                        .WithMany("ImageSources")
-                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
