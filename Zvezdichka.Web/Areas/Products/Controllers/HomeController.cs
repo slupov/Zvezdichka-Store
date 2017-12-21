@@ -31,7 +31,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         private readonly ICategoriesDataService categories;
         private readonly ICategoryProductsDataService categoryProducts;
         private readonly IHtmlService html;
-        private readonly AppKeyConfig appKeys;
+        private readonly IOptions<AppKeyConfig> appKeys;
 
         public HomeController(IProductsDataService products, ICategoriesDataService categories,
             ICategoryProductsDataService categoryProducts, IHtmlService html,
@@ -39,7 +39,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         {
             this.products = products;
             this.categories = categories;
-            this.appKeys = appKeys.Value;
+            this.appKeys = appKeys;
             this.categoryProducts = categoryProducts;
             this.html = html;
         }
@@ -151,7 +151,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                     commentsPageIndex ?? 1, 7);
 
             product.CloudinarySources = await ListCloudinaryFileNamesAsync(product.Name);
-            product.Cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys);
+            product.Cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys.Value);
 
             var friendlyTitle = FriendlyUrlHelper.GetFriendlyTitle(product.Name);
 
@@ -164,8 +164,10 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         }
 
         // GET: Products/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var categs = this.categories.GetAll().Select(x => x.Name).ToList();
+
             ProductCreateModel vm = new ProductCreateModel()
             {
                 Categories = this.categories.GetAll().Select(x => x.Name).ToList()
@@ -229,7 +231,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             product.Categories = this.categories.GetAll().Select(x => x.Name).ToList();
 
             product.CloudinarySources = await ListCloudinaryFileNamesAsync(product.Name);
-            product.Cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys);
+            product.Cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys.Value);
 
             var friendlyTitle = FriendlyUrlHelper.GetFriendlyTitle(product.Name);
 
@@ -321,7 +323,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         /// <returns></returns>
         private async Task RenameCloudinaryFolderAsync(string oldName, string newName)
         {
-            var cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys);
+            var cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys.Value);
 
             await Task.Run(() =>
             {
@@ -339,7 +341,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         [HttpDelete]
         private async Task DeleteCloudinaryFolderAsync(string folder)
         {
-            var cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys);
+            var cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys.Value);
 
             Task.Run(() =>
             {
@@ -362,7 +364,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         [HttpDelete]
         public async Task DeleteCloudinaryFileAsync(string name)
         {
-            var cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys);
+            var cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys.Value);
 
             Task.Run(() =>
             {
@@ -382,7 +384,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
 
         private async Task<List<string>> ListCloudinaryFileNamesAsync(string name)
         {
-            var cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys);
+            var cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys.Value);
 
             return await Task.Run(() =>
             {

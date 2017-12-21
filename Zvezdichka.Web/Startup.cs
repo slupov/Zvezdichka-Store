@@ -158,7 +158,7 @@ namespace Zvezdichka.Web
             //initializing custom roles 
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-            string[] roleNames = {"Admin", "Manager"};
+            string[] roleNames = {WebConstants.RoleNames.AdminRole, WebConstants.RoleNames.ManagerRole};
 
             foreach (var roleName in roleNames)
             {
@@ -186,7 +186,7 @@ namespace Zvezdichka.Web
             {
                 var createSuperUser = await userManager.CreateAsync(superUser, userPwd);
                 if (createSuperUser.Succeeded)
-                    await userManager.AddToRoleAsync(superUser, "Admin");
+                    await userManager.AddToRoleAsync(superUser, WebConstants.RoleNames.AdminRole);
             }
         }
     }

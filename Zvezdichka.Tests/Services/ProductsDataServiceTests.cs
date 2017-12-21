@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
-using Zvezdichka.Data;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Data.Models.Mapping;
 using Zvezdichka.Services.Implementations.Entity;
 
-namespace Zvezdichka.Tests
+namespace Zvezdichka.Tests.Services
 {
     public class ProductsDataServiceTests
     {
@@ -23,7 +19,7 @@ namespace Zvezdichka.Tests
         public void ShouldAddProduct()
         {
             //Arrange
-            var db = GetDatabase();
+            var db = Zvezdichka.Tests.Tests.GetDatabase();
 
             var p1 = new Product()
             {
@@ -56,7 +52,7 @@ namespace Zvezdichka.Tests
         public void ShouldReturnAllProducts()
         {
             //Arrange
-            var db = GetDatabase();
+            var db = Zvezdichka.Tests.Tests.GetDatabase();
 
             var p1 = new Product()
             {
@@ -91,7 +87,7 @@ namespace Zvezdichka.Tests
         public void ShouldUpdateProduct()
         {
             //Arrange
-            var db = GetDatabase();
+            var db = Zvezdichka.Tests.Tests.GetDatabase();
 
             var p1 = new Product()
             {
@@ -117,7 +113,7 @@ namespace Zvezdichka.Tests
         public void ShouldDeleteProduct()
         {
             //Arrange
-            var db = GetDatabase();
+            var db = Zvezdichka.Tests.Tests.GetDatabase();
 
             var p1 = new Product()
             {
@@ -152,7 +148,7 @@ namespace Zvezdichka.Tests
         public void ShouldGetWithNavigationProperties()
         {
             //Arrange
-            var db = GetDatabase();
+            var db = Zvezdichka.Tests.Tests.GetDatabase();
 
             var p1 = new Product()
             {
@@ -189,15 +185,6 @@ namespace Zvezdichka.Tests
             //Assert
 
             result.Categories.Count.Should().Be(2);
-        }
-
-        private ZvezdichkaDbContext GetDatabase()
-        {
-            var dbOptions = new DbContextOptionsBuilder<ZvezdichkaDbContext>()
-                .UseInMemoryDatabase(Guid.NewGuid().ToString())
-                .Options;
-
-            return new ZvezdichkaDbContext(dbOptions);
         }
     }
 }

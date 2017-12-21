@@ -128,14 +128,13 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
         }
 
         // POST: Categories/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName(nameof(Delete))]
         [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var category = this.categories.GetSingle(m => m.Id == id);
             this.categories.Remove(category);
 
-            //todo: what happens with products with this category
             return RedirectToAction(nameof(Index));
         }
 

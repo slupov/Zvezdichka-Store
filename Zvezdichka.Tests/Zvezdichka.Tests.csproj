@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Mocks\Services\" />
     <Folder Include="Web\Controllers\" />
   </ItemGroup>
 
