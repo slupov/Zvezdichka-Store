@@ -23,22 +23,20 @@ function addAlert(alertStyle, message) {
     });
 }
 
-function deleteCloudinaryPhoto(photoId) {
-    photoId = photoId.replace("/", "%2F");
+function deleteCloudinaryPhoto(e, photoId) {
+    var urlPhotoId = encodeURIComponent(photoId);
 
-    var deleteUrl = "/products/home/deletecloudinaryfileasync?name=" + photoId;
+    var deleteUrl = "/products/home/deletecloudinaryfileasync?name=" + urlPhotoId;
 
     $.ajax({
             url: deleteUrl,
             method: "DELETE"
         })
-        .done(function() {
-            $("#cloudinary-" + photoId).fadeOut(300,
-                function() {
-                    $("#cloudinary-" + photoId).remove();
-                });
+        .done(function () {
 
-            alert("deleted");
+            $(e).parent().parent().parent().fadeOut(300, function () { $(this).remove(); });
+
+            addAlert("Success","Image deleted.");
         });
 }
 
