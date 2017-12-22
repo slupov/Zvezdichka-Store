@@ -87,11 +87,8 @@
 
     <script src="//widget.cloudinary.com/global/all.js" type="text/javascript"></script>
 
-    <script>
-
-    </script>
     <script type="text/javascript">
         addCkEditor("Description", "editForm");
-        addMultipleUpload("upload_widget_opener", '@Model.Name');
+        addMultipleUpload("upload_widget_opener", $("#Name").val());
     </script>
 }

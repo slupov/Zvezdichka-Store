@@ -1,7 +1,6 @@
 ﻿function addCkEditor(textareaId, formId) {
     //attaches the editor to the text area
     CKEDITOR.replace(textareaId);
-
     updateEditorElements();
     if (formId === "") {
         return;
@@ -11,6 +10,7 @@
 }
 
 function updateEditorElements() {
+
     var instance;
     for (instance in CKEDITOR.instances) {
         if (CKEDITOR.instances.hasOwnProperty(instance)) {

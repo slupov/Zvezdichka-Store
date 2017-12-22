@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -155,7 +156,8 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             var product = Mapper.Map<ProductDetailsViewModel>(dbProduct);
 
             //parameter tampering defence
-            if (commentsPageIndex > Math.Ceiling((decimal)dbProduct.Comments.Count / WebConstants.CommentsPerPage) || commentsPageIndex < 1 || commentsPageIndex == null)
+            if (commentsPageIndex > Math.Ceiling((decimal) dbProduct.Comments.Count / WebConstants.CommentsPerPage) ||
+                commentsPageIndex < 1 || commentsPageIndex == null)
             {
                 commentsPageIndex = 1;
             }
@@ -178,6 +180,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         }
 
         // GET: Products/Create
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Create()
         {
             var categs = this.categories.GetAll().Select(x => x.Name).ToList();
@@ -195,11 +198,21 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Create(ProductCreateModel product)
         {
+            var alreadyExists = this.products.Any(x => x.Name == product.Name);
+
+            if (alreadyExists)
+            {
+                Danger(WebConstants.ProductAlreadyExists);
+                return RedirectToAction(nameof(Create), new {product = product});
+            }
+
             if (!this.ModelState.IsValid)
             {
-                return View(nameof(Create));
+                Warning(WebConstants.InvalidDataSupplied, true);
+                return RedirectToAction(nameof(Create));
             }
 
             var productToAdd = new Product()
@@ -234,6 +247,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         }
 
         // GET: Products/Edit/5
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int? id, string title)
         {
             if (id == null)
@@ -262,6 +276,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int id, string oldName, ProductEditViewModel product)
         {
             var dbProduct = this.products.GetSingle(x => x.Name == oldName);
@@ -335,6 +350,8 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         /// <param name="oldName"></param>
         /// <param name="newName"></param>
         /// <returns></returns>
+        /// 
+        [Authorize(Roles = "Admin,Manager")]
         private async Task RenameCloudinaryFolderAsync(string oldName, string newName)
         {
             var cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys.Value);
@@ -353,6 +370,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Admin,Manager")]
         private async Task DeleteCloudinaryFolderAsync(string folder)
         {
             var cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys.Value);
@@ -376,6 +394,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task DeleteCloudinaryFileAsync(string name)
         {
             var cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys.Value);
@@ -414,6 +433,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         }
 
         // GET: Products/Delete/5
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Delete(int? id)
         {
             Warning("You are about to delete an item !!!");
@@ -431,12 +451,15 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var product = this.products.GetSingle(m => m.Id == id);
             this.products.Remove(product);
 
             DeleteCloudinaryFolderAsync(product.Name);
+
+            Success(string.Format(WebConstants.ProductSuccessfullyDeleted, product.Name));
             return RedirectToAction(nameof(Index));
         }
 

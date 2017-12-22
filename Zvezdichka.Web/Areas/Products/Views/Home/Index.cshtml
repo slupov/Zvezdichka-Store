@@ -15,7 +15,7 @@
     }
 </p>
 
-<input type="hidden" id="selected-categories" value="@string.Join(",", Model.Products.SelectMany(x => x.Categories).Distinct())" />
+<input type="hidden" id="selected-categories" value="@string.Join(",", Model.Products.SelectMany(x => x.Categories).Distinct())"/>
 
 @*    Filters*@
 
@@ -26,23 +26,29 @@
 
 <div class="row">
     <div id="filterPanel" class="collapse in col-xs-3">
-        <br />
+        <br/>
+
         <form method="post" asp-area="Products" asp-controller="Home" asp-action="Index">
 
-            <h4>Filter by price interval:</h4>
-            <b>@Model.MinPrice</b>
-            <input name="pricerange" id="price-slider" type="text" class="span2 slider" value="" data-slider-min="@Model.MinPrice" data-slider-max="@Model.MaxPrice" data-slider-step="5" data-slider-value="[@dataSliderValueMin,@dataSliderValueMax]" />
-            <b>@Model.MaxPrice</b>
-            <div id="filters"></div>
-            <span>Sort by: </span>
-            <br />
-            <select name="orderby" id="order-by" class="selectpicker" title="Choose one of the following...">
-                <option value="@((int) WebConstants.OrderBy.NameAsc)">Name [A-Z]</option>
-                <option value="@((int) WebConstants.OrderBy.NameDesc)">Name [Z-A]</option>
-                <option value="@((int) WebConstants.OrderBy.PriceAsc)">Price, Ascending</option>
-                <option value="@((int) WebConstants.OrderBy.PriceDesc)">Price, Descending</option>
-            </select>
+            <div>
 
+                <h4>Filter by price interval:</h4>
+                <b>@Model.MinPrice</b>
+                <input name="pricerange" id="price-slider" type="text" class="span2 slider" value="" data-slider-min="@Model.MinPrice" data-slider-max="@Model.MaxPrice" data-slider-step="5" data-slider-value="[@dataSliderValueMin,@dataSliderValueMax]"/>
+                <b>@Model.MaxPrice</b>
+
+            </div>
+
+            <div id="filters">
+                <span>Sort by: </span>
+                <br/>
+                <select name="orderby" id="order-by" class="selectpicker" title="Choose one of the following...">
+                    <option value="@((int) WebConstants.OrderBy.NameAsc)">Name [A-Z]</option>
+                    <option value="@((int) WebConstants.OrderBy.NameDesc)">Name [Z-A]</option>
+                    <option value="@((int) WebConstants.OrderBy.PriceAsc)">Price, Ascending</option>
+                    <option value="@((int) WebConstants.OrderBy.PriceDesc)">Price, Descending</option>
+                </select>
+            </div>
             @{
                 var categories = Model.AllCategories;
             }
@@ -54,9 +60,11 @@
                 }
             </select>
 
-            <input type="submit" class="btn btn-default" />
+            <div>
+                <input type="submit" class="btn btn-default"/>
+            </div>
         </form>
-        <br />
+        <br/>
     </div>
 
     @*    products grid system*@
@@ -109,7 +117,6 @@
         </div>
     }
 </div>
-
 
 
 @section Scripts{

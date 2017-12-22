@@ -1,4 +1,6 @@
-﻿namespace Zvezdichka.Web.Infrastructure.Constants
+﻿using System;
+
+namespace Zvezdichka.Web.Infrastructure.Constants
 {
     public class WebConstants
     {
@@ -38,5 +40,8 @@
         public const string SuchCategoryExists = "Such category already exists.";
         public const string CategoryCreated = "Category {0} successfully created.";
         public const string CheckoutSecured = "Payment successfull. Your shipment is on its way.";
+        public const string ProductSuccessfullyDeleted = "{0} successfully deleted.";
+        public const string ProductAlreadyExists = "Such product already exists.";
+        public const string InvalidDataSupplied = "Invalid data supplied";
     }
 }
