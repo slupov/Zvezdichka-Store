@@ -43,5 +43,6 @@ namespace Zvezdichka.Web.Infrastructure.Constants
         public const string ProductSuccessfullyDeleted = "{0} successfully deleted.";
         public const string ProductAlreadyExists = "Such product already exists.";
         public const string InvalidDataSupplied = "Invalid data supplied";
+        public const string SuccessfullyCreatedProduct = "Product was successfully created.";
     }
 }

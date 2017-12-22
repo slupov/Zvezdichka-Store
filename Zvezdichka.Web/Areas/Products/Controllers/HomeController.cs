@@ -243,7 +243,8 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
 
             this.categoryProducts.Add(categoryProducts.ToArray());
 
-            return RedirectToAction(nameof(Details), new {id = dbProduct.Id, title = dbProduct.Name});
+//            Success(WebConstants.SuccessfullyCreatedProduct);
+            return RedirectToAction(nameof(Details), "Home", new {area = WebConstants.Areas.ProductsArea, id = dbProduct.Id, title = dbProduct.Name});
         }
 
         // GET: Products/Edit/5

@@ -1,22 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Zvezdichka.Web.Areas.Products.Controllers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Xunit;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Data.Models.Mapping;
 using Zvezdichka.Services.Contracts.Entity;
 using Zvezdichka.Services.Contracts.Entity.Mapping;
 using Zvezdichka.Tests.Mocks;
+using Zvezdichka.Web.Areas.Products.Controllers;
 using Zvezdichka.Web.Areas.Products.Models;
 using Zvezdichka.Web.Infrastructure.Constants;
+using Zvezdichka.Web.Infrastructure.Extensions.Helpers;
+using Zvezdichka.Web.Infrastructure.Extensions.Helpers.Html;
 
 namespace Zvezdichka.Tests.Web.Areas.Products.Controllers
 {
@@ -85,92 +87,108 @@ namespace Zvezdichka.Tests.Web.Areas.Products.Controllers
             formModel.Categories.Should().NotBeEmpty();
         }
 
-//        [Fact]
-//        public async Task PostCreateShouldRedirectWithValidModel()
-//        {
-//            //Arrange
-//            const string nameValue = "Name";
-//            const string descriptionValue = "Description";
-//            const string thumbnailSourceValue = "ThumbnailSource";
-//            const decimal priceValue = 1.99m;
-//            const byte stockValue = 1;
-//
-//            string modelName = null;
-//            string modelDescription = null;
-//            string modelThumbnailSource = null;
-//            decimal modelPriceValue = 0;
-//            byte modelStock = 1;
-//
-//            var categoryService = new Mock<ICategoriesDataService>();
-//            var productsService = new Mock<IProductsDataService>();
-//            var categoryProductsService = new Mock<ICategoryProductsDataService>();
-//
-//            //
-//            var categoriesToAdd = new List<Category>()
-//            {
-//                new Category()
-//                {
-//                    Id = 1,
-//                    Name = FirstCategory
-//                },
-//                new Category()
-//                {
-//                    Id = 2,
-//                    Name = SecondCategory
-//                }
-//            };
-//
-//            var productToAdd = new Product()
-//            {
-//                Id = 1,
-//                Name = "FirstProduct",
-//                Price = 1,
-//                Stock = 1
-//            };
-//
-//            var categoryProductsToAdd = new CategoryProduct[]
-//            {
-//                new CategoryProduct()
-//                {
-//                    ProductId = 1,
-//                    CategoryId = 1
-//                },
-//                new CategoryProduct()
-//                {
-//                    ProductId = 1,
-//                    CategoryId = 2
-//                }
-//            };
-//            //
-//
-//            categoryService.Setup(c => c.GetList(It.IsAny<Func<Category, bool>>()))
-//                .Returns(categoriesToAdd);
-//
-//            productsService.Setup(c => c.Add(productToAdd))
-//                .Callback((string name, string description, decimal price, byte stock, string thumbnail) =>
-//                {
-//                    modelName = name;
-//                    modelDescription = description;
-//                    modelPriceValue = price;
-//                    modelStock = stock;
-//                    modelThumbnailSource = thumbnail;
-//                });
-//
-//
-//            productsService.Setup(c => c.GetSingle(It.IsAny<Func<Product,bool>>()))
-//                .Returns(productToAdd);
-//
-//            categoryProductsService.Setup(c => c.Add(categoryProductsToAdd));
-//
-//            var controller = new HomeController(productsService.Object, categoryService.Object, categoryProductsService.Object, null, null);
-//
-//            //Act
-//            var result = await controller.Create(Mapper.Map<ProductCreateModel>(productToAdd));
-//
-//            //Assert
-//
-//            result.Should();
-//        }
+        [Fact]
+        public async Task PostCreateShouldRedirectWithValidModel()
+        {
+            Tests.Initialize();
+            //Arrange
+            const string nameValue = "Name";
+            const string descriptionValue = "Description";
+            const string thumbnailSourceValue = "ThumbnailSource";
+            const decimal priceValue = 1.99m;
+            const byte stockValue = 1;
+
+            string modelName = null;
+            string modelDescription = null;
+            string modelThumbnailSource = null;
+            decimal modelPriceValue = 0;
+            byte modelStock = 1;
+
+            var categoryService = new Mock<ICategoriesDataService>();
+            var productsService = new Mock<IProductsDataService>();
+            var categoryProductsService = new Mock<ICategoryProductsDataService>();
+
+            #region 
+            var categoriesToAdd = new List<Category>()
+            {
+                new Category()
+                {
+                    Id = 1,
+                    Name = FirstCategory
+                },
+                new Category()
+                {
+                    Id = 2,
+                    Name = SecondCategory
+                }
+            };
+
+            var categoryProductsToAdd = new CategoryProduct[]
+            {
+                new CategoryProduct()
+                {
+                    ProductId = 1,
+                    CategoryId = 1
+                },
+                new CategoryProduct()
+                {
+                    ProductId = 1,
+                    CategoryId = 2
+                }
+            };
+
+#endregion
+
+            categoryService.Setup(c => c.GetList(It.IsAny<Func<Category, bool>>()))
+                .Returns(categoriesToAdd);
+
+            productsService.Setup(c => c.Any(It.IsAny<Func<Product,bool>>()))
+                .Returns(false);
+
+            productsService.Setup(c => c.Add(It.IsAny<Product[]>()))
+                .Callback((Product[] prod) =>
+                {
+                    modelName = prod[0].Name;
+                    modelDescription = prod[0].Description;
+                    modelPriceValue = prod[0].Price;
+                    modelStock = prod[0].Stock;
+                    modelThumbnailSource = prod[0].ThumbnailSource;
+                });
+
+
+            var vm = new Product()
+            {
+                Id = 1,
+                Name = nameValue,
+                Price = priceValue,
+                Stock = stockValue,
+                Description = descriptionValue,
+                ThumbnailSource = thumbnailSourceValue
+            };
+
+            productsService.Setup(c => c.GetSingle(It.IsAny<Func<Product,bool>>()))
+                .Returns(vm);
+
+            categoryProductsService.Setup(c => c.Add(categoryProductsToAdd));
+
+            var controller = new HomeController(productsService.Object, categoryService.Object, categoryProductsService.Object, null, null);
+
+            //Act
+            var result = await controller.Create(Mapper.Map<ProductCreateModel>(vm));
+
+            // Assert
+            modelName.Should().Be(nameValue);
+            modelDescription.Should().Be(descriptionValue);
+            modelStock.Should().Be(stockValue);
+            modelPriceValue.Should().Be(priceValue);
+            modelThumbnailSource.Should().Be(thumbnailSourceValue);
+
+            result.Should().BeOfType<RedirectToActionResult>();
+
+            result.As<RedirectToActionResult>().ActionName.Should().Be("Details");
+            result.As<RedirectToActionResult>().ControllerName.Should().Be("Home");
+            result.As<RedirectToActionResult>().RouteValues.Keys.Should().Contain("area");
+        }
 
         private Mock<UserManager<ApplicationUser>> GetUserManagerMock()
         {
