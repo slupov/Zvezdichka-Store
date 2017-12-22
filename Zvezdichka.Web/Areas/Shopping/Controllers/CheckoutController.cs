@@ -40,7 +40,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             //check for errors
             for (int i = 0; i < checkoutItems.Count; i++)
             {
-                var product = dbProducts.FirstOrDefault(x => x.Name == checkoutItems[i].Name);
+                var product = dbProducts.SingleOrDefault(x => x.Name == checkoutItems[i].Name);
 
                 if (product == null)
                 {
@@ -75,7 +75,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             //check for errors
             for (int i = 0; i < name.Count; i++)
             {
-                var product = dbProducts.FirstOrDefault(x => x.Name == name[i]);
+                var product = dbProducts.SingleOrDefault(x => x.Name == name[i]);
 
                 if (product == null)
                 {
@@ -100,7 +100,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
 
             for (int i = 0; i < name.Count; i++)
             {
-                var product = dbProducts.FirstOrDefault(x => x.Name == name[i]);
+                var product = dbProducts.SingleOrDefault(x => x.Name == name[i]);
                 product.Stock -= quantity[i];
 
             }

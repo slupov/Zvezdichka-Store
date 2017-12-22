@@ -41,7 +41,7 @@ namespace Zvezdichka.Tests.Web.Areas.Products.Controllers
             // Act
             var areaAttribute = controller
                     .GetCustomAttributes(true)
-                    .FirstOrDefault(a => a.GetType() == typeof(AreaAttribute))
+                    .SingleOrDefault(a => a.GetType() == typeof(AreaAttribute))
                 as AreaAttribute;
 
             // Assert

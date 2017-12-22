@@ -37,7 +37,7 @@ namespace Zvezdichka.Web.Infrastructure.Extensions.Data
 
                     item = dbQuery
                         .AsNoTracking() //Don't track any changes for the selected item
-                        .FirstOrDefault(u => u.UserName == username); //Apply where clause
+                        .SingleOrDefault(u => u.UserName == username); //Apply where clause
                 }
 
                 return item;
@@ -101,7 +101,7 @@ namespace Zvezdichka.Web.Infrastructure.Extensions.Data
 
                     item = dbQuery
                         .AsNoTracking() //Don't track any changes for the selected item
-                        .FirstOrDefault(u => u.Email == email); //Apply where clause
+                        .SingleOrDefault(u => u.Email == email); //Apply where clause
                 }
                 return item;
             }).GetAwaiter().GetResult();
@@ -123,7 +123,7 @@ namespace Zvezdichka.Web.Infrastructure.Extensions.Data
 
                     item = dbQuery
                         .AsNoTracking() //Don't track any changes for the selected item
-                        .FirstOrDefault(u => u.Id == id); //Apply where clause
+                        .SingleOrDefault(u => u.Id == id); //Apply where clause
                 }
                 return item;
             }).GetAwaiter().GetResult();

@@ -18,7 +18,7 @@ namespace Zvezdichka.Tests.Web.Areas.Admin.Controllers
 
             //Act
             var areaAttribute = controller.GetCustomAttributes(true)
-                .FirstOrDefault(a => a.GetType() == typeof(AreaAttribute)) as AreaAttribute;
+                .SingleOrDefault(a => a.GetType() == typeof(AreaAttribute)) as AreaAttribute;
 
             //Assert
             areaAttribute.Should().NotBe(null);
@@ -34,7 +34,7 @@ namespace Zvezdichka.Tests.Web.Areas.Admin.Controllers
             // Act
             var areaAttribute = controller
                     .GetCustomAttributes(true)
-                    .FirstOrDefault(a => a.GetType() == typeof(AuthorizeAttribute))
+                    .SingleOrDefault(a => a.GetType() == typeof(AuthorizeAttribute))
                 as AuthorizeAttribute;
 
             // Assert

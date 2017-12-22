@@ -67,7 +67,7 @@ namespace Zvezdichka.Services
 
             item = dbQuery
                 .AsNoTracking() //Don't track any changes for the selected item
-                .FirstOrDefault(where); //Apply where clause
+                .SingleOrDefault(where); //Apply where clause
             return item;
         }
 

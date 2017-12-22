@@ -180,7 +180,7 @@ namespace Zvezdichka.Tests.Services
 
             //Act
 
-            var result = products.Join(x => x.Categories).FirstOrDefault(x => x.Name == "First");
+            var result = products.Join(x => x.Categories).SingleOrDefault(x => x.Name == "First");
 
             //Assert
 

@@ -55,7 +55,7 @@ namespace Zvezdichka.Web.Areas.Api.Controllers
             var toUpdate = this.cartItems
                 .Join(x => x.Product)
                 .Join(x => x.User)
-                .FirstOrDefault(x => x.Id == cartItem.Id);
+                .SingleOrDefault(x => x.Id == cartItem.Id);
 
             if (toUpdate == null)
                 return NotFound();

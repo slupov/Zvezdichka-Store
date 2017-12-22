@@ -194,7 +194,7 @@ function sendEditAjax(commentId) {
                 data: JSON.stringify(dataToSend)
             })
         .done(function() {
-            addAlert(alertURL,'info','Comment edited.')
+            addAlert('info', 'Comment edited.');
 
             //remove editor
             $("#edit-comment-div").parent().fadeOut(300,

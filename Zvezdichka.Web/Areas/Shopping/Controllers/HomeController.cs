@@ -41,7 +41,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             var user = this.users2
                 .Join(u => u.CartItems)
                 .ThenJoin(ci => ci.Product)
-                .FirstOrDefault(u => u.UserName == this.User.Identity.Name);
+                .SingleOrDefault(u => u.UserName == this.User.Identity.Name);
 
             var userCartItems = user.CartItems.AsQueryable().ToList();
 
@@ -96,7 +96,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
 
         public async Task<IActionResult> DeleteCart(int id)
         {
-            var cartItem = this.cartItems.Join(x => x.Product).FirstOrDefault(x => x.Id == id);
+            var cartItem = this.cartItems.Join(x => x.Product).SingleOrDefault(x => x.Id == id);
 
             if (cartItem == null)
                 return NotFound();
@@ -110,7 +110,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateCart(CartItemUpdateModel cartItem)
         {
-            var toUpdate = this.cartItems.Join(x => x.Product).FirstOrDefault(x => x.Id == cartItem.Id);
+            var toUpdate = this.cartItems.Join(x => x.Product).SingleOrDefault(x => x.Id == cartItem.Id);
 
             if (toUpdate == null)
                 return NotFound();

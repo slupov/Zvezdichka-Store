@@ -146,7 +146,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             var dbProduct = this.products
                 .Join(x => x.Comments).ThenJoin(x => x.User)
                 .Join(x => x.Categories).ThenJoin(c => c.Category)
-                .FirstOrDefault(x => x.Id == id);
+                .SingleOrDefault(x => x.Id == id);
 
             if (dbProduct == null)
             {
@@ -317,7 +317,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             foreach (var productCategory in product.Categories)
             {
                 var dbCategory = dbCategories
-                    .FirstOrDefault(x => x.Category.Name == productCategory);
+                    .SingleOrDefault(x => x.Category.Name == productCategory);
 
                 //product is not in this category
                 if (dbCategory == null)
@@ -406,7 +406,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                     .ListResources()
                     .Resources
                     .Select(x => x.PublicId)
-                    .FirstOrDefault(x => x == name);
+                    .SingleOrDefault(x => x == name);
 
                 cloudinary.Destroy(new DeletionParams(toDelete)
                 {
