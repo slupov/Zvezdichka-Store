@@ -1,6 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Zvezdichka.Common;
-using Zvezdichka.Data.Models;
+﻿using Zvezdichka.Data.Models;
+using Zvezdichka.Data.Models.ValidationAttributes;
 using Zvezdichka.Web.Models.Automapper;
 
 namespace Zvezdichka.Web.Areas.Shopping.Models
@@ -10,7 +9,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Models
         public string Name { get; set; }
         public decimal Price { get; set; }
 
-        [Range(1, 256, ErrorMessage = CommonConstants.WrongStockAmount)]
+        [StockQuantity]
         public byte Quantity { get; set; }
 
         public void Configure(AutoMapperProfile config)

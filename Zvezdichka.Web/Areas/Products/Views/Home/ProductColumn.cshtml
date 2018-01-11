@@ -3,6 +3,15 @@
 
 <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 product-column-wrapper">
     <div class="product-column">
+        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+        {
+            <div class="product-checkbox-wrapper">
+                <label class="checkbox-inline">
+                    <input type="checkbox" class="product-checkbox"/>
+                </label>
+            </div>
+        }
+        
         <div class="product-column-title-wrapper">
             <p>
                 <a asp-route="@WebConstants.Routes.ProductDetails" asp-route-id="@Model.Id" asp-route-title="@Model.Name" class="product-column-title">@Model.Name</a>
@@ -32,3 +41,4 @@
         }
     </div>
 </div>
+

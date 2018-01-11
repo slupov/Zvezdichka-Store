@@ -226,10 +226,14 @@ namespace Zvezdichka.Data.Migrations
 
                     b.Property<DateTime?>("DateEdited");
 
-                    b.Property<bool>("IsEdited");
+                    b.Property<bool>("IsEdited")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Message")
-                        .IsRequired();
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("");
 
                     b.Property<int>("ProductId");
 
@@ -243,6 +247,24 @@ namespace Zvezdichka.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.Faq", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Answer")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("");
+
+                    b.Property<string>("Title")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Faqs");
                 });
 
             modelBuilder.Entity("Zvezdichka.Data.Models.Mapping.CategoryProduct", b =>
@@ -263,13 +285,29 @@ namespace Zvezdichka.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("");
+
+                    b.Property<bool>("IsInSale")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Make")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("")
+                        .HasMaxLength(25);
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50);
 
                     b.Property<decimal>("Price");
+
+                    b.Property<decimal?>("SalePrice")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(null);
 
                     b.Property<byte>("Stock");
 

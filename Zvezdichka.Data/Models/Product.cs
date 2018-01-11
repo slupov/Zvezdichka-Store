@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Zvezdichka.Data.Models.Mapping;
+using Zvezdichka.Data.Models.ValidationAttributes;
 
 namespace Zvezdichka.Data.Models
 {
@@ -13,13 +14,23 @@ namespace Zvezdichka.Data.Models
         [StringLength(50)]
         public string Name { get; set; }
 
+        [Required]
+        [StringLength(25)]
+        public string Make { get; set; }
+
         public string Description { get; set; }
 
         [Required]
+        [StockQuantity]
         public byte Stock { get; set; }
 
         [Required]
         public decimal Price { get; set; }
+
+        [Required]
+        public bool IsInSale { get; set; }
+
+        public decimal? SalePrice { get; set; }
 
         public string ThumbnailSource { get; set; }
 

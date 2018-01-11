@@ -9,6 +9,7 @@ namespace Zvezdichka.Data.Models
         public int Id { get; set; }
 
         [Required]
+        [Range(1,5)]
         public byte Value { get; set; }
 
         [Required]

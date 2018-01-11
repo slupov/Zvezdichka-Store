@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Zvezdichka.Common;
+using Zvezdichka.Data.Models.ValidationAttributes;
 
 namespace Zvezdichka.Data.Models
 {
@@ -7,7 +7,7 @@ namespace Zvezdichka.Data.Models
     {
         public int Id { get; set; }
 
-        [Range(1,256, ErrorMessage = CommonConstants.WrongStockAmount)]
+        [StockQuantity]
         public byte Quantity { get; set; }
 
         [Required]

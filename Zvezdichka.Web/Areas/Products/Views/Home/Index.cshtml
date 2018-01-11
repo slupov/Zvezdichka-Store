@@ -8,6 +8,8 @@
 
 <h2>Products</h2>
 
+<label class="checkbox-inline"><input id="all-items-selector" type="checkbox" value="" onchange="allItemsSelectorListener()">Select all</label>
+
 <p>
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
     {
@@ -31,7 +33,6 @@
         <form method="post" asp-area="Products" asp-controller="Home" asp-action="Index">
 
             <div>
-
                 <h4>Filter by price interval:</h4>
                 <b>@Model.MinPrice</b>
                 <input name="pricerange" id="price-slider" type="text" class="span2 slider" value="" data-slider-min="@Model.MinPrice" data-slider-max="@Model.MaxPrice" data-slider-step="5" data-slider-value="[@dataSliderValueMin,@dataSliderValueMax]"/>

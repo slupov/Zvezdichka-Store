@@ -78,6 +78,7 @@ namespace Zvezdichka.Web
             services.AddTransient<IHtmlSanitizer, HtmlSanitizer>();
             services.AddTransient<IHtmlService, HtmlService>();
 
+
             //Add data services.
             services.AddDataServices();
 
@@ -117,13 +118,15 @@ namespace Zvezdichka.Web
 
             app.UseAuthentication();
 
+            app.UseSession();
+
             app.UseMvc(routes =>
             {
-                //                start with most specific, end with most generic
+                // start with most specific, end with most generic
                 routes.MapRoute(
                     name: WebConstants.Routes.ProductsPaginatedListing,
                     template: "products/{page}",
-                    defaults: new { area = "Products", controller = "Home", action = "Index" });
+                    defaults: new {area = "Products", controller = "Home", action = "Index"});
 
                 routes.MapRoute(
                     name: WebConstants.Routes.ProductEdit,

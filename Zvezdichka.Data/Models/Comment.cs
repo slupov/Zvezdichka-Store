@@ -28,6 +28,7 @@ namespace Zvezdichka.Data.Models
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MMMM/YYYY HH:mm:ss}")]
         public DateTime? DateEdited { get; set; }
 
+        [Required]
         public bool IsEdited { get; set; }
     }
 }

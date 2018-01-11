@@ -17,10 +17,11 @@ function addAlert(alertStyle, message) {
     console.log("alert message: " + message);
     console.log("alert url: " + urlWithQuery);
 
-    $("#alerts-container").load(urlWithQuery, function() {
-        $(".alert-dismissable").delay(2000).fadeOut(3000);
-        $("html, body").animate({ scrollTop: $("body").offset().top }, 1000);
-    });
+    $("#alerts-container").load(urlWithQuery,
+        function() {
+            $(".alert-dismissable").delay(2000).fadeOut(3000);
+            $("html, body").animate({ scrollTop: $("body").offset().top }, 1000);
+        });
 }
 
 function deleteCloudinaryPhoto(e, photoId) {
@@ -32,11 +33,11 @@ function deleteCloudinaryPhoto(e, photoId) {
             url: deleteUrl,
             method: "DELETE"
         })
-        .done(function () {
+        .done(function() {
 
-            $(e).parent().parent().parent().fadeOut(300, function () { $(this).remove(); });
+            $(e).parent().parent().parent().fadeOut(300, function() { $(this).remove(); });
 
-            addAlert("Success","Image deleted.");
+            addAlert("Success", "Image deleted.");
         });
 }
 
@@ -53,9 +54,9 @@ function updateProductThumbnailSource(productName, thumbnailNumber) {
         .done(function() {
             addAlert("Success", thumbnailUpdateSuccessfulMessage);
         })
-        .fail(function () {
+        .fail(function() {
             addAlert("Danger", thumbnailUpdateFailedMessage);
-       });
+        });
 }
 
 function addToCart(productName) {
@@ -69,11 +70,11 @@ function addToCart(productName) {
                     quantity: $("#bag-quantity").val()
                 }
             })
-        .done(function (resp) {
+        .done(function(resp) {
             console.dir(resp);
-            addAlert("Success",resp.responseText);
+            addAlert("Success", resp.responseText);
         })
-        .fail(function (resp) {
+        .fail(function(resp) {
             console.dir(resp);
             addAlert("danger", resp.responseText);
         });
@@ -240,4 +241,22 @@ function changeThumbnailOnHover() {
             $(this).removeClass("thumbnail-image-hovered");
         }
     );
+}
+
+function allItemsSelectorListener() {
+    var productColumns = $('.product-column');
+    console.dir(productColumns);
+    productColumns.each(function(index) {
+        changeItemSelector(jQuery(this));
+    });
+}
+
+function changeItemSelector(item) {
+    if (item.prop('checked') !== true) {
+        jQuery(item).addClass("product-column-selected");
+        item.find('input:checkbox:first').prop('checked', true);
+    } else {
+        jQuery(item).removeClass("product-column-selected");
+        item.find('input:checkbox:first').prop('checked', false);
+    }
 }
