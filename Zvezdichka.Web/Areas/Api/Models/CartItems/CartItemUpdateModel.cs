@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Zvezdichka.Common;
-using Zvezdichka.Data.Models;
-using Zvezdichka.Data.Models.ValidationAttributes;
+﻿using Zvezdichka.Data.Models.ValidationAttributes;
 using Zvezdichka.Web.Models.Automapper;
+using Zvezdichka.Web.Models.Entity;
 
 namespace Zvezdichka.Web.Areas.Api.Models.CartItems
 {
@@ -11,6 +9,6 @@ namespace Zvezdichka.Web.Areas.Api.Models.CartItems
         public int Id { get; set; }
 
         [StockQuantity]
-        public int Quantity { get; set; }
+        public byte Quantity { get; set; }
     }
 }

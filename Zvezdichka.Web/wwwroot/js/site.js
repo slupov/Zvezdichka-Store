@@ -59,20 +59,19 @@ function updateProductThumbnailSource(productName, thumbnailNumber) {
         });
 }
 
-function addToCart(productName) {
+function addToCart(prodId) {
     $.ajax(
             {
                 type: "POST",
                 traditional: true,
-                url: "api/cartitems",
+                url: "shopping/home/addToCart",
                 data: {
-                    title: productName,
+                    productId: prodId,
                     quantity: $("#bag-quantity").val()
                 }
             })
-        .done(function(resp) {
-            console.dir(resp);
-            addAlert("Success", resp.responseText);
+        .done(function (resp) {
+            addAlert("Success", resp);
         })
         .fail(function(resp) {
             console.dir(resp);

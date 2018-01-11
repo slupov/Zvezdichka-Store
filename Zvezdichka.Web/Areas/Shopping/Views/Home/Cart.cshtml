@@ -1,4 +1,5 @@
-﻿@model IQueryable<Zvezdichka.Web.Areas.Shopping.Models.CartItemListingViewModel>
+﻿@using Zvezdichka.Web.Models.ShoppingViewModels
+@model IEnumerable<Zvezdichka.Web.Models.ShoppingViewModels.CartItemViewModel>
 
 @{
     ViewBag.Title = "title";
@@ -37,10 +38,10 @@
                         <img src="@item.ThumbnailSource" class="img-responsive img-thumbnail" style="max-height: 100px"/>
                     </td>
                     <td>
-                        <span class="product-name" name="product-@item.Id">@item.ProductName</span>
+                        <span class="product-name" name="product-@item.Id">@item.Name</span>
 
                         <div>
-                            <a asp-area="Shopping" asp-controller="Home" asp-action="DeleteCart" asp-route-id="@item.Id"class="btn btn-default">
+                            <a asp-area="Shopping" asp-controller="Home" asp-action="DeleteCartItem" asp-route-id="@item.Id"class="btn btn-default">
                                 <i class="fa fa-trash-o col-md-12" aria-hidden="true"></i>
                             </a>
                         </div>
@@ -53,7 +54,6 @@
 
                             <div>
                                 <input type="hidden" name="id" value="@item.Id" />
-                                <input type="hidden" name="id" value="@item.Id" form="checkOutForm" />
 
                                 <button type="submit" class="btn btn-info col-xs-12" value="Update bag">Update bag</button>
                             </div>
@@ -78,39 +78,3 @@
 
 <h3>Total: @totalPrice</h3>
 <button type="submit" class="btn btn-success" form="checkOutForm">Checkout</button>
-
-@section Scripts
-{
-    <script>
-        function checkOut() {
-            var products = new Array();
-            var productNames = $('.product-name').each(function(index) {
-                var nameAttr = $(this).attr('name');
-                var productId = nameAttr.substr(nameAttr.indexOf('-') + 1);
-                var bagQuantity = $("#bag-quantity-" + productId).val();
-
-                var productName = $(this).text();
-
-                products.push({ name: productName, quantity: bagQuantity });
-                console.log(index + ": productId=" + productId + " productName=" + productName);
-            });
-
-            console.dir(products);
-
-            $.ajax(
-                    {
-                        type: "POST",
-                        traditional: true,
-                        url: "/shopping/home/checkout",
-                        contentType: "application/json",
-                        data: JSON.stringify(products)
-                    })
-                .done(function() {
-//                    location.reload();
-                })
-                .fail(function() {
-                });
-        }
-    </script>
-
-}

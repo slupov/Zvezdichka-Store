@@ -20,6 +20,7 @@ using Zvezdichka.Web.Infrastructure.Constants;
 using Zvezdichka.Web.Infrastructure.Extensions.Helpers.Html;
 using Zvezdichka.Web.Infrastructure.Extensions.Helpers.Secrets;
 using Zvezdichka.Web.Infrastructure.Extensions.Services;
+using Zvezdichka.Web.Services;
 
 namespace Zvezdichka.Web
 {
@@ -78,6 +79,9 @@ namespace Zvezdichka.Web
             services.AddTransient<IHtmlSanitizer, HtmlSanitizer>();
             services.AddTransient<IHtmlService, HtmlService>();
 
+            services.AddSingleton<IShoppingCartManager, ShoppingCartManager>();
+
+            services.AddSession();
 
             //Add data services.
             services.AddDataServices();

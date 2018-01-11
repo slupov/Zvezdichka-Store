@@ -11,12 +11,12 @@ namespace Zvezdichka.Common
             ;
 
         public const string StockAmountExceededForError =
-                "You have requested quantities for {0} that exceed our stock level. Please reduce the amount or remove the item and try again."
-            ;
+                "You have requested quantities for {0} that exceed our stock level. Please reduce the amount or remove the item and try again.";
 
-        public const string DeletedCartItemSuccessfully = "Successfully removed {0} from your bag!";
+        public const string AddingAmountWillExceedOurStock = "Adding this amount to your current bag amount will exceed our stock for this item";
+        public const string DeletedCartItemSuccessfully = "Successfully removed item from your bag!";
         public const string UpdatedCartItemSuccessfully = "Successfully updated your bag!";
         public const string SuccessfullyAddedCartItem = "Successfully added this product to the cart.";
-        public const string  SuccessfullyAddedMoreOfThisItem = "Successfully added more of this product to the cart.";
+        public const string SuccessfullyAddedMoreOfThisItem = "Successfully added more of this product to the cart.";
     }
 }

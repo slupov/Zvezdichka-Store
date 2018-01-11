@@ -179,27 +179,6 @@ namespace Zvezdichka.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("Zvezdichka.Data.Models.CartItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("ProductId");
-
-                    b.Property<byte>("Quantity");
-
-                    b.Property<string>("UserId")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("CartItems");
-                });
-
             modelBuilder.Entity("Zvezdichka.Data.Models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -383,19 +362,6 @@ namespace Zvezdichka.Data.Migrations
                 {
                     b.HasOne("Zvezdichka.Data.Models.ApplicationUser")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Zvezdichka.Data.Models.CartItem", b =>
-                {
-                    b.HasOne("Zvezdichka.Data.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Zvezdichka.Data.Models.ApplicationUser", "User")
-                        .WithMany("CartItems")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

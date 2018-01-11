@@ -10,9 +10,9 @@ namespace Zvezdichka.Data.Models.ValidationAttributes
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            byte quantity = (byte)validationContext.ObjectInstance;
+            byte quantity = (byte)value;
 
-            if (quantity >= minValue && quantity <= maxValue)
+            if (!(quantity >= minValue && quantity <= maxValue))
             {
                 return new ValidationResult(CommonConstants.WrongStockAmount);
             }

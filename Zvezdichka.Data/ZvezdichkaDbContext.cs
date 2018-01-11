@@ -13,7 +13,6 @@ namespace Zvezdichka.Data
         {
         }
 
-        public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -26,7 +25,6 @@ namespace Zvezdichka.Data
 
             builder.AddConfiguration(new ProductConfiguration());
             builder.AddConfiguration(new CategoryConfiguration());
-            builder.AddConfiguration(new CartItemConfiguration());
             builder.AddConfiguration(new CategoryProductConfiguration());
             builder.AddConfiguration(new CommentConfiguration());
             builder.AddConfiguration(new FaqConfiguration());

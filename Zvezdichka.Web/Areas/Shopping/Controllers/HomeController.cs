@@ -1,121 +1,112 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Zvezdichka.Common;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Services.Contracts.Entity;
-using Zvezdichka.Services.Extensions;
 using Zvezdichka.Web.Areas.Api.Models.CartItems;
-using Zvezdichka.Web.Areas.Shopping.Models;
-using Zvezdichka.Web.Infrastructure.Constants;
+using Zvezdichka.Web.Infrastructure.Extensions;
+using Zvezdichka.Web.Models.ShoppingViewModels;
+using Zvezdichka.Web.Services;
 
 namespace Zvezdichka.Web.Areas.Shopping.Controllers
 {
     public class HomeController : ShoppingBaseController
     {
         private readonly IProductsDataService products;
-        private readonly ICartItemsDataService cartItems;
-        private readonly UserManager<ApplicationUser> users;
-        private readonly IApplicationUserDataService users2;
+        private readonly IShoppingCartManager shoppingCartManager;
 
-        public HomeController(IProductsDataService products, ICartItemsDataService cartItems,
-            IApplicationUserDataService users2,
-            UserManager<ApplicationUser> users)
+        public HomeController(IProductsDataService products, IShoppingCartManager shoppingCartManager)
         {
             this.products = products;
-            this.cartItems = cartItems;
-            this.users = users;
-            this.users2 = users2;
+            this.shoppingCartManager = shoppingCartManager;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Cart()
         {
-            return RedirectToAction(nameof(Cart));
-        }
+            var shoppingCartId = this.HttpContext.Session.GetShoppingCartId();
 
-        public async Task<IActionResult> Cart()
-        {
-            var user = this.users2
-                .Join(u => u.CartItems)
-                .ThenJoin(ci => ci.Product)
-                .SingleOrDefault(u => u.UserName == this.User.Identity.Name);
+            var items = this.shoppingCartManager.GetCartItems(shoppingCartId);
+            var itemIds = items.Select(x => x.ProductId).ToList();
 
-            var userCartItems = user.CartItems.AsQueryable().ToList();
+            var itemQuantities = items.ToDictionary(i => i.ProductId, i => i.Quantity);
 
-            //see usercartitems
-            return View(userCartItems.AsQueryable().ProjectTo<CartItemListingViewModel>());
+            var itemsWithDetails =
+                this.products.GetAll()
+                    .Where(x => itemIds.Contains(x.Id))
+                    .AsQueryable()
+                    .ProjectTo<CartItemViewModel>()
+                    .ToList();
+
+            itemsWithDetails.ForEach(x => x.Quantity = itemQuantities[x.Id]);
+
+            return View(itemsWithDetails);
         }
 
         /// <summary>
-        /// Handles an ajax add to cart request
+        /// Handles an Ajax request to add products to cart
         /// </summary>
-        /// <param name="title"></param>
+        /// <param name="productId"></param>
         /// <param name="quantity"></param>
         /// <returns></returns>
-        [Authorize]
-        public async Task<IActionResult> AddToCart(string title, byte quantity)
+        [HttpPost]
+        public IActionResult AddToCart(int productId, int quantity)
         {
-            var productToAdd = this.products.GetSingle(p => p.Name == title);
+            var shoppingCartId = this.HttpContext.Session.GetShoppingCartId();
 
-            if (productToAdd.Stock <= 0 || productToAdd.Stock < quantity)
+            //check quantity for this product
+            var dbProduct = this.products.GetSingle(p => p.Id == productId);
+
+            if (dbProduct.Stock <= 0 || quantity > dbProduct.Stock)
+                return BadRequest(string.Format(CommonConstants.StockAmountExceededForError, dbProduct.Name));
+
+            var cartItem = this.shoppingCartManager.GetCartItem(shoppingCartId, productId);
+
+            if (cartItem == null)
             {
-                Warning(string.Format(CommonConstants.StockAmountExceededForError,productToAdd.Name), true);
+                this.shoppingCartManager.AddToCart(shoppingCartId, productId, quantity);
 
-                return RedirectToRoute(WebConstants.Routes.ProductDetails,
-                    new {id = productToAdd.Id, title = title});
+                return Ok(CommonConstants.SuccessfullyAddedCartItem);
             }
 
-            //already such cart product exists
-            var cartItem =
-                this.cartItems.GetSingle(c => c.User.UserName == this.User.Identity.Name && c.Product.Name == title,
-                    c => c.User, c => c.Product);
+            //check if can add this quantity to the current quantity without exceeding the db stock
+            if (cartItem.Quantity + quantity > dbProduct.Stock)
+                return BadRequest(CommonConstants.AddingAmountWillExceedOurStock);
 
-            if (cartItem != null)
-            {
-                cartItem.Quantity += quantity;
-                this.cartItems.Update(cartItem);
-
-                return Ok();
-            }
-
-            var user = this.users.FindByNameAsync(this.User.Identity.Name).GetAwaiter().GetResult();
-            var cartProduct = new CartItem()
-            {
-                Product = productToAdd,
-                Quantity = quantity,
-                User = user
-            };
-
-            this.cartItems.Add(cartProduct);
-
-            return Ok();
+            return Ok(CommonConstants.SuccessfullyAddedMoreOfThisItem);
         }
 
-        public async Task<IActionResult> DeleteCart(int id)
+        public async Task<IActionResult> DeleteCartItem(int id)
         {
-            var cartItem = this.cartItems.Join(x => x.Product).SingleOrDefault(x => x.Id == id);
+            var shoppingCartId = this.HttpContext.Session.GetShoppingCartId();
+            var cartItems = this.shoppingCartManager.GetCartItems(shoppingCartId);
+
+            var cartItem = cartItems.SingleOrDefault(x => x.ProductId == id);
 
             if (cartItem == null)
                 return NotFound();
 
-            this.cartItems.Remove(cartItem);
+            this.shoppingCartManager.RemoveFromCart(shoppingCartId, cartItem.ProductId);
 
-            Success(string.Format(CommonConstants.DeletedCartItemSuccessfully, cartItem.Product.Name));
+            Success(string.Format(CommonConstants.DeletedCartItemSuccessfully));
             return RedirectToAction(nameof(Cart));
         }
 
         [HttpPost]
         public async Task<IActionResult> UpdateCart(CartItemUpdateModel cartItem)
         {
-            var toUpdate = this.cartItems.Join(x => x.Product).SingleOrDefault(x => x.Id == cartItem.Id);
+            var shoppingCartId = this.HttpContext.Session.GetShoppingCartId();
+            var toUpdate = this.shoppingCartManager.GetCartItems(shoppingCartId)
+                .SingleOrDefault(x => x.ProductId == cartItem.Id);
 
             if (toUpdate == null)
                 return NotFound();
 
-            if (toUpdate.Product.Stock < cartItem.Quantity)
+            var dbProduct = this.products.GetSingle(x => x.Id == cartItem.Id);
+
+            if (dbProduct.Stock < cartItem.Quantity)
             {
                 Danger(CommonConstants.StockAmountExceededError);
                 return RedirectToAction(nameof(Cart));
@@ -129,12 +120,11 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
                 foreach (var error in modelState.Errors)
                     errorMsg += error.ErrorMessage + "\n";
 
-                Danger(CommonConstants.StockAmountExceededError);
+                Danger(errorMsg);
                 return RedirectToAction(nameof(Cart));
             }
 
-            toUpdate.Quantity = (byte) cartItem.Quantity;
-            this.cartItems.Update(toUpdate);
+            toUpdate.Quantity = cartItem.Quantity;
 
             Success(CommonConstants.UpdatedCartItemSuccessfully);
             return RedirectToAction(nameof(Cart));
