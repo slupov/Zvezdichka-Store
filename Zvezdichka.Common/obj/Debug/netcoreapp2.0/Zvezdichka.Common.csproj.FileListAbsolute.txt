@@ -7,3 +7,12 @@ D:\Github\Zvezdichka-Store\Zvezdichka.Common\obj\Debug\netcoreapp2.0\Zvezdichka.
 D:\Github\Zvezdichka-Store\Zvezdichka.Common\obj\Debug\netcoreapp2.0\Zvezdichka.Common.AssemblyInfo.cs
 D:\Github\Zvezdichka-Store\Zvezdichka.Common\obj\Debug\netcoreapp2.0\Zvezdichka.Common.dll
 D:\Github\Zvezdichka-Store\Zvezdichka.Common\obj\Debug\netcoreapp2.0\Zvezdichka.Common.pdb
+C:\Users\Maria\Documents\GitHub\Zvezdichka-Store\Zvezdichka.Common\bin\Debug\netcoreapp2.0\Zvezdichka.Common.deps.json
+C:\Users\Maria\Documents\GitHub\Zvezdichka-Store\Zvezdichka.Common\bin\Debug\netcoreapp2.0\Zvezdichka.Common.dll
+C:\Users\Maria\Documents\GitHub\Zvezdichka-Store\Zvezdichka.Common\bin\Debug\netcoreapp2.0\Zvezdichka.Common.pdb
+C:\Users\Maria\Documents\GitHub\Zvezdichka-Store\Zvezdichka.Common\obj\Debug\netcoreapp2.0\Zvezdichka.Common.csprojResolveAssemblyReference.cache
+C:\Users\Maria\Documents\GitHub\Zvezdichka-Store\Zvezdichka.Common\obj\Debug\netcoreapp2.0\Zvezdichka.Common.csproj.CoreCompileInputs.cache
+C:\Users\Maria\Documents\GitHub\Zvezdichka-Store\Zvezdichka.Common\obj\Debug\netcoreapp2.0\Zvezdichka.Common.AssemblyInfoInputs.cache
+C:\Users\Maria\Documents\GitHub\Zvezdichka-Store\Zvezdichka.Common\obj\Debug\netcoreapp2.0\Zvezdichka.Common.AssemblyInfo.cs
+C:\Users\Maria\Documents\GitHub\Zvezdichka-Store\Zvezdichka.Common\obj\Debug\netcoreapp2.0\Zvezdichka.Common.dll
+C:\Users\Maria\Documents\GitHub\Zvezdichka-Store\Zvezdichka.Common\obj\Debug\netcoreapp2.0\Zvezdichka.Common.pdb
