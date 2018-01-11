@@ -122,7 +122,7 @@ namespace Zvezdichka.Web
 
             app.UseAuthentication();
 
-            app.UseSession();
+//            app.UseSession();
 
             app.UseMvc(routes =>
             {
