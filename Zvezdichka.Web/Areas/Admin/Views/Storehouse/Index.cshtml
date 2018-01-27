@@ -1,0 +1,25 @@
+﻿@model IList<Product>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>title</h2>
+
+<table class="table table-responsive table-striped">
+    <tr>
+        <th>Product name</th>
+        <th>Price</th>
+        <th>Deliverer</th>
+    </tr>
+
+    @foreach (var product in Model)
+    {
+        <tr>
+            <td>@product.Name</td>
+            <td>@product.Price</td>
+            <td>@product.Make</td>
+        </tr>
+    }
+</table>

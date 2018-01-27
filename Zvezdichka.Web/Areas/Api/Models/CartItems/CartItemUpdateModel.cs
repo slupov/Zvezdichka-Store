@@ -1,4 +1,4 @@
-﻿using Zvezdichka.Data.Models.ValidationAttributes;
+﻿using Zvezdichka.Data.EntityConfigurations.ValidationAttributes;
 using Zvezdichka.Web.Models.Automapper;
 using Zvezdichka.Web.Models.Entity;
 

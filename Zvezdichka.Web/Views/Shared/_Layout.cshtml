@@ -55,7 +55,7 @@
                 <li>
                     <a asp-area="Products" asp-controller="Home" asp-action="Index">Products</a>
                 </li>
-                
+
                 <li>
                     <a asp-area="" asp-controller="Faqs" asp-action="Index">FAQ</a>
                 </li>
@@ -63,9 +63,13 @@
                 <li>
                     <a asp-area="" asp-controller="Home" asp-action="Contact">Contact us</a>
                 </li>
-
+              
                 @if (User.IsInRole("Admin"))
                 {
+                    <li>
+                        <a asp-area="Admin" asp-controller="Storehouse" asp-action="Index">Storehouse</a>
+                    </li>
+
                     <li>
                         <a asp-area="Admin" asp-controller="Home" asp-action="Index">Admin Panel</a>
                     </li>

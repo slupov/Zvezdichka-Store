@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Zvezdichka.Common;
 using Zvezdichka.Services.Contracts.Entity;
+using Zvezdichka.Services.Contracts.Entity.Checkout;
 using Zvezdichka.Web.Areas.Shopping.Models;
+using Zvezdichka.Web.Areas.Shopping.Models.Checkout;
 using Zvezdichka.Web.Infrastructure.Extensions;
 using Zvezdichka.Web.Services;
 
@@ -18,11 +20,16 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
     {
         private readonly IShoppingCartManager shoppingCartManager;
         private readonly IProductsDataService products;
+        private readonly IDeliveryOptionsDataService deliveryOptions;
+        private readonly IPaymentOptionsDataService paymentOptions;
 
-        public CheckoutController(IShoppingCartManager shoppingCartManager, IProductsDataService products)
+        public CheckoutController(IShoppingCartManager shoppingCartManager, IProductsDataService products,
+            IDeliveryOptionsDataService deliveryOptions, IPaymentOptionsDataService paymentOptions)
         {
             this.shoppingCartManager = shoppingCartManager;
             this.products = products;
+            this.deliveryOptions = deliveryOptions;
+            this.paymentOptions = paymentOptions;
         }
 
         public async Task<IActionResult> Index()
@@ -62,7 +69,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             }
 
             List<CheckoutProductsModel> vm = dbProducts.AsQueryable().ProjectTo<CheckoutProductsModel>().ToList();
-            vm.ForEach(x => x.Quantity = (byte)cartItems.Single(y => y.ProductId == x.Id).Quantity);
+            vm.ForEach(x => x.Quantity = (byte) cartItems.Single(y => y.ProductId == x.Id).Quantity);
 
             return View(vm);
         }
@@ -70,51 +77,22 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
         [HttpPost]
         public async Task<IActionResult> SecureCheckout(List<string> name, List<byte> quantity)
         {
+            return View();
+        }
 
-            return Ok();
-//        {
-//            var dbProducts = this.products.GetList(x => name.Contains(x.Name));
-//
-//            string errorMsg = string.Empty;
-//            bool hasErrors = false;
-//
-//            //check for errors
-//            for (int i = 0; i < name.Count; i++)
-//            {
-//                var product = dbProducts.SingleOrDefault(x => x.Name == name[i]);
-//
-//                if (product == null)
-//                {
-//                    return NotFound();
-//                }
-//
-//                if (product.Stock < quantity[i])
-//                {
-//                    hasErrors = true;
-//                    errorMsg += string.Format(CommonConstants.StockAmountExceededForError, name[i]) +
-//                                Environment.NewLine;
-//                }
-//            }
-//
-//            if (hasErrors)
-//            {
-//                Danger(errorMsg);
-//                return RedirectToAction(nameof(Index), new {id = dbProducts.Select(x => x.Id).ToList()});
-//            }
-//
-//            //secure checkout
-//
-//            for (int i = 0; i < name.Count; i++)
-//            {
-//                var product = dbProducts.SingleOrDefault(x => x.Name == name[i]);
-//                product.Stock -= quantity[i];
-//            }
-//
-//            this.products.Update(dbProducts.ToArray());
-//            this.cartItems.Remove(this.cartItems.GetAll().ToArray());
-//
-//            Success(WebConstants.CheckoutSecured);
-//            return RedirectToAction("Index", "Home", new {area = ""});
+        public async Task<IActionResult> Delivery(List<string> name, List<byte> quantity)
+        {
+            return View(this.deliveryOptions.GetAll());
+        }
+
+        public async Task<IActionResult> CardDetails(List<string> name, List<byte> quantity)
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> Payment(List<string> name, List<byte> quantity)
+        {
+            return View(this.paymentOptions.GetAll());
         }
     }
 }

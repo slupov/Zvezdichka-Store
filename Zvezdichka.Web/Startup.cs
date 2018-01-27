@@ -122,7 +122,7 @@ namespace Zvezdichka.Web
 
             app.UseAuthentication();
 
-//            app.UseSession();
+            app.UseSession();
 
             app.UseMvc(routes =>
             {
@@ -160,7 +160,6 @@ namespace Zvezdichka.Web
                 context.Database.Migrate();
 
                 CreateRoles(serviceProvider).Wait();
-
                 context.EnsureSeedData();
             }
         }

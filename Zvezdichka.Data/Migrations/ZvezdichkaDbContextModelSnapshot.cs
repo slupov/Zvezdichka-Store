@@ -196,6 +196,62 @@ namespace Zvezdichka.Data.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("Zvezdichka.Data.Models.Checkout.DeliveryOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("")
+                        .HasMaxLength(20);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
+
+                    b.ToTable("DeliveryOptions");
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.Checkout.PaymentOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("")
+                        .HasMaxLength(20);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
+
+                    b.ToTable("PaymentOptions");
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.Checkout.Purchase", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CustomerId");
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<bool>("IsOnline");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Purchase");
+                });
+
             modelBuilder.Entity("Zvezdichka.Data.Models.Comment", b =>
                 {
                     b.Property<int>("Id")
@@ -226,6 +282,63 @@ namespace Zvezdichka.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.Distributors.Distributor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("PhoneNumber");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
+
+                    b.ToTable("Distributors");
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.Distributors.DistributorShipment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<int>("DistributorId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DistributorId");
+
+                    b.ToTable("DistributorShipments");
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.Distributors.DistributorShipmentProduct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<double>("DiscountPercentage");
+
+                    b.Property<int>("DistributorShipmentId");
+
+                    b.Property<string>("Name");
+
+                    b.Property<decimal>("Price");
+
+                    b.Property<byte>("Quantity");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DistributorShipmentId");
+
+                    b.ToTable("DistributorShipmentProducts");
                 });
 
             modelBuilder.Entity("Zvezdichka.Data.Models.Faq", b =>
@@ -366,6 +479,13 @@ namespace Zvezdichka.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("Zvezdichka.Data.Models.Checkout.Purchase", b =>
+                {
+                    b.HasOne("Zvezdichka.Data.Models.ApplicationUser", "Customer")
+                        .WithMany("Purchases")
+                        .HasForeignKey("CustomerId");
+                });
+
             modelBuilder.Entity("Zvezdichka.Data.Models.Comment", b =>
                 {
                     b.HasOne("Zvezdichka.Data.Models.Product", "Product")
@@ -376,6 +496,22 @@ namespace Zvezdichka.Data.Migrations
                     b.HasOne("Zvezdichka.Data.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.Distributors.DistributorShipment", b =>
+                {
+                    b.HasOne("Zvezdichka.Data.Models.Distributors.Distributor", "Distributor")
+                        .WithMany()
+                        .HasForeignKey("DistributorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.Distributors.DistributorShipmentProduct", b =>
+                {
+                    b.HasOne("Zvezdichka.Data.Models.Distributors.DistributorShipment", "DistributorShipment")
+                        .WithMany("Products")
+                        .HasForeignKey("DistributorShipmentId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

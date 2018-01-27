@@ -1,0 +1,47 @@
+﻿@model Zvezdichka.Data.Models.Distributors.DistributorShipment
+
+
+@{
+    ViewData["Title"] = "Details";
+    int row = 0;
+}
+
+
+<h2>Details</h2>
+
+
+<div>
+
+    <table class="table table-responsive table-striped">
+        <tr>
+            <th></th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Delivery price</th>
+            <th>Discount</th>
+            <th>Final DP</th>
+        </tr>
+
+        @foreach (var item in Model.Products)
+        {
+            <tr>
+                <td>@{ ++row; }</td>
+                <td>@item.Name</td>
+                <td>@item.Quantity</td>
+                <td>@item.Price</td>
+                <td>@item.DiscountPercentage &#37;</td>
+                <td>@((double) item.Price * item.DiscountPercentage * item.Quantity)</td>
+            </tr>
+        }
+
+    </table>
+
+</div>
+
+<div>
+
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+
+    <a asp-action="Index">Back to List</a>
+
+</div>

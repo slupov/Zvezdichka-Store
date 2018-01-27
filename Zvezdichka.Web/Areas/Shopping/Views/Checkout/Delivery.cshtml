@@ -1,0 +1,48 @@
+﻿@using Zvezdichka.Data.Models.Checkout
+@model IList<Zvezdichka.Data.Models.Checkout.DeliveryOption>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>Delivery</h2>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <ul>
+                @foreach (var del in Model)
+                {
+                    <li>
+                        <div>
+                            <p>@del.Name</p>
+                        </div>
+                    </li>
+                }
+            </ul>
+
+        </div>
+
+        <div class="col-xs-12 col-md-6">
+            <div>
+                x items
+            </div>
+
+            <div>
+                Total price: xyz $
+            </div>
+
+            <div class="col-xs-12">
+                <a asp-area="Shopping" asp-controller="Home" asp-action="Cart" class="col-xs-6 btn btn-default">Edit cart</a>
+                <a asp-area="Products" asp-controller="Home" asp-action="Index" class="col-xs-6 btn btn-default">Continue shopping</a>
+            </div>
+
+
+            <a asp-area="Shopping" asp-controller="Checkout" asp-action="Payment" class="btn btn-success col-xs-12">Continue securely</a>
+
+        </div>
+    </div>
+</div>
+
+<a asp-area="Shopping" asp-controller="Checkout" asp-action="Payment" class="btn btn-success">Payment</a>

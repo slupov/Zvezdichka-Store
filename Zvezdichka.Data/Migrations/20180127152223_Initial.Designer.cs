@@ -11,8 +11,8 @@ using Zvezdichka.Data;
 namespace Zvezdichka.Data.Migrations
 {
     [DbContext(typeof(ZvezdichkaDbContext))]
-    [Migration("20171221201621_ProductsAndCategoriesWithUniqueNames")]
-    partial class ProductsAndCategoriesWithUniqueNames
+    [Migration("20180127152223_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -180,27 +180,6 @@ namespace Zvezdichka.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("Zvezdichka.Data.Models.CartItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("ProductId");
-
-                    b.Property<byte>("Quantity");
-
-                    b.Property<string>("UserId")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("CartItems");
-                });
-
             modelBuilder.Entity("Zvezdichka.Data.Models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -218,6 +197,62 @@ namespace Zvezdichka.Data.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("Zvezdichka.Data.Models.Checkout.DeliveryOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("")
+                        .HasMaxLength(20);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
+
+                    b.ToTable("DeliveryOptions");
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.Checkout.PaymentOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("")
+                        .HasMaxLength(20);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
+
+                    b.ToTable("PaymentOptions");
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.Checkout.Purchase", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CustomerId");
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<bool>("IsOnline");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Purchase");
+                });
+
             modelBuilder.Entity("Zvezdichka.Data.Models.Comment", b =>
                 {
                     b.Property<int>("Id")
@@ -227,10 +262,14 @@ namespace Zvezdichka.Data.Migrations
 
                     b.Property<DateTime?>("DateEdited");
 
-                    b.Property<bool>("IsEdited");
+                    b.Property<bool>("IsEdited")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Message")
-                        .IsRequired();
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("");
 
                     b.Property<int>("ProductId");
 
@@ -244,6 +283,81 @@ namespace Zvezdichka.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.Distributors.Distributor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("PhoneNumber");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
+
+                    b.ToTable("Distributors");
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.Distributors.DistributorShipment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<int>("DistributorId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DistributorId");
+
+                    b.ToTable("DistributorShipments");
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.Distributors.DistributorShipmentProduct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<double>("DiscountPercentage");
+
+                    b.Property<int>("DistributorShipmentId");
+
+                    b.Property<string>("Name");
+
+                    b.Property<decimal>("Price");
+
+                    b.Property<byte>("Quantity");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DistributorShipmentId");
+
+                    b.ToTable("DistributorShipmentProducts");
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.Faq", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Answer")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("");
+
+                    b.Property<string>("Title")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Faqs");
                 });
 
             modelBuilder.Entity("Zvezdichka.Data.Models.Mapping.CategoryProduct", b =>
@@ -264,7 +378,21 @@ namespace Zvezdichka.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("");
+
+                    b.Property<int?>("DistributorShipmentId");
+
+                    b.Property<bool>("IsInSale")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Make")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("")
+                        .HasMaxLength(25);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -272,11 +400,17 @@ namespace Zvezdichka.Data.Migrations
 
                     b.Property<decimal>("Price");
 
+                    b.Property<decimal?>("SalePrice")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(null);
+
                     b.Property<byte>("Stock");
 
                     b.Property<string>("ThumbnailSource");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DistributorShipmentId");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -350,17 +484,11 @@ namespace Zvezdichka.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Zvezdichka.Data.Models.CartItem", b =>
+            modelBuilder.Entity("Zvezdichka.Data.Models.Checkout.Purchase", b =>
                 {
-                    b.HasOne("Zvezdichka.Data.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Zvezdichka.Data.Models.ApplicationUser", "User")
-                        .WithMany("CartItems")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("Zvezdichka.Data.Models.ApplicationUser", "Customer")
+                        .WithMany("Purchases")
+                        .HasForeignKey("CustomerId");
                 });
 
             modelBuilder.Entity("Zvezdichka.Data.Models.Comment", b =>
@@ -376,6 +504,22 @@ namespace Zvezdichka.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("Zvezdichka.Data.Models.Distributors.DistributorShipment", b =>
+                {
+                    b.HasOne("Zvezdichka.Data.Models.Distributors.Distributor", "Distributor")
+                        .WithMany()
+                        .HasForeignKey("DistributorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.Distributors.DistributorShipmentProduct", b =>
+                {
+                    b.HasOne("Zvezdichka.Data.Models.Distributors.DistributorShipment", "DistributorShipment")
+                        .WithMany()
+                        .HasForeignKey("DistributorShipmentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Zvezdichka.Data.Models.Mapping.CategoryProduct", b =>
                 {
                     b.HasOne("Zvezdichka.Data.Models.Category", "Category")
@@ -387,6 +531,13 @@ namespace Zvezdichka.Data.Migrations
                         .WithMany("Categories")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Zvezdichka.Data.Models.Product", b =>
+                {
+                    b.HasOne("Zvezdichka.Data.Models.Distributors.DistributorShipment")
+                        .WithMany("Products")
+                        .HasForeignKey("DistributorShipmentId");
                 });
 
             modelBuilder.Entity("Zvezdichka.Data.Models.Rating", b =>

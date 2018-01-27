@@ -1,0 +1,39 @@
+﻿@model IList<Zvezdichka.Data.Models.Distributors.DistributorShipment>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+    var row = 0;
+}
+
+<h2>Distributor Shipments</h2>
+<a asp-area="Admin" asp-controller="DistributorShipments" asp-action="Create" class="btn btn-success">Create new</a>
+
+<div>
+    @foreach (var shipment in Model)
+    {
+        <table class="table table-responsive table-striped">
+            <tr>
+                <th></th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Delivery price</th>
+                <th>Discount</th>
+                <th>Final DP</th>
+            </tr>
+
+            @foreach (var item in shipment.Products)
+            {
+                <tr>
+                    <td>@{ ++row; }</td>
+                    <td>@item.Name</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.Price</td>
+                    <td>@item.DiscountPercentage &#37;</td>
+                    <td>@((double) item.Price * item.DiscountPercentage * item.Quantity)</td>
+                </tr>
+            }
+
+        </table>
+    }
+</div>

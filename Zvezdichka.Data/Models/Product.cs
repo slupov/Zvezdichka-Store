@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Zvezdichka.Data.EntityConfigurations.ValidationAttributes;
 using Zvezdichka.Data.Models.Mapping;
-using Zvezdichka.Data.Models.ValidationAttributes;
 
 namespace Zvezdichka.Data.Models
 {

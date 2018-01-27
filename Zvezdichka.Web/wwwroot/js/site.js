@@ -11,7 +11,7 @@ $(".alert-dismissable").delay(2000).fadeOut(3000);
 var checkboxes = $('.product-column').find('input:checkbox');
 
 for (let i = 0; i < checkboxes.length; i++) {
-    checkboxes[i].onclick = function () {
+    checkboxes[i].onclick = function() {
         if (checkboxes[i].checked) {
             // console.log($(this).parent());
 
@@ -22,6 +22,7 @@ for (let i = 0; i < checkboxes.length; i++) {
         }
     };
 }
+
 function addAlert(alertStyle, message) {
     //The required URL parameter specifies the URL you wish to load.
     //The optional data parameter specifies a set of querystring key/value pairs to send along with the request.
@@ -84,7 +85,7 @@ function addToCart(prodId) {
                     quantity: $("#bag-quantity").val()
                 }
             })
-        .done(function (resp) {
+        .done(function(resp) {
             addAlert("Success", resp);
         })
         .fail(function(resp) {
@@ -257,21 +258,21 @@ function changeThumbnailOnHover() {
 }
 
 function allItemsSelectorListener() {
-   
 
-        var productColumns = $('.product-column');
-        productColumns.each(function (index) {
-            if ($('#all-items-selector').prop('checked') === true) {
-                changeItemSelector(jQuery(this), true);
-            } else {
-                changeItemSelector(jQuery(this), false);
-            }
-        });
-    
+
+    var productColumns = $('.product-column');
+    productColumns.each(function(index) {
+        if ($('#all-items-selector').prop('checked') === true) {
+            changeItemSelector(jQuery(this), true);
+        } else {
+            changeItemSelector(jQuery(this), false);
+        }
+    });
+
 }
 
 
-function changeItemSelector(item,changeTo) {
+function changeItemSelector(item, changeTo) {
     if (changeTo === true) {
         jQuery(item).addClass("product-column-selected");
         item.find('input:checkbox:first').prop('checked', true);

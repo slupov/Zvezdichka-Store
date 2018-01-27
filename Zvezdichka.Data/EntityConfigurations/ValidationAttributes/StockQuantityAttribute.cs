@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Zvezdichka.Common;
 
-namespace Zvezdichka.Data.Models.ValidationAttributes
+namespace Zvezdichka.Data.EntityConfigurations.ValidationAttributes
 {
     public class StockQuantityAttribute : ValidationAttribute
     {
@@ -10,7 +10,7 @@ namespace Zvezdichka.Data.Models.ValidationAttributes
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            byte quantity = (byte)value;
+            byte quantity = (byte) value;
 
             if (!(quantity >= minValue && quantity <= maxValue))
             {

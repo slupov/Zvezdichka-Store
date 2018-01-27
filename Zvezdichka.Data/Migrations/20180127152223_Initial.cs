@@ -62,20 +62,57 @@ namespace Zvezdichka.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Products",
+                name: "DeliveryOptions",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Description = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(maxLength: 50, nullable: false),
-                    Price = table.Column<decimal>(nullable: false),
-                    Stock = table.Column<byte>(nullable: false),
-                    ThumbnailSource = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(maxLength: 20, nullable: true, defaultValue: "")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.PrimaryKey("PK_DeliveryOptions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Distributors",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(maxLength: 20, nullable: true),
+                    PhoneNumber = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Distributors", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Faqs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Answer = table.Column<string>(nullable: true, defaultValue: ""),
+                    Title = table.Column<string>(nullable: true, defaultValue: "")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Faqs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PaymentOptions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(maxLength: 20, nullable: true, defaultValue: "")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentOptions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -185,30 +222,94 @@ namespace Zvezdichka.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CartItems",
+                name: "Purchase",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ProductId = table.Column<int>(nullable: false),
-                    Quantity = table.Column<byte>(nullable: false),
-                    UserId = table.Column<string>(nullable: false)
+                    CustomerId = table.Column<string>(nullable: true),
+                    Date = table.Column<DateTime>(nullable: false),
+                    IsOnline = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CartItems", x => x.Id);
+                    table.PrimaryKey("PK_Purchase", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CartItems_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CartItems_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Purchase_AspNetUsers_CustomerId",
+                        column: x => x.CustomerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DistributorShipments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Date = table.Column<DateTime>(nullable: false),
+                    DistributorId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DistributorShipments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DistributorShipments_Distributors_DistributorId",
+                        column: x => x.DistributorId,
+                        principalTable: "Distributors",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DistributorShipmentProducts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    DiscountPercentage = table.Column<double>(nullable: false),
+                    DistributorShipmentId = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Price = table.Column<decimal>(nullable: false),
+                    Quantity = table.Column<byte>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DistributorShipmentProducts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DistributorShipmentProducts_DistributorShipments_DistributorShipmentId",
+                        column: x => x.DistributorShipmentId,
+                        principalTable: "DistributorShipments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Description = table.Column<string>(nullable: true, defaultValue: ""),
+                    DistributorShipmentId = table.Column<int>(nullable: true),
+                    IsInSale = table.Column<bool>(nullable: false, defaultValue: false),
+                    Make = table.Column<string>(maxLength: 25, nullable: false, defaultValue: ""),
+                    Name = table.Column<string>(maxLength: 50, nullable: false),
+                    Price = table.Column<decimal>(nullable: false),
+                    SalePrice = table.Column<decimal>(nullable: true),
+                    Stock = table.Column<byte>(nullable: false),
+                    ThumbnailSource = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Products_DistributorShipments_DistributorShipmentId",
+                        column: x => x.DistributorShipmentId,
+                        principalTable: "DistributorShipments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -243,8 +344,8 @@ namespace Zvezdichka.Data.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DateAdded = table.Column<DateTime>(nullable: false),
                     DateEdited = table.Column<DateTime>(nullable: true),
-                    IsEdited = table.Column<bool>(nullable: false),
-                    Message = table.Column<string>(nullable: false),
+                    IsEdited = table.Column<bool>(nullable: false, defaultValue: false),
+                    Message = table.Column<string>(nullable: false, defaultValue: ""),
                     ProductId = table.Column<int>(nullable: false),
                     UserId = table.Column<string>(nullable: false)
                 },
@@ -332,14 +433,10 @@ namespace Zvezdichka.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartItems_ProductId",
-                table: "CartItems",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CartItems_UserId",
-                table: "CartItems",
-                column: "UserId");
+                name: "IX_Categories_Name",
+                table: "Categories",
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_CategoryProduct_CategoryId",
@@ -355,6 +452,53 @@ namespace Zvezdichka.Data.Migrations
                 name: "IX_Comments_UserId",
                 table: "Comments",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeliveryOptions_Name",
+                table: "DeliveryOptions",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Distributors_Name",
+                table: "Distributors",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DistributorShipmentProducts_DistributorShipmentId",
+                table: "DistributorShipmentProducts",
+                column: "DistributorShipmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DistributorShipments_DistributorId",
+                table: "DistributorShipments",
+                column: "DistributorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentOptions_Name",
+                table: "PaymentOptions",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_DistributorShipmentId",
+                table: "Products",
+                column: "DistributorShipmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_Name",
+                table: "Products",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Purchase_CustomerId",
+                table: "Purchase",
+                column: "CustomerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ratings_ProductId",
@@ -385,13 +529,25 @@ namespace Zvezdichka.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "CartItems");
-
-            migrationBuilder.DropTable(
                 name: "CategoryProduct");
 
             migrationBuilder.DropTable(
                 name: "Comments");
+
+            migrationBuilder.DropTable(
+                name: "DeliveryOptions");
+
+            migrationBuilder.DropTable(
+                name: "DistributorShipmentProducts");
+
+            migrationBuilder.DropTable(
+                name: "Faqs");
+
+            migrationBuilder.DropTable(
+                name: "PaymentOptions");
+
+            migrationBuilder.DropTable(
+                name: "Purchase");
 
             migrationBuilder.DropTable(
                 name: "Ratings");
@@ -407,6 +563,12 @@ namespace Zvezdichka.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "DistributorShipments");
+
+            migrationBuilder.DropTable(
+                name: "Distributors");
         }
     }
 }

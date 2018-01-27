@@ -1,9 +1,8 @@
-﻿using Zvezdichka.Data.Models;
-using Zvezdichka.Data.Models.ValidationAttributes;
+﻿using Zvezdichka.Data.EntityConfigurations.ValidationAttributes;
+using Zvezdichka.Data.Models;
 using Zvezdichka.Web.Models.Automapper;
-using Zvezdichka.Web.Models.Entity;
 
-namespace Zvezdichka.Web.Areas.Shopping.Models
+namespace Zvezdichka.Web.Areas.Shopping.Models.Checkout
 {
     public class CheckoutProductsModel : IMapFrom<Product>, IHaveCustomMapping
     {

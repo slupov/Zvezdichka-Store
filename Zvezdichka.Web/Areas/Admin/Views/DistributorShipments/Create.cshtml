@@ -1,0 +1,100 @@
+﻿@model Zvezdichka.Data.Models.Distributors.DistributorShipment
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+
+<h4>DistributorShipment</h4>
+<hr/>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" class="form-control"/>
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+
+            <table id="delivery-products" class="table table-responsive table-striped">
+                <tr>
+                    <th></th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Delivery price</th>
+                    <th>Discount</th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>
+                        <input name="Name"/>
+                    </td>
+                    <td>
+                        <input name="Quantity" type="number"/>
+                    </td>
+                    <td>
+                        <input name="Price" type="number"/>
+                    </td>
+                    <td>
+                        <input name="DiscountPercentage" type="number"/>
+                    </td>
+                    <td>
+                        <a class="btn btn-success" onclick="addProductRow(1)">Add</a>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default"/>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts{
+    <script src="~/js/distributor-shipments.js"></script>
+    <script>
+        var allInputs = $('input[type="datetime-local"]');
+        var now = new Date();
+
+        var month = now.getMonth() + 1;
+        if (month < 10) {
+            month = '0' + month;
+        }
+
+        var date = now.getDate();
+        if (date < 10) {
+            date = '0' + month;
+        }
+
+        var hours = now.getHours();
+        if (hours < 10) {
+            hours = '0' + hours;
+        }
+
+        var minutes = now.getMinutes();
+        if (minutes < 10) {
+            minutes = '0' + minutes;
+        }
+
+        var format = now.getFullYear() +
+            '-' +
+            month +
+            '-' +
+            date +
+            'T' +
+            hours +
+            ':' +
+            minutes;
+
+        allInputs.val(format);
+    </script>
+}
