@@ -308,7 +308,9 @@ namespace Zvezdichka.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("Date");
+                    b.Property<DateTime>("Date")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(new DateTime(2018, 1, 28, 14, 37, 8, 583, DateTimeKind.Local));
 
                     b.Property<int>("DistributorId");
 

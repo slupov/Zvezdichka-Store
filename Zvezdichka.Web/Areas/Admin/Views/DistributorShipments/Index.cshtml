@@ -19,21 +19,34 @@
                 <th>Quantity</th>
                 <th>Delivery price</th>
                 <th>Discount</th>
+                <th>Discounted price</th>
                 <th>Final DP</th>
             </tr>
 
             @foreach (var item in shipment.Products)
             {
-                <tr>
-                    <td>@{ ++row; }</td>
-                    <td>@item.Name</td>
-                    <td>@item.Quantity</td>
-                    <td>@item.Price</td>
-                    <td>@item.DiscountPercentage &#37;</td>
-                    <td>@((double) item.Price * item.DiscountPercentage * item.Quantity)</td>
-                </tr>
+                {
+                    var discountedPrice = item.Price - item.Price * (decimal) item.DiscountPercentage / 100;
+
+                    <tr>
+                        <td>@(row++)</td>
+                        <td>@item.Name</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.Price</td>
+                        <td>@item.DiscountPercentage &#37;</td>
+                        <td>@discountedPrice</td>
+                        <td>@(discountedPrice * item.Quantity)</td>
+                    </tr>
+                }
             }
 
+            <tr>
+                <td colspan="8">
+                    <div class="col-xs-12">
+                        <a asp-controller="DistributorShipments" asp-action="Edit" asp-route-id="@shipment.Id" class="btn btn-info">Edit</a>
+                    </div>
+                </td>
+            </tr>
         </table>
     }
 </div>

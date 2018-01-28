@@ -178,19 +178,15 @@ table { background-color: white; }
 
 /*}*/
 
-.faq-box {
-    
-}
+.faq-box { }
 
 .faq-question {
     background: #E3F7DB;
     color: #389361;
 }
 
-.faq-answer {
-    background: white;
-}
+.faq-answer { background: white; }
 
-.product-checkbox-wrapper {
-    float: left;
-}
+.product-checkbox-wrapper { float: left; }
+
+.storehouse-product-img { max-height: 50px; }

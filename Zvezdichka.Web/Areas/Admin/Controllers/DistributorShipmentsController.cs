@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Zvezdichka.Data;
 using Zvezdichka.Data.Models.Distributors;
 using Zvezdichka.Services.Contracts.Entity.Distributor;
+using Zvezdichka.Services.Extensions;
+using Zvezdichka.Web.Areas.Admin.Models.Distributor;
 
 namespace Zvezdichka.Web.Areas.Admin.Controllers
 {
+    [Route("distributor/shipments/[action]")]
     public class DistributorShipmentsController : AdminBaseController
     {
         private readonly IDistributorShipmentsDataService shipments;
@@ -23,7 +24,7 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
         // GET: Admin/DistributorShipments
         public async Task<IActionResult> Index()
         {
-            return View(this.shipments.GetAll(x => x.Distributor));
+            return View(this.shipments.GetAll(x => x.Distributor, x => x.Products));
         }
 
         // GET: Admin/DistributorShipments/Details/5
@@ -49,7 +50,22 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
         // GET: Admin/DistributorShipments/Create
         public IActionResult Create()
         {
-            return View();
+            var vm = new CreateDistributorShipmentModel()
+            {
+                Distributor = string.Empty,
+                Products = new List<CreateDistributorShipmentProductModel>()
+                {
+                    new CreateDistributorShipmentProductModel()
+                    {
+                        DiscountPercentage = 0,
+                        Name = string.Empty,
+                        Price = 0,
+                        Quantity = 0
+                    }
+                }
+            };
+
+            return View(vm);
         }
 
         // POST: Admin/DistributorShipments/Create
@@ -57,11 +73,24 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(DistributorShipment distributorShipment)
+        public async Task<IActionResult> Create(CreateDistributorShipmentModel distributorShipment)
         {
             if (this.ModelState.IsValid)
             {
-                this.shipments.Add(distributorShipment);
+                var shipmentToAdd = new DistributorShipment()
+                {
+                    Date = distributorShipment.Date,
+                    Distributor = new Distributor()
+                    {
+                        Name = distributorShipment.Distributor
+                    },
+                    Products = distributorShipment.Products.AsQueryable().ProjectTo<DistributorShipmentProduct>()
+                        .ToList()
+                };
+
+                //todo: check how to add shipmentId
+                this.shipments.Add(shipmentToAdd);
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -76,13 +105,19 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var distributorShipment = this.shipments.GetSingle(m => m.Id == id);
+            var distributorShipment = this.shipments
+                .Join(x => x.Distributor)
+                .Join(x => x.Products)
+                .SingleOrDefault(m => m.Id == id);
+
             if (distributorShipment == null)
             {
                 return NotFound();
             }
 
-            return View(distributorShipment);
+            var vm = AutoMapper.Mapper.Map<EditDistributorShipmentModel>(distributorShipment);
+
+            return View(vm);
         }
 
         // POST: Admin/DistributorShipments/Edit/5
@@ -90,9 +125,13 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, DistributorShipment distributorShipment)
+        public async Task<IActionResult> Edit(EditDistributorShipmentModel distributorShipment)
         {
-            if (id != distributorShipment.Id)
+            var dbShipment = this.shipments
+                .Join(x => x.Distributor)
+                .SingleOrDefault(x => x.Id == distributorShipment.Id);
+
+            if (dbShipment == null)
             {
                 return NotFound();
             }
@@ -101,7 +140,8 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
             {
                 try
                 {
-                    this.shipments.Update(distributorShipment);
+                    dbShipment = AutoMapper.Mapper.Map<DistributorShipment>(distributorShipment);
+                    this.shipments.Update(dbShipment);
                 }
                 catch (DbUpdateConcurrencyException)
                 {

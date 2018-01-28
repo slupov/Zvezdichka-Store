@@ -281,3 +281,40 @@ function changeItemSelector(item, changeTo) {
         item.find('input:checkbox:first').prop('checked', false);
     }
 }
+
+
+function getDateTimeLocal() {
+    var now = new Date();
+
+    var month = now.getMonth() + 1;
+    if (month < 10) {
+        month = '0' + month;
+    }
+
+    var date = now.getDate();
+    if (date < 10) {
+        date = '0' + month;
+    }
+
+    var hours = now.getHours();
+    if (hours < 10) {
+        hours = '0' + hours;
+    }
+
+    var minutes = now.getMinutes();
+    if (minutes < 10) {
+        minutes = '0' + minutes;
+    }
+
+    var format = now.getFullYear() +
+        '-' +
+        month +
+        '-' +
+        date +
+        'T' +
+        hours +
+        ':' +
+        minutes;
+
+    return format;
+}

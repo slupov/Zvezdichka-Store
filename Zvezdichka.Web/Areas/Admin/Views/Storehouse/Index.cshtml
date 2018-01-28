@@ -5,21 +5,29 @@
     Layout = "_Layout";
 }
 
-<h2>title</h2>
+<h2>Storehouse</h2>
 
 <table class="table table-responsive table-striped">
     <tr>
+        <th></th>
         <th>Product name</th>
         <th>Price</th>
-        <th>Deliverer</th>
+        <th>Stock</th>
     </tr>
 
     @foreach (var product in Model)
     {
         <tr>
-            <td>@product.Name</td>
+            <td>
+                <img src="@product.ThumbnailSource" class="storehouse-product-img"/>
+            </td>
+            <td>
+                <a asp-area="Products" asp-controller="Home" asp-action="Details" asp-route-id="@product.Id">
+                    @product.Name
+                </a>
+            </td>
             <td>@product.Price</td>
-            <td>@product.Make</td>
+            <td>@product.Stock</td>
         </tr>
     }
 </table>
