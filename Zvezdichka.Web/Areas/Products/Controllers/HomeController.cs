@@ -244,7 +244,8 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             this.categoryProducts.Add(categoryProducts.ToArray());
 
 //            Success(WebConstants.SuccessfullyCreatedProduct);
-            return RedirectToAction(nameof(Details), "Home", new {area = WebConstants.Areas.ProductsArea, id = dbProduct.Id, title = dbProduct.Name});
+            return RedirectToAction(nameof(Details), "Home",
+                new {area = WebConstants.Areas.ProductsArea, id = dbProduct.Id, title = dbProduct.Name});
         }
 
         // GET: Products/Edit/5
@@ -376,7 +377,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         {
             var cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys.Value);
 
-            Task.Run(() =>
+            await Task.Run(() =>
             {
                 var toDelete = cloudinary
                     .ListResources()
@@ -400,7 +401,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         {
             var cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys.Value);
 
-            Task.Run(() =>
+            await Task.Run(() =>
             {
                 var toDelete = cloudinary
                     .ListResources()
@@ -458,7 +459,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             var product = this.products.GetSingle(m => m.Id == id);
             this.products.Remove(product);
 
-            DeleteCloudinaryFolderAsync(product.Name);
+            await DeleteCloudinaryFolderAsync(product.Name);
 
             Success(string.Format(WebConstants.ProductSuccessfullyDeleted, product.Name));
             return RedirectToAction(nameof(Index));

@@ -50,3 +50,4 @@ C:\Users\Maria\Documents\GitHub\Zvezdichka-Store\Zvezdichka.Web\obj\Debug\netcor
 C:\Users\Maria\Documents\GitHub\Zvezdichka-Store\Zvezdichka.Web\obj\Debug\netcoreapp2.0\Zvezdichka.Web.AssemblyInfo.cs
 C:\Users\Maria\Documents\GitHub\Zvezdichka-Store\Zvezdichka.Web\obj\Debug\netcoreapp2.0\Zvezdichka.Web.dll
 C:\Users\Maria\Documents\GitHub\Zvezdichka-Store\Zvezdichka.Web\obj\Debug\netcoreapp2.0\Zvezdichka.Web.pdb
+D:\Github\Zvezdichka-Store\Zvezdichka.Web\obj\Debug\netcoreapp2.0\Zvezdichka.Web.csproj.CopyComplete

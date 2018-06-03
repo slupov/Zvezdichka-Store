@@ -35,3 +35,4 @@ C:\Users\Maria\Documents\GitHub\Zvezdichka-Store\Zvezdichka.Services\obj\Debug\n
 C:\Users\Maria\Documents\GitHub\Zvezdichka-Store\Zvezdichka.Services\obj\Debug\netcoreapp2.0\Zvezdichka.Services.AssemblyInfo.cs
 C:\Users\Maria\Documents\GitHub\Zvezdichka-Store\Zvezdichka.Services\obj\Debug\netcoreapp2.0\Zvezdichka.Services.dll
 C:\Users\Maria\Documents\GitHub\Zvezdichka-Store\Zvezdichka.Services\obj\Debug\netcoreapp2.0\Zvezdichka.Services.pdb
+D:\Github\Zvezdichka-Store\Zvezdichka.Services\obj\Debug\netcoreapp2.0\Zvezdichka.Services.csproj.CopyComplete
