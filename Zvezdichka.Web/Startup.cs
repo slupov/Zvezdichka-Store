@@ -152,7 +152,7 @@ namespace Zvezdichka.Web
             });
 
 
-//            scope seed db
+            //scope seed db
             using (var serviceScope =
                 app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {

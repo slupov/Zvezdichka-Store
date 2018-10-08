@@ -6,11 +6,14 @@
     Layout = "_Layout";
 }
 
-<h1>Checkout</h1>
+<div class="bg0 m-t-23 p-b-140">
+    <div class="container">
+        <h1>Checkout</h1>
 
-<form method="post" asp-area="Shopping" asp-controller="Checkout" asp-action="SecureCheckout">
-    @await Html.PartialAsync("Invoice", Model)
-    
-    <button type="submit" class="btn btn-success">Secure Checkout</button>
-</form>
+        <form method="post" asp-area="Shopping" asp-controller="Checkout" asp-action="SecureCheckout">
+            @await Html.PartialAsync("Invoice", Model)
 
+            <button type="submit" class="btn btn-success">Secure Checkout</button>
+        </form>
+    </div>
+</div>

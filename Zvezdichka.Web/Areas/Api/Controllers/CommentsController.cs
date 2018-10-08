@@ -33,7 +33,9 @@ namespace Zvezdichka.Web.Areas.Api.Controllers
         {
             //create new comment from model
             if (!this.ModelState.IsValid)
+            {
                 return NotFound();
+            }
 
             var user = await this.users.FindByNameAsync(comment.Username);
             var product = this.products.GetSingle(x => x.Id == comment.ProductId);

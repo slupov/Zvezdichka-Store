@@ -6,47 +6,51 @@
     var row = 0;
 }
 
-<h2>Distributor Shipments</h2>
-<a asp-area="Admin" asp-controller="DistributorShipments" asp-action="Create" class="btn btn-success">Create new</a>
+<div class="bg0 m-t-23 p-b-140">
+    <div class="container">
+        <h2>Distributor Shipments</h2>
+        <a asp-area="Admin" asp-controller="DistributorShipments" asp-action="Create" class="btn btn-success">Create new</a>
 
-<div>
-    @foreach (var shipment in Model)
-    {
-        <table class="table table-responsive table-striped">
-            <tr>
-                <th></th>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Delivery price</th>
-                <th>Discount</th>
-                <th>Discounted price</th>
-                <th>Final DP</th>
-            </tr>
-
-            @foreach (var item in shipment.Products)
+        <div>
+            @foreach (var shipment in Model)
             {
-                {
-                    var discountedPrice = item.Price - item.Price * (decimal) item.DiscountPercentage / 100;
+                <table class="table table-responsive table-striped">
+                    <tr>
+                        <th></th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Delivery price</th>
+                        <th>Discount</th>
+                        <th>Discounted price</th>
+                        <th>Final DP</th>
+                    </tr>
+
+                    @foreach (var item in shipment.Products)
+                    {
+                        {
+                            var discountedPrice = item.Price - item.Price * (decimal)item.DiscountPercentage / 100;
+
+                            <tr>
+                                <td>@(row++)</td>
+                                <td>@item.Name</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.Price</td>
+                                <td>@item.DiscountPercentage &#37;</td>
+                                <td>@discountedPrice</td>
+                                <td>@(discountedPrice * item.Quantity)</td>
+                            </tr>
+                        }
+                    }
 
                     <tr>
-                        <td>@(row++)</td>
-                        <td>@item.Name</td>
-                        <td>@item.Quantity</td>
-                        <td>@item.Price</td>
-                        <td>@item.DiscountPercentage &#37;</td>
-                        <td>@discountedPrice</td>
-                        <td>@(discountedPrice * item.Quantity)</td>
+                        <td colspan="8">
+                            <div class="col-xs-12">
+                                <a asp-controller="DistributorShipments" asp-action="Edit" asp-route-id="@shipment.Id" class="btn btn-info">Edit</a>
+                            </div>
+                        </td>
                     </tr>
-                }
+                </table>
             }
-
-            <tr>
-                <td colspan="8">
-                    <div class="col-xs-12">
-                        <a asp-controller="DistributorShipments" asp-action="Edit" asp-route-id="@shipment.Id" class="btn btn-info">Edit</a>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    }
+        </div>
+    </div>
 </div>

@@ -2,9 +2,22 @@
     ViewData["Title"] = "Admin panel";
 }
 
-<h2>Admin Panel</h2>
-
-<a class="btn btn-default" asp-area="Admin" asp-controller="Categories" asp-action="Index">Manage Categories</a>
-<a class="btn btn-default" asp-area="Products" asp-controller="Home" asp-action="Index">Manage Products</a>
-<a class="btn btn-default" asp-area="Admin" asp-controller="Users" asp-action="Index">Manage Users</a>
-<a class="btn btn-default" asp-area="Admin" asp-controller="DistributorShipments" asp-action="Index">Manage distributor shipments</a>
+<div class="bg0 m-t-23 p-b-140">
+    <div class="container">
+        <h2>Admin Panel</h2>
+        <ul>
+            <li>
+                <a class="btn btn-default" asp-area="Admin" asp-controller="Categories" asp-action="Index">Manage Categories</a>
+            </li>
+            <li>
+                <a class="btn btn-default" asp-area="Products" asp-controller="Home" asp-action="Index">Manage Products</a>
+            </li>
+            <li>
+                <a class="btn btn-default" asp-area="Admin" asp-controller="Users" asp-action="Index">Manage Users</a>
+            </li>
+            <li>
+                <a class="btn btn-default" asp-area="Admin" asp-controller="DistributorShipments" asp-action="Index">Manage distributor shipments</a>
+            </li>
+        </ul>
+    </div>
+</div>

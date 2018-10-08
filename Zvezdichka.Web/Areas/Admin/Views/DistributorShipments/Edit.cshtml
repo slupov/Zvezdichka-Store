@@ -4,66 +4,71 @@
     ViewData["Title"] = "Edit";
     var row = 0;
 }
-<h2>Edit</h2>
-<h4>DistributorShipment</h4>
-<hr/>
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" disabled/>
-                <span asp-validation-for="Date" class="text-danger"></span>
+
+<div class="bg0 m-t-23 p-b-140">
+    <div class="container">
+        <h2>Edit</h2>
+        <h4>DistributorShipment</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Edit" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Date" class="control-label"></label>
+                        <input asp-for="Date" class="form-control" disabled />
+                        <span asp-validation-for="Date" class="text-danger"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="Distributor" class="control-label"></label>
+                        <input asp-for="Distributor" class="form-control" />
+                        <span asp-validation-for="Distributor" class="text-danger"></span>
+                    </div>
+
+                    <table id="delivery-products" class="table table-responsive table-striped">
+                        <tr>
+                            <th></th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Delivery price</th>
+                            <th>Discount</th>
+                            <th></th>
+                        </tr>
+
+                        @for (int i = 0; i < Model.Products.Count; i++)
+                        {
+                            <tr>
+                                <td>@(i + 1)</td>
+                                <td>
+                                    <input name="Products[@i].Name" value="@Model.Products.ElementAt(i).Name" />
+                                </td>
+                                <td>
+                                    <input name="Products[@i].Quantity" type="number" value="@Model.Products.ElementAt(i).Quantity" />
+                                </td>
+                                <td>
+                                    <input name="Products[@i].Price" value="@Model.Products.ElementAt(i).Price" type="number" />
+                                </td>
+                                <td>
+                                    <input name="Products[@i].DiscountPercentage" value="@Model.Products.ElementAt(i).DiscountPercentage" type="number" />
+                                </td>
+                            </tr>
+                        }
+                    </table>
+
+                    <div class="form-group">
+                        <a class="btn btn-success" onclick="addEditProductRow(@(++row))">Add</a>
+                        <input type="submit" value="Save" class="btn btn-default" />
+                    </div>
+                </form>
             </div>
-
-            <div>
-                <label asp-for="Distributor" class="control-label"></label>
-                <input asp-for="Distributor" class="form-control"/>
-                <span asp-validation-for="Distributor" class="text-danger"></span>
-            </div>
-
-            <table id="delivery-products" class="table table-responsive table-striped">
-                <tr>
-                    <th></th>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>Delivery price</th>
-                    <th>Discount</th>
-                    <th></th>
-                </tr>
-
-                @for (int i = 0; i < Model.Products.Count; i++)
-                {
-                    <tr>
-                        <td>@(i + 1)</td>
-                        <td>
-                            <input name="Products[@i].Name" value="@Model.Products.ElementAt(i).Name"/>
-                        </td>
-                        <td>
-                            <input name="Products[@i].Quantity" type="number" value="@Model.Products.ElementAt(i).Quantity"/>
-                        </td>
-                        <td>
-                            <input name="Products[@i].Price" value="@Model.Products.ElementAt(i).Price" type="number"/>
-                        </td>
-                        <td>
-                            <input name="Products[@i].DiscountPercentage" value ="@Model.Products.ElementAt(i).DiscountPercentage" type="number"/>
-                        </td>
-                    </tr>
-                }
-            </table>
-
-            <div class="form-group">
-                <a class="btn btn-success" onclick="addEditProductRow(@(++row))">Add</a>
-                <input type="submit" value="Save" class="btn btn-default"/>
-            </div>
-        </form>
+        </div>
+        <div>
+            <a asp-action="Index">Back to List</a>
+        </div>
     </div>
 </div>
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
-@section Scripts{
-    <script src="~/js/distributor-shipments.js"></script>
-}
+        @section Scripts{
+            <script src="~/js/distributor-shipments.js"></script>
+        }
