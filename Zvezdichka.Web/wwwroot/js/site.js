@@ -74,7 +74,7 @@ function updateProductThumbnailSource(productName, thumbnailNumber) {
         });
 }
 
-function addToCart(prodId) {
+function addToCart(prodId, quantity) {
     $.ajax(
             {
                 type: "POST",
@@ -82,7 +82,7 @@ function addToCart(prodId) {
                 url: "shopping/home/addToCart",
                 data: {
                     productId: prodId,
-                    quantity: $("#bag-quantity").val()
+                    quantity: quantity
                 }
             })
         .done(function(resp) {

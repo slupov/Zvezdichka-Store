@@ -18,6 +18,8 @@ namespace Zvezdichka.Web.Areas.Products.Models
         public bool IsInStock { get; set; }
         public string ThumbnailSource { get; set; }
 
+        public ICollection<RelatedProductViewModel> RelatedProducts { get; set; } = new List<RelatedProductViewModel>();
+
         public ICollection<string> CloudinarySources { get; set; }
         public Cloudinary Cloudinary { get; set; }
 

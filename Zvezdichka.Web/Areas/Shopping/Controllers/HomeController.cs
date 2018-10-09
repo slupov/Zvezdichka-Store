@@ -1,10 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Zvezdichka.Common;
-using Zvezdichka.Data.Models;
 using Zvezdichka.Services.Contracts.Entity;
 using Zvezdichka.Web.Areas.Api.Models.CartItems;
 using Zvezdichka.Web.Infrastructure.Extensions;
@@ -98,6 +96,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
         public async Task<IActionResult> UpdateCart(CartItemUpdateModel cartItem)
         {
             var shoppingCartId = this.HttpContext.Session.GetShoppingCartId();
+
             var toUpdate = this.shoppingCartManager.GetCartItems(shoppingCartId)
                 .SingleOrDefault(x => x.ProductId == cartItem.Id);
 
@@ -117,8 +116,12 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
                 var errorMsg = string.Empty;
 
                 foreach (var modelState in this.ModelState.Values)
-                foreach (var error in modelState.Errors)
-                    errorMsg += error.ErrorMessage + "\n";
+                {
+                    foreach (var error in modelState.Errors)
+                    {
+                        errorMsg += error.ErrorMessage + "\n";
+                    }
+                }
 
                 Danger(errorMsg);
                 return RedirectToAction(nameof(Cart));

@@ -73,9 +73,6 @@
                         <ul class="main-menu">
                             <li class="active-menu">
                                 <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                                <ul class="sub-menu">
-                                    @* <li><a href="home-03.html">Homepage 1</a></li> *@
-                                </ul>
                             </li>
 
                             <li>
@@ -102,6 +99,20 @@
 
                                 <li>
                                     <a asp-area="Admin" asp-controller="Home" asp-action="Index">Admin Panel</a>
+                                    <ul class="sub-menu">
+                                        <li>
+                                            <a asp-area="Admin" asp-controller="Categories" asp-action="Index">Manage Categories</a>
+                                        </li>
+                                        <li>
+                                            <a asp-area="Products" asp-controller="Home" asp-action="Index">Manage Products</a>
+                                        </li>
+                                        <li>
+                                            <a asp-area="Admin" asp-controller="Users" asp-action="Index">Manage Users</a>
+                                        </li>
+                                        <li>
+                                            <a asp-area="Admin" asp-controller="DistributorShipments" asp-action="Index">Manage distributor shipments</a>
+                                        </li>
+                                    </ul>
                                 </li>
                             }
 
@@ -168,9 +179,6 @@
             <ul class="main-menu-m">
                 <li>
                     <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    <span class="arrow-main-menu-m">
-                        <i class="fa fa-angle-right" aria-hidden="true"></i>
-                    </span>
                 </li>
 
                 <li>
@@ -197,8 +205,28 @@
 
                     <li>
                         <a asp-area="Admin" asp-controller="Home" asp-action="Index">Admin Panel</a>
+                        <span class="arrow-main-menu-m">
+                            <i class="fa fa-angle-right" aria-hidden="true"></i>
+                        </span>
+
+                        <ul class="sub-menu-m">
+                            <li>
+                                <a asp-area="Admin" asp-controller="Categories" asp-action="Index">Manage Categories</a>
+                            </li>
+                            <li>
+                                <a asp-area="Products" asp-controller="Home" asp-action="Index">Manage Products</a>
+                            </li>
+                            <li>
+                                <a asp-area="Admin" asp-controller="Users" asp-action="Index">Manage Users</a>
+                            </li>
+                            <li>
+                                <a asp-area="Admin" asp-controller="DistributorShipments" asp-action="Index">Manage distributor shipments</a>
+                            </li>
+                        </ul>
                     </li>
                 }
+
+                @await Html.PartialAsync("_LoginPartial")
             </ul>
         </div>
 

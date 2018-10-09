@@ -116,6 +116,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             {
                 Success("Successfully filtered products.");
             }
+
             return View(vm);
         }
 
@@ -153,7 +154,24 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                 return NotFound();
             }
 
+            var dbProductCategories = dbProduct.Categories;
             var product = Mapper.Map<ProductDetailsViewModel>(dbProduct);
+
+            var relatedProducts = this.products.Join(x => x.Categories)
+                .ThenJoin(x => x.Category)
+                .Where(p => dbProductCategories.Any(dbProductCat => p.Categories.Any(pCat => pCat.CategoryId == dbProductCat.CategoryId) ))
+                .ToList();
+
+            foreach (var relatedProduct in relatedProducts)
+            {
+                product.RelatedProducts.Add(new RelatedProductViewModel()
+                {
+                    Id = relatedProduct.Id,
+                    Name = relatedProduct.Name,
+                    Price = relatedProduct.Price,
+                    ThumbnailSource = relatedProduct.ThumbnailSource
+                });
+            }
 
             //parameter tampering defence
             if (commentsPageIndex > Math.Ceiling((decimal) dbProduct.Comments.Count / WebConstants.CommentsPerPage) ||
@@ -243,7 +261,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
 
             this.categoryProducts.Add(categoryProducts.ToArray());
 
-//            Success(WebConstants.SuccessfullyCreatedProduct);
+            //            Success(WebConstants.SuccessfullyCreatedProduct);
             return RedirectToAction(nameof(Details), "Home",
                 new {area = WebConstants.Areas.ProductsArea, id = dbProduct.Id, title = dbProduct.Name});
         }
@@ -343,6 +361,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                 else
                     throw;
             }
+
             return RedirectToRoute(WebConstants.Routes.ProductDetails, new {id = dbProduct.Id, title = dbProduct.Name});
         }
 

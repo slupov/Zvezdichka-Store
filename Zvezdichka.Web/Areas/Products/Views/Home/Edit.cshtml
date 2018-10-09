@@ -5,77 +5,81 @@
     ViewData["Title"] = "Edit";
 }
 
-<h2>Edit</h2>
+<div class="bg0 m-t-23 p-b-140">
+    <div class="container">
+        <h2>Edit</h2>
 
-<h4>Product</h4>
-<hr/>
-<div class="row">
-    <div class="col-md-8">
-        <form id="editForm" asp-action="Edit" asp-route-oldName="@Model.Name" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control"/>
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" id="Description" name="Description"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Stock" class="control-label"></label>
-                <input asp-for="Stock" class="form-control"/>
-                <span asp-validation-for="Stock" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control"/>
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-
-            <select asp-for="Categories" class="selectpicker" multiple title="Choose categories...">
-                @foreach (var cat in Model.Categories)
-                {
-                    <option value="@cat">@cat</option>
-                }
-            </select>
-
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default"/>
-            </div>
-        </form>
-
-        <div>
-
-            <div class="row">
-                @{
-                    var cloudinaryImages = @Model.CloudinarySources.ToArray();
-                }
-                
-                @for (int i = 0; i < @Model.CloudinarySources.Count; i++)
-                {
-                    <div class="col-lg-3 col-md-4 col-xs-12 img-wrapper" name="cloudinary-@cloudinaryImages[i]">
-
-                        @Html.Raw(@Model.Cloudinary
-                            .Api
-                            .UrlImgUp
-                            .BuildImageTag(cloudinaryImages[i], new StringDictionary()
-                            {
-                                new KeyValuePair<string, string>("class", "img-responsive"),
-                                new KeyValuePair<string, string>("id", "cloudinary-image-" + i)
-                            }))
-
-                        <div class="img-overlay">
-                            <a class="btn btn-md btn-danger" onclick="deleteCloudinaryPhoto(this,'@cloudinaryImages[i]')">Remove</a>
-                            <a class="btn btn-md btn-primary" onclick="updateProductThumbnailSource('@Model.Name', '@i')">Make Thumbnail</a>
-                        </div>
+        <h4>Product</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-8">
+                <form id="editForm" asp-action="Edit" asp-route-oldName="@Model.Name" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
-                }
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label"></label>
+                        <textarea asp-for="Description" id="Description" name="Description"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Stock" class="control-label"></label>
+                        <input asp-for="Stock" class="form-control" />
+                        <span asp-validation-for="Stock" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Price" class="control-label"></label>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+
+                    <select asp-for="Categories" class="selectpicker" multiple title="Choose categories...">
+                        @foreach (var cat in Model.Categories)
+                        {
+                            <option value="@cat">@cat</option>
+                        }
+                    </select>
+
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-default" />
+                    </div>
+                </form>
+
+                <div>
+
+                    <div class="row">
+                        @{
+                            var cloudinaryImages = @Model.CloudinarySources.ToArray();
+                        }
+
+                        @for (int i = 0; i < @Model.CloudinarySources.Count; i++)
+                        {
+                            <div class="col-lg-3 col-md-4 col-xs-12 img-wrapper" name="cloudinary-@cloudinaryImages[i]">
+
+                                @Html.Raw(@Model.Cloudinary
+                                    .Api
+                                    .UrlImgUp
+                                    .BuildImageTag(cloudinaryImages[i], new StringDictionary()
+                                    {
+                                        new KeyValuePair<string, string>("class", "img-responsive"),
+                                        new KeyValuePair<string, string>("id", "cloudinary-image-" + i)
+                                    }))
+
+                                <div class="img-overlay">
+                                    <a class="btn btn-md btn-danger" onclick="deleteCloudinaryPhoto(this,'@cloudinaryImages[i]')">Remove</a>
+                                    <a class="btn btn-md btn-primary" onclick="updateProductThumbnailSource('@Model.Name', '@i')">Make Thumbnail</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <a href="#" id="upload_widget_opener" class="btn btn-primary">Upload multiple images</a>
             </div>
         </div>
-
-        <a href="#" id="upload_widget_opener" class="btn btn-primary">Upload multiple images</a>
     </div>
 </div>
 
