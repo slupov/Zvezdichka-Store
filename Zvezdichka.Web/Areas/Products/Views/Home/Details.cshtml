@@ -34,6 +34,7 @@
         @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
         {
             <a asp-route="@WebConstants.Routes.ProductEdit" asp-route-id="@Model.Id" asp-route-title="@Model.Name" class="btn btn-primary">Edit</a>
+            <a asp-area="Products" asp-controller="Home" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
         }
 
         <div class="row">
@@ -89,7 +90,7 @@
                     </span>
 
                     <p class="stext-102 cl3 p-t-23">
-                        @Model.Description
+                        @Html.Raw(@Model.Description)
                     </p>
 
                     <!--  -->
@@ -139,14 +140,14 @@
                                         <i class="fs-16 zmdi zmdi-minus"></i>
                                     </div>
 
-                                    <input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product" value="1">
+                                    <input class="mtext-104 cl3 txt-center num-product" type="number" name="product-cart-quantity" value="1">
 
                                     <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
                                         <i class="fs-16 zmdi zmdi-plus"></i>
                                     </div>
                                 </div>
 
-                                <button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail" onclick="addToCart('@Model.Id', $('[name=num-product]').val())">
+                                <button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail" onclick="addToCart('@Model.Id', '@Model.Name', '@Model.ThumbnailSource','@Model.Price', $('[name=product-cart-quantity]').val())">
                                     Add to cart
                                 </button>
                             </div>
@@ -201,7 +202,7 @@
                     <div class="tab-pane fade show active" id="description" role="tabpanel">
                         <div class="how-pos2 p-lr-15-md">
                             <p class="stext-102 cl6">
-                                @Model.Description
+                                @Html.Raw(Model.Description)
                             </p>
                         </div>
                     </div>
@@ -294,7 +295,7 @@
                                                 </div>
 
                                                 <p class="stext-102 cl6">
-                                                    @item.Message
+                                                    @Html.Raw(item.Message)
                                                 </p>
                                             </div>
                                         </div>

@@ -34,6 +34,8 @@
     <Folder Include="Areas\Api\Data\" />
     <Folder Include="Areas\Products\Data\" />
     <Folder Include="Areas\Shopping\Data\" />
+    <Folder Include="Areas\Shopping\Views\Home\Components\" />
+    <Folder Include="Areas\Shopping\Views\Shared\" />
   </ItemGroup>
 
   <ItemGroup>

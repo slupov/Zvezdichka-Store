@@ -5,58 +5,63 @@
     ViewData["Title"] = "Create";
 }
 
-<h2>Create</h2>
+<div class="bg0 m-t-23 p-b-140">
+    <div class="container">
+        <h2>Create</h2>
 
-<h4>Product</h4>
-<hr />
-<div class="row">
-    <div class="col-md-6">
-        <form id="createForm" asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Stock" class="control-label"></label>
-                <input asp-for="Stock" class="form-control" />
-                <span asp-validation-for="Stock" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ThumbnailSource" class="control-label"></label>
-                <input asp-for="ThumbnailSource" class="form-control" />
-                <span asp-validation-for="ThumbnailSource" class="text-danger"></span>
-            </div>
+        <h4>Product</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-6">
+                <form id="createForm" asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label"></label>
+                        <input asp-for="Description" class="form-control" />
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Stock" class="control-label"></label>
+                        <input asp-for="Stock" class="form-control" />
+                        <span asp-validation-for="Stock" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Price" class="control-label"></label>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ThumbnailSource" class="control-label"></label>
+                        <input asp-for="ThumbnailSource" class="form-control" />
+                        <span asp-validation-for="ThumbnailSource" class="text-danger"></span>
+                    </div>
 
-            <select asp-for="Categories" class="selectpicker" multiple title="Choose categories...">
-                @foreach (var cat in Model.Categories)
-                {
-                    <option value="@cat">@cat</option>
-                }
-            </select>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                    <select asp-for="Categories" class="selectpicker" multiple title="Choose categories...">
+                        @foreach (var cat in Model.Categories)
+                        {
+                            <option value="@cat">@cat</option>
+                        }
+                    </select>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-default" />
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
+
+        <a href="#" id="upload_widget_opener" class="btn btn-primary">Upload images</a>
+
+        <div>
+            <a asp-action="Index">Back to List</a>
+        </div>
     </div>
 </div>
 
-<a href="#" id="upload_widget_opener" class="btn btn-primary">Upload images</a>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts{
 

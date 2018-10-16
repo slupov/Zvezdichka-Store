@@ -74,7 +74,7 @@ function updateProductThumbnailSource(productName, thumbnailNumber) {
         });
 }
 
-function addToCart(prodId, quantity) {
+function addToCart(prodId, prodName, prodThumbnailSource, prodPrice, quantity) {
     $.ajax(
             {
                 type: "POST",
@@ -87,11 +87,96 @@ function addToCart(prodId, quantity) {
             })
         .done(function(resp) {
             addAlert("Success", resp);
+            addHtmlSidebarCartItem(prodThumbnailSource, prodName, prodPrice, parseInt(quantity));
         })
         .fail(function(resp) {
             console.dir(resp);
             addAlert("danger", resp.responseText);
         });
+}
+
+function addHtmlSidebarCartItem(prodThumbnailSource, prodName, prodPrice, prodQuantity) {
+    // attach html to cart in shared layout
+    var sideBarCartList = $('#sidebar-cart-items-list');
+
+    var found = false;
+    var foundQuantity = 0;
+
+    // change total cart value text
+    var totalValueElement = $('#sidebar-cart-total-value');
+    var totalText = "Total: $";
+    var subtotalMidText = " x $";
+
+    // check if list already contains this item
+    $(".header-cart-item-name").each(function () {
+        if ($(this).text().trim() === prodName) {
+
+            var itemTotalPriceElement = $(this).parent().parent().find(".header-cart-item-info");
+            var text = itemTotalPriceElement.text().trim();
+
+            console.dir(itemTotalPriceElement);
+
+            foundQuantity = parseInt(text.split(subtotalMidText)[0]);
+
+            // found the same product, so change its text
+            $(this).parent().find(".header-cart-item-info").text(`${prodQuantity + foundQuantity} x $${prodPrice}`);
+
+            var currentTotal = parseFloat(totalValueElement.text().trim().substring(totalText.length)) + 
+                (prodPrice * prodQuantity);
+
+            totalValueElement.text(totalText + `${currentTotal}`);
+
+            // break the each callback
+            found = true;
+            return true; 
+        }
+    });
+
+    if (found === true) {
+        return;
+    }
+
+    // create and append new html element
+    var htmlElement = createSidebarCartItemHtml(prodThumbnailSource, prodName, prodPrice, prodQuantity);
+
+    sideBarCartList.append(htmlElement);
+
+    // update total cart value
+    var currentTotal = parseFloat(totalValueElement.text().trim().substring(totalText.length)) +
+        (prodPrice * prodQuantity);
+
+    totalValueElement.text(totalText + `${currentTotal}`);
+
+    //update data-notify property in navbar cart icon desktop/mobile
+    var navbarCartIcon = $("#navbar-shopping-cart-icon");
+    var navbarCartIconMobile = $("#navbar-shopping-cart-icon-mobile");
+    var currentCartSize = parseInt($(navbarCartIcon).attr('data-notify')) + 1;
+
+    navbarCartIcon.attr('data-notify', currentCartSize);
+    navbarCartIconMobile.attr('data-notify', currentCartSize);
+
+    //show sidebar cart
+    $('.js-panel-cart').addClass('show-header-cart');
+}
+
+function createSidebarCartItemHtml(prodThumbnailSource, prodName, prodPrice, prodQuantity) {
+    var newHtml = `<li class="header-cart-item flex-w flex-t m-b-12">
+                        <div class="header-cart-item-img">
+                            <img src="${prodThumbnailSource}" alt="IMG">
+                        </div>
+
+                        <div class="header-cart-item-txt p-t-8">
+                            <a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04" class="sidebar-cart-item-name">
+                               ${prodName}
+                            </a>
+
+                            <span class="header-cart-item-info" class="sidebar-cart-item-total-price">
+                                ${prodQuantity} x $${prodPrice}
+                            </span>
+                        </div>
+                    </li>`;
+
+    return $(newHtml);
 }
 
 function addCommentOnEnter(productId, username) {

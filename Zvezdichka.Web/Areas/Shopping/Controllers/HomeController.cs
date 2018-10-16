@@ -43,6 +43,28 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             return View(itemsWithDetails);
         }
 
+        public PartialViewResult SidebarCart()
+        {
+            var shoppingCartId = this.HttpContext.Session.GetShoppingCartId();
+
+            var items = this.shoppingCartManager.GetCartItems(shoppingCartId);
+            var itemIds = items.Select(x => x.ProductId).ToList();
+
+            var itemQuantities = items.ToDictionary(i => i.ProductId, i => i.Quantity);
+
+            var itemsWithDetails =
+                this.products.GetAll()
+                    .Where(x => itemIds.Contains(x.Id))
+                    .AsQueryable()
+                    .ProjectTo<CartItemViewModel>()
+                    .ToList();
+
+            itemsWithDetails.ForEach(x => x.Quantity = itemQuantities[x.Id]);
+
+
+            return PartialView("../Views/Shared/Components/SidebarShoppingCart/SidebarShoppingCart.cshtml", itemsWithDetails);
+        }
+
         /// <summary>
         /// Handles an Ajax request to add products to cart
         /// </summary>
@@ -71,7 +93,13 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
 
             //check if can add this quantity to the current quantity without exceeding the db stock
             if (cartItem.Quantity + quantity > dbProduct.Stock)
+            {
                 return BadRequest(CommonConstants.AddingAmountWillExceedOurStock);
+            }
+            else
+            {
+                cartItem.Quantity += quantity;
+            }
 
             return Ok(CommonConstants.SuccessfullyAddedMoreOfThisItem);
         }
