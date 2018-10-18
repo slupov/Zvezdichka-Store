@@ -47,7 +47,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
 
         //try making it post with another method, get the data and redirect to httpget index
         [HttpGet]
-        public async Task<IActionResult> Index(string searchString,
+        public async Task<IActionResult> Index(string searchValue,
             int? page,
             int pageSize = 20)
         {
@@ -97,10 +97,10 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                 }
             }
 
-            if (!string.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchValue))
             {
-                this.ViewData["SearchFilter"] = searchString;
-                filtered = filtered.Where(x => x.Name.ToLower().Contains(searchString.ToLower()))
+                this.ViewData["SearchValue"] = searchValue;
+                filtered = filtered.Where(x => x.Name.ToLower().Contains(searchValue.ToLower()))
                     .ToList();
             }
 
