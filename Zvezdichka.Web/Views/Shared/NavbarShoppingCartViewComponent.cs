@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Zvezdichka.Web.Infrastructure.Extensions;
 using Zvezdichka.Web.Services;
@@ -14,12 +15,13 @@ namespace Zvezdichka.Web.Views.Shared
             this.shoppingCartManager = shoppingCartManager;
         }
 
-        public IViewComponentResult Invoke()
+        public Task<IViewComponentResult> InvokeAsync()
         {
             var shoppingCartId = this.HttpContext.Session.GetShoppingCartId();
             var items = this.shoppingCartManager.GetCartItems(shoppingCartId);
 
-            return View("NavbarShoppingCart", items.Count());
+            var result = (IViewComponentResult) View("NavbarShoppingCart", items.Count());
+            return Task.FromResult(result);
         }
     }
 }

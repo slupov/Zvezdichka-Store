@@ -3,7 +3,8 @@ using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Zvezdichka.Common;
-using Zvezdichka.Services.Contracts.Entity;
+using Zvezdichka.Data.Models;
+using Zvezdichka.Services.Contracts;
 using Zvezdichka.Web.Areas.Api.Models.CartItems;
 using Zvezdichka.Web.Infrastructure.Extensions;
 using Zvezdichka.Web.Models.ShoppingViewModels;
@@ -13,16 +14,16 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
 {
     public class HomeController : ShoppingBaseController
     {
-        private readonly IProductsDataService products;
+        private readonly IGenericDataService<Product> products;
         private readonly IShoppingCartManager shoppingCartManager;
 
-        public HomeController(IProductsDataService products, IShoppingCartManager shoppingCartManager)
+        public HomeController(IGenericDataService<Product> products, IShoppingCartManager shoppingCartManager)
         {
             this.products = products;
             this.shoppingCartManager = shoppingCartManager;
         }
 
-        public IActionResult Cart()
+        public async Task<IActionResult> Cart()
         {
             var shoppingCartId = this.HttpContext.Session.GetShoppingCartId();
 
@@ -32,8 +33,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             var itemQuantities = items.ToDictionary(i => i.ProductId, i => i.Quantity);
 
             var itemsWithDetails =
-                this.products.GetAll()
-                    .Where(x => itemIds.Contains(x.Id))
+                (await this.products.GetListAsync(x => itemIds.Contains(x.Id)))
                     .AsQueryable()
                     .ProjectTo<CartItemViewModel>()
                     .ToList();
@@ -43,7 +43,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             return View(itemsWithDetails);
         }
 
-        public PartialViewResult SidebarCart()
+        public async Task<PartialViewResult> SidebarCart()
         {
             var shoppingCartId = this.HttpContext.Session.GetShoppingCartId();
 
@@ -53,8 +53,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             var itemQuantities = items.ToDictionary(i => i.ProductId, i => i.Quantity);
 
             var itemsWithDetails =
-                this.products.GetAll()
-                    .Where(x => itemIds.Contains(x.Id))
+                (await this.products.GetListAsync(x => itemIds.Contains(x.Id)))
                     .AsQueryable()
                     .ProjectTo<CartItemViewModel>()
                     .ToList();
@@ -72,12 +71,12 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
         /// <param name="quantity"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult AddToCart(int productId, int quantity)
+        public async Task<IActionResult> AddToCart(int productId, int quantity)
         {
             var shoppingCartId = this.HttpContext.Session.GetShoppingCartId();
 
             //check quantity for this product
-            var dbProduct = this.products.GetSingle(p => p.Id == productId);
+            var dbProduct = await this.products.GetSingleOrDefaultAsync(p => p.Id == productId);
 
             if (dbProduct.Stock <= 0 || quantity > dbProduct.Stock)
                 return BadRequest(string.Format(CommonConstants.StockAmountExceededForError, dbProduct.Name));
@@ -131,7 +130,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             if (toUpdate == null)
                 return NotFound();
 
-            var dbProduct = this.products.GetSingle(x => x.Id == cartItem.Id);
+            var dbProduct = await this.products.GetSingleOrDefaultAsync(x => x.Id == cartItem.Id);
 
             if (dbProduct.Stock < cartItem.Quantity)
             {

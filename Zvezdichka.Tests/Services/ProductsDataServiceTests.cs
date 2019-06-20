@@ -4,7 +4,7 @@ using FluentAssertions;
 using Xunit;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Data.Models.Mapping;
-using Zvezdichka.Services.Implementations.Entity;
+using Zvezdichka.Services;
 
 namespace Zvezdichka.Tests.Services
 {
@@ -37,11 +37,11 @@ namespace Zvezdichka.Tests.Services
                 Stock = 10
             };
 
-            var products = new ProductsDataService(db);
+            var products = new GenericDataService<Product>(db);
 
             //Act
             products.Add(p1, p2);
-            var result = products.GetAll();
+            var result = products.GetAllAsync().GetAwaiter().GetResult();
 
             //Assert
             result.Should().BeOfType<List<Product>>();
@@ -70,12 +70,12 @@ namespace Zvezdichka.Tests.Services
                 Stock = 10
             };
 
-            var products = new ProductsDataService(db);
+            var products = new GenericDataService<Product>(db);
 
             products.Add(p1, p2);
 
             //Act
-            var result = products.GetAll();
+            var result = products.GetAllAsync().GetAwaiter().GetResult();
 
             //Assert
             result.Should().BeOfType<List<Product>>();
@@ -99,14 +99,14 @@ namespace Zvezdichka.Tests.Services
 
             //Act
 
-            var products = new ProductsDataService(db);
+            var products = new GenericDataService<Product>(db);
             products.Add(p1);
 
             p1.Name = "Updated";
             products.Update(p1);
 
             //Assert
-            products.GetList(x => x.Name == "Updated").Count.Should().Be(1);
+            products.GetListAsync(x => x.Name == "Updated").GetAwaiter().GetResult().Count.Should().Be(1);
         }
 
         [Fact]
@@ -133,7 +133,7 @@ namespace Zvezdichka.Tests.Services
             };
 
 
-            var products = new ProductsDataService(db);
+            var products = new GenericDataService<Product>(db);
             products.Add(p1, p2);
 
             //Act
@@ -141,7 +141,7 @@ namespace Zvezdichka.Tests.Services
             products.Remove(p1);
             //Assert
 
-            products.GetAll().Count.Should().Be(1);
+            products.GetAllAsync().GetAwaiter().GetResult().Count.Should().Be(1);
         }
 
         [Fact]
@@ -175,12 +175,12 @@ namespace Zvezdichka.Tests.Services
                 }
             };
 
-            var products = new ProductsDataService(db);
+            var products = new GenericDataService<Product>(db);
             products.Add(p1);
 
             //Act
 
-            var result = products.Join(x => x.Categories).SingleOrDefault(x => x.Name == "First");
+            var result = products.GetSingleOrDefaultAsync(x => x.Name == "First").GetAwaiter().GetResult();
 
             //Assert
 

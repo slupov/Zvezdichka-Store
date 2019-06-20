@@ -12,6 +12,7 @@ namespace Zvezdichka.Web
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+//                .UseSetting("https_port","8080")
                 .UseStartup<Startup>()
                 .Build();
     }

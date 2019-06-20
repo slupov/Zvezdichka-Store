@@ -2,6 +2,7 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Zvezdichka.Services;
+using Zvezdichka.Services.Contracts;
 
 namespace Zvezdichka.Web.Infrastructure.Extensions.Services
 {
@@ -16,7 +17,7 @@ namespace Zvezdichka.Web.Infrastructure.Extensions.Services
             this IServiceCollection services)
         {
             var types = Assembly
-                .GetAssembly(typeof(IService))
+                .GetAssembly(typeof(IGenericDataService<>))
                 .GetTypes();
 
             var needed = types

@@ -6,13 +6,13 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Xunit;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Data.Models.Mapping;
-using Zvezdichka.Services.Contracts.Entity;
-using Zvezdichka.Services.Contracts.Entity.Mapping;
+using Zvezdichka.Services.Contracts;
 using Zvezdichka.Tests.Mocks;
 using Zvezdichka.Web.Areas.Products.Controllers;
 using Zvezdichka.Web.Areas.Products.Models;
@@ -53,9 +53,9 @@ namespace Zvezdichka.Tests.Web.Areas.Products.Controllers
         public async Task GetCreateShouldReturnViewWithValidModel()
         {
             // Arrange
-            var categoryService = new Mock<ICategoriesDataService>();
+            var categoryService = new Mock<IGenericDataService<Category>>();
 
-            IList<Category> categoriesList = new List<Category>()
+            List<Category> categoriesList = new List<Category>()
             {
                 new Category()
                 {
@@ -69,7 +69,7 @@ namespace Zvezdichka.Tests.Web.Areas.Products.Controllers
                 }
             };
 
-            categoryService.Setup(c => c.GetAll())
+            categoryService.Setup(c => c.GetAllAsync().GetAwaiter().GetResult())
                 .Returns(categoriesList);
 
             var controller = new HomeController(null, categoryService.Object, null, null, null);
@@ -104,9 +104,9 @@ namespace Zvezdichka.Tests.Web.Areas.Products.Controllers
             decimal modelPriceValue = 0;
             byte modelStock = 1;
 
-            var categoryService = new Mock<ICategoriesDataService>();
-            var productsService = new Mock<IProductsDataService>();
-            var categoryProductsService = new Mock<ICategoryProductsDataService>();
+            var categoryService = new Mock<IGenericDataService<Category>>();
+            var productsService = new Mock<IGenericDataService<Product>>();
+            var categoryProductsService = new Mock<IGenericDataService<CategoryProduct>>();
 
             #region 
             var categoriesToAdd = new List<Category>()
@@ -139,10 +139,10 @@ namespace Zvezdichka.Tests.Web.Areas.Products.Controllers
 
 #endregion
 
-            categoryService.Setup(c => c.GetList(It.IsAny<Func<Category, bool>>()))
+            categoryService.Setup(c => c.GetListAsync(It.IsAny<Func<Category, bool>>()).GetAwaiter().GetResult())
                 .Returns(categoriesToAdd);
 
-            productsService.Setup(c => c.Any(It.IsAny<Func<Product,bool>>()))
+            productsService.Setup(c => c.AnyAsync(It.IsAny<Expression<Func<Product, bool>>>()).GetAwaiter().GetResult())
                 .Returns(false);
 
             productsService.Setup(c => c.Add(It.IsAny<Product[]>()))
@@ -166,7 +166,7 @@ namespace Zvezdichka.Tests.Web.Areas.Products.Controllers
                 ThumbnailSource = thumbnailSourceValue
             };
 
-            productsService.Setup(c => c.GetSingle(It.IsAny<Func<Product,bool>>()))
+            productsService.Setup(c => c.GetSingleOrDefault(It.IsAny<Expression<Func<Product,bool>>>()))
                 .Returns(vm);
 
             categoryProductsService.Setup(c => c.Add(categoryProductsToAdd));

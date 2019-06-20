@@ -9,12 +9,12 @@ namespace Zvezdichka.Data.Models.Distributors
         [Key]
         public int Id { get; set; }
 
-        public Distributor Distributor { get; set; }
+        public virtual Distributor Distributor { get; set; }
 
         [Required]
         public int DistributorId { get; set; }
 
         public DateTime Date { get; set; }
-        public ICollection<DistributorShipmentProduct> Products { get; set; }
+        public virtual ICollection<DistributorShipmentProduct> Products { get; set; }
     }
 }

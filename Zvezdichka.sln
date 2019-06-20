@@ -5,13 +5,13 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zvezdichka.Web", "Zvezdichka.Web\Zvezdichka.Web.csproj", "{19954A66-3035-4111-B66B-8FB3DEE9A51C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zvezdichka.Services", "Zvezdichka.Services\Zvezdichka.Services.csproj", "{F2AF6A47-D69B-4762-9DF3-3344C11C3FFB}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zvezdichka.Data", "Zvezdichka.Data\Zvezdichka.Data.csproj", "{27CF7560-E927-4FE9-A30F-ED70B8A4FE5A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zvezdichka.Tests", "Zvezdichka.Tests\Zvezdichka.Tests.csproj", "{70D53BA3-8E88-4333-8890-78C0AFBE67C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zvezdichka.Common", "Zvezdichka.Common\Zvezdichka.Common.csproj", "{F13FED39-99BD-40FA-AB4B-4B53293AB124}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zvezdichka.Common", "Zvezdichka.Common\Zvezdichka.Common.csproj", "{F13FED39-99BD-40FA-AB4B-4B53293AB124}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zvezdichka.Services", "Zvezdichka.Services\Zvezdichka.Services.csproj", "{C1F5EE3F-7294-4F7A-AE0C-D478C9824472}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,6 @@ Global
 		{19954A66-3035-4111-B66B-8FB3DEE9A51C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19954A66-3035-4111-B66B-8FB3DEE9A51C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19954A66-3035-4111-B66B-8FB3DEE9A51C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F2AF6A47-D69B-4762-9DF3-3344C11C3FFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F2AF6A47-D69B-4762-9DF3-3344C11C3FFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F2AF6A47-D69B-4762-9DF3-3344C11C3FFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F2AF6A47-D69B-4762-9DF3-3344C11C3FFB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{27CF7560-E927-4FE9-A30F-ED70B8A4FE5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{27CF7560-E927-4FE9-A30F-ED70B8A4FE5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27CF7560-E927-4FE9-A30F-ED70B8A4FE5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +35,10 @@ Global
 		{F13FED39-99BD-40FA-AB4B-4B53293AB124}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F13FED39-99BD-40FA-AB4B-4B53293AB124}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F13FED39-99BD-40FA-AB4B-4B53293AB124}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1F5EE3F-7294-4F7A-AE0C-D478C9824472}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1F5EE3F-7294-4F7A-AE0C-D478C9824472}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1F5EE3F-7294-4F7A-AE0C-D478C9824472}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1F5EE3F-7294-4F7A-AE0C-D478C9824472}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,9 +6,9 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Zvezdichka.Common;
-using Zvezdichka.Services.Contracts.Entity;
-using Zvezdichka.Services.Contracts.Entity.Checkout;
-using Zvezdichka.Web.Areas.Shopping.Models;
+using Zvezdichka.Data.Models;
+using Zvezdichka.Data.Models.Checkout;
+using Zvezdichka.Services.Contracts;
 using Zvezdichka.Web.Areas.Shopping.Models.Checkout;
 using Zvezdichka.Web.Infrastructure.Extensions;
 using Zvezdichka.Web.Services;
@@ -19,17 +19,12 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
     public class CheckoutController : ShoppingBaseController
     {
         private readonly IShoppingCartManager shoppingCartManager;
-        private readonly IProductsDataService products;
-        private readonly IDeliveryOptionsDataService deliveryOptions;
-        private readonly IPaymentOptionsDataService paymentOptions;
+        private readonly IGenericDataService<Product> products;
 
-        public CheckoutController(IShoppingCartManager shoppingCartManager, IProductsDataService products,
-            IDeliveryOptionsDataService deliveryOptions, IPaymentOptionsDataService paymentOptions)
+        public CheckoutController(IShoppingCartManager shoppingCartManager, IGenericDataService<Product> products)
         {
             this.shoppingCartManager = shoppingCartManager;
             this.products = products;
-            this.deliveryOptions = deliveryOptions;
-            this.paymentOptions = paymentOptions;
         }
 
         public async Task<IActionResult> Index()
@@ -39,7 +34,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
             var cartItems = this.shoppingCartManager.GetCartItems(shoppingCartId).ToList();
 
             var productIds = cartItems.Select(y => y.ProductId).ToList();
-            var dbProducts = this.products.GetList(x => productIds.Contains(x.Id));
+            var dbProducts = await this.products.GetListAsync(x => productIds.Contains(x.Id));
 
             string errorMsg = string.Empty;
             bool hasErrors = false;
@@ -82,7 +77,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
 
         public async Task<IActionResult> Delivery(List<string> name, List<byte> quantity)
         {
-            return View(this.deliveryOptions.GetAll());
+            return View();
         }
 
         public async Task<IActionResult> CardDetails(List<string> name, List<byte> quantity)
@@ -92,7 +87,7 @@ namespace Zvezdichka.Web.Areas.Shopping.Controllers
 
         public async Task<IActionResult> Payment(List<string> name, List<byte> quantity)
         {
-            return View(this.paymentOptions.GetAll());
+            return View();
         }
     }
 }

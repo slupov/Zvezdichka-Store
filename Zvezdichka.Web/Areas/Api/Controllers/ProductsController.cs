@@ -1,8 +1,9 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
-using Zvezdichka.Services.Contracts.Entity;
-using Zvezdichka.Services.Extensions;
+using Zvezdichka.Data.Models;
+using Zvezdichka.Services.Contracts;
 using Zvezdichka.Web.Areas.Api.Models.Products;
 using Zvezdichka.Web.Areas.Products.Models;
 using Zvezdichka.Web.Infrastructure.Constants;
@@ -11,23 +12,23 @@ namespace Zvezdichka.Web.Areas.Api.Controllers
 {
     public class ProductsController : ApiBaseController
     {
-        private readonly IProductsDataService products;
+        private readonly IGenericDataService<Product> products;
 
-        public ProductsController(IProductsDataService products)
+        public ProductsController(IGenericDataService<Product> products)
         {
             this.products = products;
         }
 
         [HttpGet]
-        public IActionResult Get(ProductFilterModel filtration)
+        public async Task<IActionResult> Get(ProductFilterModel filtration)
         {
             if (!this.ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var filteredProducts = this.products
-                .Join(x => x.Categories).ThenJoin(c => c.Category)
+            var filteredProducts = (await this.products
+                .GetAllAsync())
                 .AsQueryable()
                 .ProjectTo<ProductListingViewModel>()
                 .ToList();
@@ -68,9 +69,9 @@ namespace Zvezdichka.Web.Areas.Api.Controllers
         }
 
         [HttpPut]
-        public IActionResult ChangeThumbnail(string productName, string newThumbnailSource)
+        public async Task<IActionResult> ChangeThumbnail(string productName, string newThumbnailSource)
         {
-            var product = this.products.GetSingle(x => x.Name == productName);
+            var product = await this.products.GetSingleOrDefaultAsync(x => x.Name == productName);
 
             if (product == null)
             {

@@ -12,9 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Zvezdichka.Data.Models;
 using Zvezdichka.Data.Models.Mapping;
-using Zvezdichka.Services.Contracts.Entity;
-using Zvezdichka.Services.Contracts.Entity.Mapping;
-using Zvezdichka.Services.Extensions;
+using Zvezdichka.Services.Contracts;
 using Zvezdichka.Web.Areas.Api.Models.Products;
 using Zvezdichka.Web.Areas.Products.Models;
 using Zvezdichka.Web.Infrastructure.Constants;
@@ -28,14 +26,14 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
 {
     public class HomeController : ProductsBaseController
     {
-        private readonly IProductsDataService products;
-        private readonly ICategoriesDataService categories;
-        private readonly ICategoryProductsDataService categoryProducts;
+        private readonly IGenericDataService<Product> products;
+        private readonly IGenericDataService<Category> categories;
+        private readonly IGenericDataService<CategoryProduct> categoryProducts;
         private readonly IHtmlService html;
         private readonly IOptions<AppKeyConfig> appKeys;
 
-        public HomeController(IProductsDataService products, ICategoriesDataService categories,
-            ICategoryProductsDataService categoryProducts, IHtmlService html,
+        public HomeController(IGenericDataService<Product> products, IGenericDataService<Category> categories,
+            IGenericDataService<CategoryProduct> categoryProducts, IHtmlService html,
             IOptions<AppKeyConfig> appKeys)
         {
             this.products = products;
@@ -53,7 +51,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         {
             var filter = this.TempData.Get<ProductFilterModel>("ProductFilter");
 
-            var filtered = this.products.Join(x => x.Categories).ThenJoin(x => x.Category)
+            var filtered = (await this.products.GetAllAsync())
                 .AsQueryable()
                 .ProjectTo<ProductListingViewModel>()
                 .ToList();
@@ -64,7 +62,8 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                 MaxPrice = filtered.Max(x => x.Price)
             };
 
-            vm.AllCategories = this.categories.GetAll().Select(x => x.Name).Distinct().ToList();
+            vm.AllCategories = (await this.categories.GetAllAsync())
+                .Select(x => x.Name).Distinct().ToList();
 
             if (filter != null)
             {
@@ -144,10 +143,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             if (id == null)
                 return NotFound();
 
-            var dbProduct = this.products
-                .Join(x => x.Comments).ThenJoin(x => x.User)
-                .Join(x => x.Categories).ThenJoin(c => c.Category)
-                .SingleOrDefault(x => x.Id == id);
+            var dbProduct = await this.products.GetSingleOrDefaultAsync(x => x.Id == id);
 
             if (dbProduct == null)
             {
@@ -157,10 +153,9 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             var dbProductCategories = dbProduct.Categories;
             var product = Mapper.Map<ProductDetailsViewModel>(dbProduct);
 
-            var relatedProducts = this.products.Join(x => x.Categories)
-                .ThenJoin(x => x.Category)
-                .Where(p => dbProductCategories.Any(dbProductCat => p.Categories.Any(pCat => pCat.CategoryId == dbProductCat.CategoryId) ))
-                .ToList();
+            var relatedProducts = await this.products.GetListAsync(p =>
+                dbProductCategories.Any(dbProductCat =>
+                    p.Categories.Any(pCat => pCat.CategoryId == dbProductCat.CategoryId)));
 
             foreach (var relatedProduct in relatedProducts)
             {
@@ -201,11 +196,11 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Create()
         {
-            var categs = this.categories.GetAll().Select(x => x.Name).ToList();
+            var categs = (await this.categories.GetAllAsync()).Select(x => x.Name).ToList();
 
             ProductCreateModel vm = new ProductCreateModel()
             {
-                Categories = this.categories.GetAll().Select(x => x.Name).ToList()
+                Categories = categs
             };
 
             return View(vm);
@@ -219,7 +214,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Create(ProductCreateModel product)
         {
-            var alreadyExists = this.products.Any(x => x.Name == product.Name);
+            var alreadyExists = await this.products.AnyAsync(x => x.Name == product.Name);
 
             if (alreadyExists)
             {
@@ -243,11 +238,11 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             };
 
             List<CategoryProduct> categoryProducts = new List<CategoryProduct>();
-            var categoriesToAdd = this.categories.GetList(x => product.Categories.Contains(x.Name));
+            var categoriesToAdd = await this.categories.GetListAsync(x => product.Categories.Contains(x.Name));
 
             //add product to database
             this.products.Add(productToAdd);
-            var dbProduct = this.products.GetSingle(x => x.Name == product.Name);
+            var dbProduct = await this.products.GetSingleOrDefaultAsync(x => x.Name == product.Name);
 
             //add categories to the database product
             foreach (var category in categoriesToAdd)
@@ -274,9 +269,9 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                 return NotFound();
 
             var product =
-                Mapper.Map<ProductEditViewModel>(this.products.GetSingle(m => m.Id == id));
+                Mapper.Map<ProductEditViewModel>(await this.products.GetSingleOrDefaultAsync(m => m.Id == id));
 
-            product.Categories = this.categories.GetAll().Select(x => x.Name).ToList();
+            product.Categories = (await this.categories.GetAllAsync()).Select(x => x.Name).ToList();
 
             product.CloudinarySources = await ListCloudinaryFileNamesAsync(product.Name);
             product.Cloudinary = CloudinaryExtensions.GetCloudinary(this.appKeys.Value);
@@ -299,7 +294,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int id, string oldName, ProductEditViewModel product)
         {
-            var dbProduct = this.products.GetSingle(x => x.Name == oldName);
+            var dbProduct = await this.products.GetSingleOrDefaultAsync(x => x.Name == oldName);
 
             if (dbProduct == null || id != dbProduct.Id)
             {
@@ -318,9 +313,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             dbProduct.Stock = product.Stock;
 
             //update model categories
-            var dbCategories = this.categoryProducts.Join(x => x.Category).Where(x => x.ProductId == dbProduct.Id)
-                .ToList();
-
+            var dbCategories = await this.categoryProducts.GetListAsync(x => x.ProductId == dbProduct.Id);
 
             //remove unnecessary categories
             foreach (var dbCategory in dbCategories.Where(x => x.ProductId == dbProduct.Id))
@@ -344,7 +337,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
                     this.categoryProducts.Add(new CategoryProduct()
                     {
                         ProductId = dbProduct.Id,
-                        CategoryId = this.categories.GetSingle(x => x.Name == productCategory).Id
+                        CategoryId = (await this.categories.GetSingleOrDefaultAsync(x => x.Name == productCategory)).Id
                     });
                 }
             }
@@ -352,11 +345,11 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             try
             {
                 this.products.Update(dbProduct);
-                RenameCloudinaryFolderAsync(oldName, product.Name);
+                await RenameCloudinaryFolderAsync(oldName, product.Name);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductExists(dbProduct.Id))
+                if (!await ProductExistsAsync(dbProduct.Id))
                     return NotFound();
                 else
                     throw;
@@ -461,7 +454,8 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             if (id == null)
                 return NotFound();
 
-            var product = Mapper.Map<ProductDeleteViewModel>(this.products.GetSingle(m => m.Id == id));
+            var product = Mapper.Map<ProductDeleteViewModel>(await this.products.GetSingleOrDefaultAsync(m => m.Id == id));
+
             if (product == null)
                 return NotFound();
 
@@ -475,7 +469,7 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = this.products.GetSingle(m => m.Id == id);
+            var product = await this.products.GetSingleOrDefaultAsync(m => m.Id == id);
             this.products.Remove(product);
 
             await DeleteCloudinaryFolderAsync(product.Name);
@@ -484,9 +478,9 @@ namespace Zvezdichka.Web.Areas.Products.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProductExists(int id)
+        private async Task<bool> ProductExistsAsync(int id)
         {
-            return this.products.Any(e => e.Id == id);
+            return (await this.products.AnyAsync(e => e.Id == id));
         }
     }
 }

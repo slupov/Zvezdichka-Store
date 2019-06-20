@@ -14,6 +14,10 @@ using Microsoft.Extensions.Options;
 using Zvezdichka.Data;
 using Zvezdichka.Data.Import.Helpers;
 using Zvezdichka.Data.Models;
+using Zvezdichka.Data.Models.Checkout;
+using Zvezdichka.Data.Models.Distributors;
+using Zvezdichka.Data.Models.Mapping;
+using Zvezdichka.Services;
 using Zvezdichka.Services.Contracts;
 using Zvezdichka.Services.Implementations;
 using Zvezdichka.Web.Infrastructure.Constants;
@@ -39,7 +43,10 @@ namespace Zvezdichka.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ZvezdichkaDbContext>(options =>
-                options.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
+            {
+                options.UseLazyLoadingProxies().UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection"));
+            });
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
                 {
@@ -53,6 +60,7 @@ namespace Zvezdichka.Web
 
                     //user settings
                     options.User.RequireUniqueEmail = true;
+                    options.SignIn.RequireConfirmedEmail = true;
                 })
                 .AddEntityFrameworkStores<ZvezdichkaDbContext>()
                 .AddDefaultTokenProviders();
@@ -84,7 +92,18 @@ namespace Zvezdichka.Web
             services.AddSession();
 
             //Add data services.
-            services.AddDataServices();
+            //TODO Rewrite addDataServices
+            //            services.AddDataServices();
+            services.AddTransient<IGenericDataService<Product>, GenericDataService<Product>>();
+            services.AddTransient<IGenericDataService<Category>, GenericDataService<Category>>();
+            services.AddTransient<IGenericDataService<Comment>, GenericDataService<Comment>>();
+            services.AddTransient<IGenericDataService<Faq>, GenericDataService<Faq>>();
+            services.AddTransient<IGenericDataService<Rating>, GenericDataService<Rating>>();
+            services.AddTransient<IGenericDataService<Distributor>, GenericDataService<Distributor>>();
+            services.AddTransient<IGenericDataService<DistributorShipment>, GenericDataService<DistributorShipment>>();
+            services.AddTransient<IGenericDataService<DistributorShipmentProduct>, GenericDataService<DistributorShipmentProduct>>();
+            services.AddTransient<IGenericDataService<Purchase>, GenericDataService<Purchase>>();
+            services.AddTransient<IGenericDataService<CategoryProduct>, GenericDataService<CategoryProduct>>();
 
             //Add external login options
             services.AddAuthentication().AddFacebook(facebookOptions =>
@@ -117,6 +136,8 @@ namespace Zvezdichka.Web
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.UseHttpsRedirection();
 
             app.UseStaticFiles();
 

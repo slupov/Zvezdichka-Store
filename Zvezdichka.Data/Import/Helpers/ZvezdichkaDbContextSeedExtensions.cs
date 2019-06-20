@@ -47,32 +47,6 @@ namespace Zvezdichka.Data.Import.Helpers
             SeedProductsAndCategories(context, categoriesToSeed, productsToSeed);
             SeedRatings(context);
             SeedComments(context);
-            SeedDeliveryOptions(context);
-            SeedPaymentOptions(context);
-        }
-
-        private static void SeedPaymentOptions(ZvezdichkaDbContext context)
-        {
-            if (context.PaymentOptions.Any()) return;
-
-            var currentDirectory = Path.GetFullPath(@"..\Zvezdichka.Data\Import\Json\PaymentOptionsMock.json");
-            string json = File.ReadAllText(currentDirectory);
-            var optionsToSeed = JsonConvert.DeserializeObject<List<PaymentOption>>(json);
-
-            context.PaymentOptions.AddRange(optionsToSeed);
-            context.SaveChanges();
-        }
-
-        private static void SeedDeliveryOptions(ZvezdichkaDbContext context)
-        {
-            if (context.DeliveryOptions.Any()) return;
-
-            var currentDirectory = Path.GetFullPath(@"..\Zvezdichka.Data\Import\Json\DeliveryOptionsMock.json");
-            string json = File.ReadAllText(currentDirectory);
-            var optionsToSeed = JsonConvert.DeserializeObject<List<DeliveryOption>>(json);
-
-            context.DeliveryOptions.AddRange(optionsToSeed);
-            context.SaveChanges();
         }
 
         private static void SeedRatings(ZvezdichkaDbContext context)

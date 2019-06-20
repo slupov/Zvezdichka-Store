@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <UserSecretsId>aspnet-Zvezdichka.Web-4555E141-FE7B-45FA-ACCD-1442791782B7</UserSecretsId>
   </PropertyGroup>
 
@@ -9,13 +9,15 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="6.2.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="3.2.0" />
-    <PackageReference Include="CloudinaryDotNet" Version="1.1.1" />
+    <PackageReference Include="CloudinaryDotNet" Version="1.6.0" />
     <PackageReference Include="FontAwesome" Version="4.7.0" />
-    <PackageReference Include="HtmlSanitizer" Version="4.0.181" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="2.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" PrivateAssets="All" />
+    <PackageReference Include="HtmlSanitizer" Version="4.0.207" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Html.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.2.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.2" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,17 +27,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Zvezdichka.Data\Zvezdichka.Data.csproj" />
-    <ProjectReference Include="..\Zvezdichka.Services\Zvezdichka.Services.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Api\Data\" />
     <Folder Include="Areas\Products\Data\" />
     <Folder Include="Areas\Shopping\Data\" />
     <Folder Include="Areas\Shopping\Views\Home\Components\" />
     <Folder Include="Areas\Shopping\Views\Shared\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Zvezdichka.Common\Zvezdichka.Common.csproj" />
+    <ProjectReference Include="..\Zvezdichka.Services\Zvezdichka.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

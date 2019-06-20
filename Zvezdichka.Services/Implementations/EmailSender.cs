@@ -9,6 +9,19 @@ namespace Zvezdichka.Services.Implementations
     {
         public Task SendEmailAsync(string email, string subject, string message)
         {
+            SendGridSender.SenderEmail = "zvezdichka.online@gmail.com";
+            SendGridSender.SenderName  = "Zvezdichka Store";
+
+            SendGridSender.RecipientEmail = "stoyan.lupov@gmail.com";
+            SendGridSender.RecipientName  = "Stoyan Lupov";
+
+            SendGridSender.Subject = "Testing Send grid emails";
+
+            SendGridSender.PlainTextContent = "Testing plain text";
+            SendGridSender.HtmlContent = "<strong>Testing HTML content of email</strong>";
+
+            SendGridSender.Send();
+
             return Task.CompletedTask;
         }
     }

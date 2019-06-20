@@ -24,9 +24,6 @@ namespace Zvezdichka.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Faq> Faqs { get; set; }
 
-        public DbSet<DeliveryOption> DeliveryOptions { get; set; }
-        public DbSet<PaymentOption> PaymentOptions { get; set; }
-
         public DbSet<Distributor> Distributors { get; set; }
         public DbSet<DistributorShipment> DistributorShipments { get; set; }
         public DbSet<DistributorShipmentProduct> DistributorShipmentProducts { get; set; }
@@ -44,9 +41,6 @@ namespace Zvezdichka.Data
 
             builder.AddConfiguration(new CommentConfiguration());
             builder.AddConfiguration(new FaqConfiguration());
-
-            builder.AddConfiguration(new DeliveryOptionConfiguration());
-            builder.AddConfiguration(new PaymentOptionConfiguration());
 
             builder.AddConfiguration(new DistributorConfiguration());
             builder.AddConfiguration(new DistributorShipmentConfiguration());

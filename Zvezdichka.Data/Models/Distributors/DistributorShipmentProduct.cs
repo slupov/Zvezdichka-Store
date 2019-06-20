@@ -15,7 +15,7 @@ namespace Zvezdichka.Data.Models.Distributors
 
         public decimal Price { get; set; }
 
-        public DistributorShipment DistributorShipment { get; set; }
+        public virtual DistributorShipment DistributorShipment { get; set; }
 
         [Required]
         public int DistributorShipmentId { get; set; }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Zvezdichka.Services.Extensions.Contracts;
+using System.Threading.Tasks;
 
 namespace Zvezdichka.Services.Contracts
 {
@@ -11,11 +11,13 @@ namespace Zvezdichka.Services.Contracts
     /// <typeparam name="T"></typeparam>
     public interface IGenericDataService<T> where T : class
     {
-        IList<T> GetAll(params Expression<Func<T, object>>[] navigationProperties);
+        Task<List<T>> GetAllAsync();
 
-        IList<T> GetList(Func<T, bool> where, params Expression<Func<T, object>>[] navigationProperties);
+        Task<List<T>> GetListAsync(Func<T, bool> where);
 
-        T GetSingle(Func<T, bool> where, params Expression<Func<T, object>>[] navigationProperties);
+        Task<T> GetSingleOrDefaultAsync(Expression<Func<T, bool>> where);
+
+        T GetSingleOrDefault(Expression<Func<T, bool>> where);
 
         void Add(params T[] items);
 
@@ -23,17 +25,8 @@ namespace Zvezdichka.Services.Contracts
 
         void Remove(params T[] items);
 
-        bool Any(Func<T, bool> where,
-            params Expression<Func<T, object>>[] navigationProperties);
+        Task<bool> AnyAsync(Expression<Func<T, bool>> where);
 
-        bool Any();
-
-        /// <summary>
-        /// The starting point for eager loading.
-        /// </summary>
-        /// <typeparam name="TProperty"></typeparam>
-        /// <param name="navigationProperty">The parent navigation property</param>
-        /// <returns></returns>
-        IIncludableJoin<T, TProperty> Join<TProperty>(Expression<Func<T, TProperty>> navigationProperty);
+        Task<bool> AnyAsync();
     }
 }

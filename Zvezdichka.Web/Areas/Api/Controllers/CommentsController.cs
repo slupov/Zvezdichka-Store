@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Zvezdichka.Data.Models;
-using Zvezdichka.Services.Contracts.Entity;
+using Zvezdichka.Services.Contracts;
 using Zvezdichka.Web.Areas.Api.Models.CartItems;
 using Zvezdichka.Web.Areas.Api.Models.Comments;
 using Zvezdichka.Web.Infrastructure.Extensions.Helpers.Html;
@@ -14,12 +14,12 @@ namespace Zvezdichka.Web.Areas.Api.Controllers
 {
     public class CommentsController : ApiBaseController
     {
-        private readonly ICommentsDataService comments;
-        private readonly IProductsDataService products;
+        private readonly IGenericDataService<Comment> comments;
+        private readonly IGenericDataService<Product> products;
         private readonly IHtmlService html;
         private readonly UserManager<ApplicationUser> users;
 
-        public CommentsController(ICommentsDataService comments, IProductsDataService products, IHtmlService html,
+        public CommentsController(IGenericDataService<Comment> comments, IGenericDataService<Product> products, IHtmlService html,
             UserManager<ApplicationUser> users)
         {
             this.comments = comments;
@@ -38,7 +38,7 @@ namespace Zvezdichka.Web.Areas.Api.Controllers
             }
 
             var user = await this.users.FindByNameAsync(comment.Username);
-            var product = this.products.GetSingle(x => x.Id == comment.ProductId);
+            var product = await this.products.GetSingleOrDefaultAsync(x => x.Id == comment.ProductId);
 
             if (user == null || product == null)
                 return NotFound();
@@ -65,7 +65,7 @@ namespace Zvezdichka.Web.Areas.Api.Controllers
             if (!this.ModelState.IsValid)
                 return NotFound();
 
-            var dbComment = this.comments.GetSingle(x => x.Id == comment.Id);
+            var dbComment = await this.comments.GetSingleOrDefaultAsync(x => x.Id == comment.Id);
 
             dbComment.DateEdited = DateTime.Now;
             dbComment.IsEdited = true;
@@ -78,7 +78,7 @@ namespace Zvezdichka.Web.Areas.Api.Controllers
         [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
-            var toDelete = this.comments.GetSingle(x => x.Id == id, x => x.User);
+            var toDelete = await this.comments.GetSingleOrDefaultAsync(x => x.Id == id);
 
             if (toDelete == null)
             {

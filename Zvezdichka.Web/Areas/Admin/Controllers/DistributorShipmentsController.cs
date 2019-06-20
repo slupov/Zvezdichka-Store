@@ -5,8 +5,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Zvezdichka.Data.Models.Distributors;
-using Zvezdichka.Services.Contracts.Entity.Distributor;
-using Zvezdichka.Services.Extensions;
+using Zvezdichka.Services.Contracts;
 using Zvezdichka.Web.Areas.Admin.Models.Distributor;
 
 namespace Zvezdichka.Web.Areas.Admin.Controllers
@@ -14,9 +13,9 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
     [Route("distributor/shipments/[action]")]
     public class DistributorShipmentsController : AdminBaseController
     {
-        private readonly IDistributorShipmentsDataService shipments;
+        private readonly IGenericDataService<DistributorShipment> shipments;
 
-        public DistributorShipmentsController(IDistributorShipmentsDataService shipments)
+        public DistributorShipmentsController(IGenericDataService<DistributorShipment> shipments)
         {
             this.shipments = shipments;
         }
@@ -24,7 +23,7 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
         // GET: Admin/DistributorShipments
         public async Task<IActionResult> Index()
         {
-            return View(this.shipments.GetAll(x => x.Distributor, x => x.Products));
+            return View(await this.shipments.GetAllAsync());
         }
 
         // GET: Admin/DistributorShipments/Details/5
@@ -35,9 +34,7 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var distributorShipment = await this.shipments
-                .Join(d => d.Distributor)
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var distributorShipment = await this.shipments.GetSingleOrDefaultAsync(m => m.Id == id);
 
             if (distributorShipment == null)
             {
@@ -105,10 +102,8 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var distributorShipment = this.shipments
-                .Join(x => x.Distributor)
-                .Join(x => x.Products)
-                .SingleOrDefault(m => m.Id == id);
+            var distributorShipment = await this.shipments
+                .GetSingleOrDefaultAsync(m => m.Id == id);
 
             if (distributorShipment == null)
             {
@@ -127,9 +122,8 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditDistributorShipmentModel distributorShipment)
         {
-            var dbShipment = this.shipments
-                .Join(x => x.Distributor)
-                .SingleOrDefault(x => x.Id == distributorShipment.Id);
+            var dbShipment = await this.shipments
+                .GetSingleOrDefaultAsync(x => x.Id == distributorShipment.Id);
 
             if (dbShipment == null)
             {
@@ -145,7 +139,7 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DistributorShipmentExists(distributorShipment.Id))
+                    if (!await DistributorShipmentExists(distributorShipment.Id))
                     {
                         return NotFound();
                     }
@@ -169,8 +163,7 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
             }
 
             var distributorShipment = await this.shipments
-                .Join(d => d.Distributor)
-                .SingleOrDefaultAsync(m => m.Id == id);
+                .GetSingleOrDefaultAsync(m => m.Id == id);
 
             if (distributorShipment == null)
             {
@@ -185,14 +178,15 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var distributorShipment = this.shipments.GetSingle(m => m.Id == id);
+            var distributorShipment = await this.shipments.GetSingleOrDefaultAsync(m => m.Id == id);
+
             this.shipments.Remove(distributorShipment);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DistributorShipmentExists(int id)
+        private async Task<bool> DistributorShipmentExists(int id)
         {
-            return this.shipments.Any(e => e.Id == id);
+            return await this.shipments.AnyAsync(e => e.Id == id);
         }
     }
 }

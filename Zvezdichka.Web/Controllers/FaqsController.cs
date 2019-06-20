@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Zvezdichka.Data.Models;
-using Zvezdichka.Services.Contracts.Entity;
+using Zvezdichka.Services.Contracts;
 using Zvezdichka.Web.Infrastructure.Constants;
 
 namespace Zvezdichka.Web.Controllers
@@ -11,9 +11,9 @@ namespace Zvezdichka.Web.Controllers
     [Route("faq/[action]")]
     public class FaqsController : BaseController
     {
-        private readonly IFaqDataService faqs;
+        private readonly IGenericDataService<Faq> faqs;
 
-        public FaqsController(IFaqDataService faqs)
+        public FaqsController(IGenericDataService<Faq> faqs)
         {
             this.faqs = faqs;
         }
@@ -21,7 +21,7 @@ namespace Zvezdichka.Web.Controllers
         // GET: Faqs
         public async Task<IActionResult> Index()
         {
-            return View(this.faqs.GetAll());
+            return View(await this.faqs.GetAllAsync());
         }
 
         // GET: Faqs/Details/5
@@ -33,7 +33,7 @@ namespace Zvezdichka.Web.Controllers
                 return NotFound();
             }
 
-            var faq = this.faqs.GetSingle(m => m.Id == id);
+            var faq = await this.faqs.GetSingleOrDefaultAsync(m => m.Id == id);
 
             if (faq == null)
             {
@@ -75,7 +75,7 @@ namespace Zvezdichka.Web.Controllers
                 return NotFound();
             }
 
-            var faq = this.faqs.GetSingle(m => m.Id == id);
+            var faq = await this.faqs.GetSingleOrDefaultAsync(m => m.Id == id);
             if (faq == null)
             {
                 return NotFound();
@@ -104,7 +104,7 @@ namespace Zvezdichka.Web.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!FaqExists(faq.Id))
+                    if (!await FaqExistsAsync(faq.Id))
                     {
                         return NotFound();
                     }
@@ -127,8 +127,7 @@ namespace Zvezdichka.Web.Controllers
                 return NotFound();
             }
 
-            var faq = this.faqs
-                .GetSingle(m => m.Id == id);
+            var faq = await this.faqs.GetSingleOrDefaultAsync(m => m.Id == id);
             if (faq == null)
             {
                 return NotFound();
@@ -143,14 +142,14 @@ namespace Zvezdichka.Web.Controllers
         [Authorize(Roles = WebConstants.RoleNames.AdminRole + ", " + WebConstants.RoleNames.ManagerRole)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var faq = this.faqs.GetSingle(m => m.Id == id);
+            var faq = await this.faqs.GetSingleOrDefaultAsync(m => m.Id == id);
             this.faqs.Remove(faq);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool FaqExists(int id)
+        private async Task<bool> FaqExistsAsync(int id)
         {
-            return this.faqs.Any(e => e.Id == id);
+            return await this.faqs.AnyAsync(e => e.Id == id);
         }
     }
 }

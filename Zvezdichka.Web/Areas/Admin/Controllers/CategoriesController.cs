@@ -1,19 +1,19 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Zvezdichka.Data.Models;
-using Zvezdichka.Services.Contracts.Entity;
 using Zvezdichka.Web.Areas.Admin.Models;
 using Zvezdichka.Web.Infrastructure.Constants;
+using Zvezdichka.Services;
+using Zvezdichka.Data.Models;
+using Zvezdichka.Services.Contracts;
 
 namespace Zvezdichka.Web.Areas.Admin.Controllers
 {
     public class CategoriesController : AdminBaseController
     {
-        private readonly ICategoriesDataService categories;
+        private readonly IGenericDataService<Category> categories;
 
-        public CategoriesController(ICategoriesDataService categories, IProductsDataService products)
+        public CategoriesController(IGenericDataService<Category> categories)
         {
             this.categories = categories;
         }
@@ -21,7 +21,7 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            return View(this.categories.GetAll());
+            return View(await this.categories.GetAllAsync());
         }
 
         // GET: Categories/Details/5
@@ -32,7 +32,8 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category = this.categories.GetSingle(m => m.Id == id);
+            var category = await this.categories.GetSingleOrDefaultAsync(m => m.Id == id);
+
             if (category == null)
             {
                 return NotFound();
@@ -53,7 +54,7 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(EditCategoryModel category)
         {
-            var dbCategory = this.categories.GetSingle(x => x.Name == category.Name);
+            var dbCategory = await this.categories.GetSingleOrDefaultAsync(x => x.Name == category.Name);
 
             if (dbCategory != null)
             {
@@ -83,7 +84,7 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category = this.categories.GetSingle(m => m.Id == id);
+            var category = await this.categories.GetSingleOrDefaultAsync(m => m.Id == id);
             if (category == null)
             {
                 return NotFound();
@@ -99,7 +100,7 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
         [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> Edit(int id, EditCategoryModel category)
         {
-            var dbCategory = this.categories.GetSingle(x => x.Name == category.Name);
+            var dbCategory = await this.categories.GetSingleOrDefaultAsync(x => x.Name == category.Name);
 
             if (dbCategory == null)
             {
@@ -126,7 +127,7 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category = this.categories.GetSingle(m => m.Id == id);
+            var category = await this.categories.GetSingleOrDefaultAsync(m => m.Id == id);
             if (category == null)
             {
                 return NotFound();
@@ -140,15 +141,15 @@ namespace Zvezdichka.Web.Areas.Admin.Controllers
         [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = this.categories.GetSingle(m => m.Id == id);
+            var category = await this.categories.GetSingleOrDefaultAsync(m => m.Id == id);
             this.categories.Remove(category);
 
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CategoryExists(int id)
+        private async Task<bool> CategoryExists(int id)
         {
-            return this.categories.Any(e => e.Id == id);
+            return await this.categories.AnyAsync(e => e.Id == id);
         }
     }
 }

@@ -24,6 +24,7 @@ _UpgradeReport_Files/
 ###############
 bin/
 obj/
+.vs/
 TestResults/
 ###################
 # Web publish log #
@@ -74,3 +75,4 @@ _[Ss]cripts
 *.ncrunchsolution
 *.dot[Cc]over
 *.ide
+*.dtbcache
