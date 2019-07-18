@@ -19,12 +19,11 @@ namespace Zvezdichka.Services.Implementations
         public static string PlainTextContent { get; set; }
         public static string HtmlContent { get; set; }
 
+        public static string ApiKey { private get; set; }
+
         public static async void  Send()
         {
-            //TODO Stoyan Lupov 20 June, 2019 Extract to user secret
-            var apiKey = "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";
-
-            var client = new SendGridClient(apiKey);
+            var client = new SendGridClient(ApiKey);
 
             var msg = MailHelper.CreateSingleEmail(
                 new EmailAddress(SenderEmail, SenderName),

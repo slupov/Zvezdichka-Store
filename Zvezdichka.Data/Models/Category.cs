@@ -13,6 +13,8 @@ namespace Zvezdichka.Data.Models
         [StringLength(20, MinimumLength = 2)]
         public string Name { get; set; }
 
+        public string Country { get; set; }
+
         public virtual ICollection<CategoryProduct> Products { get; set; } = new HashSet<CategoryProduct>();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Zvezdichka.Services.Contracts;
 
 namespace Zvezdichka.Services.Implementations
@@ -7,6 +8,13 @@ namespace Zvezdichka.Services.Implementations
     // For more details see https://go.microsoft.com/fwlink/?LinkID=532713
     public class EmailSender : IEmailSender
     {
+        public EmailSender(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; set; }
+
         public Task SendEmailAsync(string email, string subject, string message)
         {
             SendGridSender.SenderEmail = "zvezdichka.online@gmail.com";
@@ -20,6 +28,7 @@ namespace Zvezdichka.Services.Implementations
             SendGridSender.PlainTextContent = "Testing plain text";
             SendGridSender.HtmlContent = "<strong>Testing HTML content of email</strong>";
 
+            SendGridSender.ApiKey = Configuration.GetSection("AppKeys")["SendGridApiKey"];
             SendGridSender.Send();
 
             return Task.CompletedTask;

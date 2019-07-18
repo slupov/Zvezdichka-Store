@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Zvezdichka.Data.Models;
-using Zvezdichka.Data.Models.Checkout;
 using Zvezdichka.Data.Models.Mapping;
 
 namespace Zvezdichka.Data.Import.Helpers
